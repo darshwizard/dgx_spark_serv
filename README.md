@@ -37,9 +37,10 @@ Also measured for the DeepSeek EXL3 K2: EvalPlus HumanEval+ **88.4** / MBPP+ **7
    bus ≈ 4.5 tok/s. Quantization is mandatory on this hardware class.
 4. **Speculative decoding is single-stream-only** on this box: drafter advantage
    dies at batch >1 for every stack tested (DSpark, DFlash, MTP scale >1).
-5. **Negative results**: no current stock stack serves the community Ling NVFP4
-   checkpoints (fork-only, patch-gated); this Laguna NVFP4 snapshot cannot serve
-   its advertised 256k context on one Spark (~122k KV ceiling at util 0.85).
+5. **Negative results**: INT4 is the only Ling 3.0 Flash quantization that
+   serves on this hardware (every FP4/NVFP4 variant failed — fork-only stacks);
+   this Laguna NVFP4 snapshot cannot serve its advertised 256k context on one
+   Spark (~122k KV ceiling at util 0.85).
 
 ## Contents
 

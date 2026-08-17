@@ -423,3 +423,10 @@ Verdict: configs are near-equivalent; DFlash helps agent-turn latency, b12x flag
 prefill. Laguna overall: mid-table quality (81-83), modest speed, weak error
 recovery/instruction following under pressure; did NOT reproduce the "agentic 99.3"
 headline (different benchmark, spark-bench, not comparable).
+
+### Ling NVFP4 — CLOSED (2026-08-17): all non-INT4 Ling variants failed
+The r0b0tlab NVFP4 rebuild attempts also failed (final outcome after the CUDA-13
+rebuild and JIT-warmup fixes; a host OOM/reboot occurred during a load attempt).
+Combined with olka-fi (incompatible module naming) and AtomicChat (broken repo):
+**INT4 is the only Ling 3.0 Flash quantization that serves on this box.** No
+further investigation planned until upstream vLLM/SGLang support lands.
