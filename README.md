@@ -44,6 +44,14 @@ Also measured for the DeepSeek EXL3 K2: EvalPlus HumanEval+ **88.4** / MBPP+ **7
 ## Contents
 
 - `RESULTS.md` — the full running log (chronological, includes configs and failures)
+- `recipes/` — **reusable serving configs, as actually run** (launch scripts with
+  the reasoning in comments): DeepSeek EXL3 K2 overlay files, Qwen3.8-27B
+  SGLang+DSpark, Qwen3.6-35B-A3B vLLM+MTP (with the measured memory-budget math),
+  Laguna S-2.1 both configs (+ the mandatory tool probe), Muse Glimmer BF16, and
+  a working/not-working map for every Ling 3.0 Flash quant
+- `docs/OPERATIONS.md` — how to run models on unified-memory Blackwell without
+  wedging the box: memory caps, restart-policy doctrine, GPU handoff, probe
+  gates, the firmware power-clamp check
 - `reports/` — raw tool-eval-bench per-run reports
 - `scripts/` — bench harness scripts (coding/concurrency/longctx pair,
   orchestrator-pattern concurrency test, episode-shape test)

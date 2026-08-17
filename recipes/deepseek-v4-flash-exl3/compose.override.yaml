@@ -1,0 +1,28 @@
+# Local overrides (untracked; compose merges this over compose.yaml).
+services:
+  deepseek-v4-flash:
+    # Fixed name so gpu.sh can arbitrate it like every other GPU tenant;
+    # without this, compose generates "recipe-deepseek-v4-flash-1".
+    container_name: ds4-flash
+
+    # Upstream ships `unless-stopped`, which relaunches a whole-machine model
+    # at every boot behind gpu.sh's back. `on-failure` turned out to be no
+    # better: after an UNCLEAN host death docker counts the container as
+    # failed and resurrects it at boot anyway (observed 2026-08-16, 18:10
+    # boot). On a box with a history of hard power-offs, only "no" actually
+    # keeps boot-time GPU ownership with gpu.sh. The cost -- a mid-run vLLM
+    # crash stays down until relaunched -- is the intended behaviour here.
+    restart: "no"
+
+    # Backstop, not a target: vLLM plans against GPU_MEMORY_UTILIZATION=0.85
+    # (~103 GB of the unified pool), so a container passing 110g is not
+    # "using a bit more", it is leaking. Better the container dies than the
+    # box wedges. memswap == mem so it cannot spill into swap instead.
+    mem_limit: 110g
+    memswap_limit: 110g
+
+    # SERVED_MODEL_NAME stays at upstream's default
+    # "deepseek-v4-flash-0731-exl3-k2". The gateway forwards its catalog's
+    # FIRST model name for this backend (gateway/app.py DEFAULT_BACKENDS), so
+    # that first entry and the served name must stay in lockstep -- change
+    # either one alone and every gateway-forwarded request 404s.
