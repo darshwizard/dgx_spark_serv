@@ -14,6 +14,7 @@ concurrency 1/2/4, 3 runs each). Full chronology, configs, and caveats: [RESULTS
 | Qwen3.8-27B NVFP4 (SGLang + DSpark) | **89** | 5.2s | 25.7 | 2,387 | 65.6 |
 | DeepSeek-V4-Flash-0731 EXL3 K2 2-bit (vLLM) | 88 | **2.3s** | 27.4 (52–57 on code) | 1,367 | 32.9 |
 | Ling 3.0 Flash INT4 124B-A5B (SGLang) | 86 | 4.3s | 28.2 | 2,365 | 44.7 |
+| Qwen3.8-27B abliterated NVFP4 (research-only) | 86 | 8.2s | 15.5 | 1,920 | 47.6 |
 | Qwen3.6-35B-A3B NVFP4 (vLLM + MTP) | 85 | 2.1s | **77–85** | **5,147–6,344** | ~112* |
 | Laguna-S-2.1 NVFP4 (validated cfg) | 83 | 5.5s | 17.5 | 2,450 | 36.9 |
 | Laguna-S-2.1 NVFP4 (DFlash + b12x cfg) | 81 | 3.2s | 18.2 | 1,795 | 35.7 |
@@ -23,6 +24,12 @@ concurrency 1/2/4, 3 runs each). Full chronology, configs, and caveats: [RESULTS
 
 Also measured for the DeepSeek EXL3 K2: EvalPlus HumanEval+ **88.4** / MBPP+ **74.1**
 (greedy, official harness) and standard-suite tool-eval **93/100**.
+
+The abliterated row is a controlled experiment (identical serving to stock Qwen3.8-27B):
+abliteration cost only 3 quality points and left core competence intact, but gutted
+prompt-injection resistance — Safety & Boundaries fell 92%→65% and it actively followed
+planted instructions (activated a cross-turn sleeper injection). Research-only; it loses
+exactly the judgment that makes the stock model useful. See RESULTS.md.
 
 ## Key findings
 
@@ -53,6 +60,11 @@ Also measured for the DeepSeek EXL3 K2: EvalPlus HumanEval+ **88.4** / MBPP+ **7
 - `docs/OPERATIONS.md` — how to run models on unified-memory Blackwell without
   wedging the box: memory caps, restart-policy doctrine, GPU handoff, probe
   gates, the firmware power-clamp check
+- `docs/FOOTPRINTS.md` — memory footprint, KV cache, and real concurrency per
+  model; why big-footprint models serve few users; the co-hosting analysis
+- `docs/GATEWAY.md` — a single-model serving gateway: stable `auto` endpoint that
+  survives model swaps, soft-auth identity (apps self-name, no keys to provision),
+  reroute-don't-404, caller attribution
 - `reports/` — raw tool-eval-bench per-run reports
 - `scripts/` — bench harness scripts (coding/concurrency/longctx pair,
   orchestrator-pattern concurrency test, episode-shape test)
