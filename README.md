@@ -1,11 +1,27 @@
-# DGX Spark (GB10) LLM Benchmark Findings
+# DGX Spark (GB10) — serving & benchmark findings
 
-Benchmarks of locally-served LLMs on a single NVIDIA DGX Spark (GB10 Grace-Blackwell,
-121 GB unified memory, aarch64/sm_121a). All quality runs use
+Field notes from running one NVIDIA DGX Spark (GB10 Grace-Blackwell, 121 GB unified
+memory, aarch64/sm_121a) hard. Two independent tracks:
+
+- **[hardware/](hardware/README.md) — platform, firmware, power, thermals, crashes.**
+  Applies to *any* GB10 workload. **Read this first if your Spark is mysteriously slow
+  or crashing under load** — this unit shipped with a firmware power fault that a
+  `fwupdmgr` update fixed.
+- **This page + [docs/](docs/), [recipes/](recipes/) — the LLM serving work below.**
+
+---
+
+## LLM benchmarks
+
+Benchmarks of locally-served LLMs. All quality runs use
 [tool-eval-bench](https://github.com/SeraphimSerapis/tool-eval-bench) **hard mode**
 (v2.5.1.dev30, seed 42, 84 scenarios); all throughput runs use
 [llama-benchy](https://github.com/eugr/llama-benchy) (pp2048/tg128, depths 0/4k/8k,
 concurrency 1/2/4, 3 runs each). Full chronology, configs, and caveats: [RESULTS.md](RESULTS.md).
+
+> **Benchmarking caveat (see [hardware/](hardware/README.md)):** all numbers here were
+> taken *after* fixing a firmware power-clamp that silently caps this box at ~15 W. Pre-fix
+> figures ran 2–3× low. Always verify GB10 clocks before trusting a throughput number.
 
 ## Headline table
 
@@ -69,7 +85,5 @@ exactly the judgment that makes the stock model useful. See RESULTS.md.
 - `scripts/` — bench harness scripts (coding/concurrency/longctx pair,
   orchestrator-pattern concurrency test, episode-shape test)
 
-Hardware note: all post-2026-08-16 numbers were taken after fixing a firmware
-power-clamp fault that silently caps this machine at ~15 W (~2–3× throughput loss);
-if your Spark benches slow, check `nvidia-smi -q -d PERFORMANCE` for a growing
-`SW Power Capping` counter before trusting any numbers.
+Platform, firmware, power, and crash findings are kept separate in
+**[hardware/](hardware/README.md)** — they apply to any GB10 workload, not just LLMs.
