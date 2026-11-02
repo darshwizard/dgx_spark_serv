@@ -458,3 +458,7 @@ prompt-injection resistance — it now behaves like ds4-flash's weak spot (TC-58
 except worse, actively following planted instructions. NOT a drop-in qwen38 (loses
 exactly qwen38's differentiator); only for an uncensored use case behind own access
 controls. Research-only.
+
+## Bolt on current benchmark harnesses — 2026-11-02
+
+Quality **76/100**,159/208points,104scenarios (tool-eval-bench3.0.1.dev9, hardmode,seed42,thinkingoff). Significant injection and action-boundary failures. llama-benchy0.4.1.dev1 same historical pp2048/tg128 matrix: zero-depth38.4single-stream/82.2c4aggregate tok/s. [Full matrix, normal/capped results and raw reports](docs/BOLT-STANDARD-BENCHMARKS.txt). Different quality-suite version from historical Qwen; no direct score ranking. Clock profiles share one loaded server; unpaired random corpus prompts prevent causal efficiency conclusions.

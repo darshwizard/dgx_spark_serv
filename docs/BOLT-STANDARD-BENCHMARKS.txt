@@ -1,0 +1,85 @@
+Bolt with the repository benchmark families — 2026-11-02
+
+tool-eval-bench v3.0.1.dev9+g2ad584631, hard mode, seed42, thinking off:
+Quality76/100, 159/208points,104scenarios; median turn1.6s, deployability74.
+Rating: Adequate (safety-capped). Full upstream report is preserved under
+experiments/bolt-standard-20261102/bolt-standard-01/bench/quality/.
+
+Important failures include cross-turn sleeper injection, multi-hop injection,
+tenant isolation, least privilege, ambiguous recipients and transactional
+notification handling. Tools are benchmark mocks; no real emails/actions occurred.
+The passing two-request pilot gates did not establish agent safety or reliability.
+Historical Qwen89/100 used v2.5.1.dev30 with84scenarios and a previous installation.
+Neither model ordering nor a13-point regression can be inferred from these scores.
+A matched-suite fresh Qwen run is still required for a controlled model comparison.
+
+llama-benchy v0.4.1.dev1+ge9be34457, pp2048/tg128, three measured runs per shape,
+one discarded warmup per shape, depths0/4096/8192, concurrency1/2/4. This is the
+same workload matrix as the historical repo. Rates below are harness means,
+aggregate across concurrent requests (not multiplied per-request averages).
+
+profile        depth   concurrency    prefill tok/s    decode tok/s
+normal             0             1           1837.4            38.4
+normal             0             2           1857.5            79.5
+normal             0             4           1887.1            82.2
+normal          4096             1           1839.7            76.3
+normal          4096             2           1902.8            60.9
+normal          4096             4           1906.6            46.2
+normal          8192             1           1824.7            42.3
+normal          8192             2           1884.6            48.3
+normal          8192             4           1890.4            35.0
+efficiency80       0             1           1831.0            80.6
+efficiency80       0             2           1853.1            57.2
+efficiency80       0             4           1880.0            73.7
+efficiency80    4096             1           1834.5            55.4
+efficiency80    4096             2           1897.0            59.1
+efficiency80    4096             4           1901.6            32.0
+efficiency80    8192             1           1821.2            37.8
+efficiency80    8192             2           1878.5            53.5
+efficiency80    8192             4           1886.5            33.3
+
+Normal zero-depth decode38.4 has substantial spread (SD12.8; measured20.4,47.6,
+47.3tok/s). Preserve individual values and avoid a universal Bolt speed claim.
+The capped rates vary in both directions. llama-benchy selects random corpus
+start positions using NumPy without a fixed seed in this invocation; normal and
+capped prompts are not paired. Speculative acceptance is content-dependent.
+Therefore these clock profiles are descriptive measurements, not a causal
+throughput-retention or energy-efficiency result. A paired replay is needed.
+
+One model server remained loaded for the entire campaign: quality first, normal
+throughput second, efficiency80 throughput third. CPU/GPU caps were applied only
+after normal throughput completed, with readback before the capped client started.
+No reload between profiles. Maximum clock policy CPU2.2464/3.120GHz, GPU2.402GHz;
+normal GPU was already around2.4GHz. Original CPU limits, default GPU clocks and
+original queue runtime/reference files restored after completion (readbacks pass).
+
+Telemetry:1573samples, hottest ACPI sensor90.6C, minimum available RAM45.79GiB,
+no job guard abort or memory-limit events. Logger's90C advisory fired for2samples;
+guard stop threshold95C was not reached. GPU-reported power peak85.38W. Whole-run
+energy includes startup, quality and both throughput phases; it is not wall energy
+and cannot be used to rank clock-profile efficiency. Ambient was not measured,
+run order was not balanced, and start temperatures were not matched.
+
+Reproducibility
+- Exact harness commits, job arguments and queue ID: spec.json and job-id.
+- Image extends the verified Spark playbook image with both harnesses installed
+  using --no-deps. The serving dependency versions are preserved. Dockerfile and
+  immutable resulting image ID are included. Build copies the two checked-out
+  upstream repos at the commits in spec.json. No new host model service installed.
+- Server launch: scripts/bolt_job.py --mode standard --recipe playbook --profile
+  normal --run-id UNIQUE. scripts/bolt_standard.py runs upstream CLI commands,
+  stored as *-command.json in the output. Stage both scripts as /workspace/code.
+- Stage the model/draft as in BOLT-RESULTS.txt. Seed the offline llama-benchy corpus
+  cache at /workspace/.cache/llama-benchy/cc6a0b5782734ee3b9069aa3b64cc62c.txt using
+  manifest.json's source/hash. Tokenizer is local to avoid network/fallback.
+- Queue limits:16CPU/96GiB/4GiBshm, offline, read-onlyroot; context32768,max4seqs,
+  gpu-memory-utilization0.55, OMP8, LiLiCorr7tokens. Full launch saved in artifacts.
+- Start host telemetry before queued job. For cap handshake, wait for bench/
+  ready-for-cap, apply/verify caps on an otherwise reserved machine, then create
+  bench/cap-applied. Always restore caps and original queue image in finally.
+- Raw telemetry and server logs are gzip-compressed; reports and machine-readable
+  throughput results remain directly readable. No forum posting was performed.
+
+Sources
+https://github.com/SeraphimSerapis/tool-eval-bench
+https://github.com/eugr/llama-benchy

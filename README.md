@@ -11,6 +11,13 @@ memory, aarch64/sm_121a) hard. Two independent tracks:
 
 ---
 
+## November 2026 Bolt benchmarks
+
+Current tool-eval-bench hard mode: **76/100 on 104 scenarios**, with injection
+and action-boundary failures. Current llama-benchy zero-depth decode: **38.4 tok/s
+single-stream, 82.2 aggregate at c4**. [Full matrix, reports, and version caveats](docs/BOLT-STANDARD-BENCHMARKS.txt).
+The historical Qwen quality score used an older suite and is not directly comparable.
+
 ## November 2026 Bolt pilot
 
 Fresh-install comparison of the forum and NVIDIA Spark playbook runtimes, with

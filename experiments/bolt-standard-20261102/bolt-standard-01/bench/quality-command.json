@@ -1,0 +1,14 @@
+[
+  "tool-eval-bench",
+  "run",
+  "--base-url",
+  "http://127.0.0.1:8000",
+  "--model",
+  "bolt",
+  "--hardmode",
+  "--seed",
+  "42",
+  "--no-think",
+  "--output-dir",
+  "/workspace/results/bolt-standard-01/bench/quality"
+]

@@ -78,7 +78,7 @@ def guard(out):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--profile',choices=['normal','efficiency80'],required=True)
-    p.add_argument('--mode',choices=['smoke','suite'],default='smoke')
+    p.add_argument('--mode',choices=['smoke','suite','standard'],default='smoke')
     p.add_argument('--run-id',required=True)
     p.add_argument('--recipe',choices=['forum','playbook'],default='forum')
     args=p.parse_args()
@@ -166,7 +166,7 @@ def main():
                 event('server_failed',exit_code=server.poll())
             else:
                 event('server_ready',startup_s=round(time.monotonic()-start,2))
-                bench=subprocess.Popen([sys.executable,str(ROOT/'code/bolt_bench.py'),
+                bench=subprocess.Popen([sys.executable,str(ROOT/('code/bolt_standard.py' if args.mode=='standard' else 'code/bolt_bench.py')),
                     '--out',str(out/'bench'),'--mode',args.mode,'--profile',args.profile],
                     env=env,start_new_session=True)
                 CHILDREN.append(bench)
