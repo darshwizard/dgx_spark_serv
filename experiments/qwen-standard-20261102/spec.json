@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python3",
+    "/workspace/code/qwen_job.py",
+    "--mode",
+    "standard",
+    "--recipe",
+    "playbook",
+    "--profile",
+    "normal",
+    "--run-id",
+    "qwen-standard-02"
+  ],
+  "metadata": {
+    "commit": "c71188073244431ffb745d16aab34ae1ea470037",
+    "dataset": "tool-eval-current-hardmode-and-llama-benchy",
+    "parameters": {
+      "seed": 42,
+      "pp": 2048,
+      "tg": 128,
+      "depths": [
+        0,
+        4096,
+        8192
+      ],
+      "concurrency": [
+        1,
+        2,
+        4
+      ],
+      "runs": 3,
+      "harnesses": {
+        "tool-eval-bench": "2ad584631702f042295862a363396ccbc6ac0fe9",
+        "llama-benchy": "e9be344578cec17745066b220798b80a0d2686d3"
+      }
+    }
+  }
+}

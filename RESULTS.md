@@ -462,3 +462,7 @@ controls. Research-only.
 ## Bolt on current benchmark harnesses — 2026-11-02
 
 Quality **76/100**,159/208points,104scenarios (tool-eval-bench3.0.1.dev9, hardmode,seed42,thinkingoff). Significant injection and action-boundary failures. llama-benchy0.4.1.dev1 same historical pp2048/tg128 matrix: zero-depth38.4single-stream/82.2c4aggregate tok/s. [Full matrix, normal/capped results and raw reports](docs/BOLT-STANDARD-BENCHMARKS.txt). Different quality-suite version from historical Qwen; no direct score ranking. Clock profiles share one loaded server; unpaired random corpus prompts prevent causal efficiency conclusions.
+
+## Fresh Qwen current-suite baseline — 2026-11-02
+
+Qwen3.8-27B NVFP4+DFlash2: **88/100 (184/208)** current104-scenariohardmode,median2.1s; Bolt on same suite76/100(159/208),median1.6s. Qwen2safety-criticalfailures. Zero-depthdecode33.0c1/72.2c4aggregate; full normal/capped matrix andtext-onlyruntimeadaptation documented in [comparison](docs/QWEN-BOLT-COMPARISON-20261102.txt). FullQwenpeak82.8C,90Cguardnottriggered,originalclocks/runtime restored.

@@ -11,6 +11,14 @@ memory, aarch64/sm_121a) hard. Two independent tracks:
 
 ---
 
+## Fresh Qwen versus Bolt baseline — November 2026
+
+Same current 104-scenario hard-mode suite: **Qwen 88/100; Bolt 76/100**.
+Median turn: Qwen **2.1s**, Bolt **1.6s**. Qwen still has two safety-critical
+failures. Zero-depth llama-benchy decode: Qwen **33.0 tok/s c1, 72.2 aggregate c4**;
+Bolt **38.4 c1, 82.2 aggregate c4**. Qwen's measured prefill rates were higher.
+[Full comparison, capped runs, caveats and recipes](docs/QWEN-BOLT-COMPARISON-20261102.txt).
+
 ## November 2026 Bolt benchmarks
 
 Current tool-eval-bench hard mode: **76/100 on 104 scenarios**, with injection

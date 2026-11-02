@@ -1,0 +1,8 @@
+{
+  "image_id": "sha256:accfefdbcc2891d76e4d25a70f73218358af41fcc798052838c034448f94eb5a",
+  "script_hashes": {
+    "qwen_job.py": "092184a3c0d217c07ef3b06e1cecd0d3a208f0650d459ba8338f4a72b2041dae",
+    "qwen_standard.py": "e2a260a9b67e332c90bcc751abe8e2921ef2f15e022c5a41d18d95fa2821321d",
+    "clock_profile.py": "cf90cd9516c51e18851a80a2a8e449a17779f092096aad8f12573e39896601b7"
+  }
+}
