@@ -25,7 +25,7 @@ Super: https://github.com/hasso5703/alzeo/blob/main/install-nemotron-super.sh
   and docs/nemotron-super-lane.md in that repository. Same pinned community
   runtime previously validated for Bolt, plus our benchmark wheels installed
   without dependency upgrades. FlashInfer Mamba backend and FP16 SSM state with
-  stochastic rounding. Adaptations: 32K context, four active sequences, one image
+  stochastic rounding; retain its default KV precision. Adaptations: 32K context, four active sequences, one image
   and no video, job-local loopback, offline staged weights, queue isolation.
 Flash: https://github.com/NVIDIA/dgx-spark-playbooks/blob/main/nvidia/playbook-vllm/assets/sync-vllm-spark-128gb-qwen38-flash-next.sh
   eugr/spark-vllm-b12x:nightly-20261015, pinned locally by immutable image ID.
