@@ -63,7 +63,7 @@ Temporary job backstop: 118 GiB charged-memory limit, no anonymous job swap,
 fully represented in the cgroup charge, so host memory pressure is primary.
 Root watchdog outside the job cgroup samples every 100 ms and cancels only our
 job at hottest ACPI >=90 C, host available memory <2 GiB, host swap growth
->64 MiB, required sensor loss, or controller loss. Phase admission needs >=3 GiB
+>64 MiB together with <4 GiB available, required sensor loss, or controller loss. Phase admission needs >=3 GiB
 available. An in-job guard backs it up. Restore original runtime, limits, public
 reference pages and clock ceilings after the experiment, including failures.
 Firmware, EC, automatic fan control and host swap configuration stay unchanged.
@@ -81,3 +81,10 @@ Their throughput used random corpus offsets, natural EOS and a 16 CPU quota.
 Keep those speed results labeled as an earlier protocol; they are not matched
 controls for the new exact-length, seeded, 20 CPU comparison. Token rates across
 different tokenizers also do not guarantee equal semantic work.
+
+Startup guard revision: the first two Super attempts stopped before inference
+because an unconditional 64 MiB cumulative host-swap rule fired with ~40-42 GiB
+available and ~52 C hottest. No OOM occurred. For subsequent attempts, swap
+growth is an early-stop condition only when available RAM is also below 4 GiB.
+The independent 2 GiB / 90 C hard stops, job swap ban, and host VM settings are
+unchanged. Preserve these attempts as startup failures, not model scores.

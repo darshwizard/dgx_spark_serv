@@ -3,10 +3,11 @@
 import argparse,json,os,pwd,signal,sqlite3,subprocess,time
 from pathlib import Path
 
-def decision(available_bytes,temperatures):
+def decision(available_bytes,temperatures,swap_growth_bytes=0):
  if available_bytes is None or len(temperatures)!=7:return 'required_sensor_missing'
  if available_bytes<2*1024**3:return 'host_available_below_2GiB'
  if max(temperatures)>=90:return 'thermal_limit_90C'
+ if swap_growth_bytes>64*1024**2 and available_bytes<4*1024**3:return 'swap_growth_with_available_below_4GiB'
  return None
 
 def main():
@@ -39,8 +40,8 @@ def main():
     except ProcessLookupError:cancel('controller_missing');return
     mem={x.split(':')[0]:int(x.split()[1])*1024 for x in Path('/proc/meminfo').read_text().splitlines()}
     temps=[float(x.read_text())/1000 for x in Path('/sys/class/thermal').glob('thermal_zone*/temp')]
-    reason=decision(mem.get('MemAvailable'),temps)
-    if mem['SwapTotal']-mem['SwapFree']-swap_baseline>64*1024**2:reason='host_swap_growth_above_64MiB'
+    swap_growth=mem['SwapTotal']-mem['SwapFree']-swap_baseline
+    reason=decision(mem.get('MemAvailable'),temps,swap_growth)
     if tick%10==0 or reason:
      f.write(json.dumps({'unix_s':time.time(),'monotonic_s':time.monotonic(),'mem_available_bytes':mem.get('MemAvailable'),'hottest_c':max(temps,default=None),'swap_used_bytes':mem['SwapTotal']-mem['SwapFree'],'reason':reason})+'\n')
     if reason:cancel(reason);return
