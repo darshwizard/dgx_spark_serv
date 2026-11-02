@@ -94,3 +94,8 @@ Super attempt 03 loaded and served successfully (626 s startup), then stopped
 before quality because the cache-reset API was not enabled (HTTP 404). Enable
 the documented developer API on isolated loopback for subsequent attempts.
 This is a benchmark-harness failure; it yields no model quality score.
+
+Attempt 04 verified success=true cache reset, then a benchmark event logger
+argument-name collision stopped the client before requests. Fixed the logger
+and passed tests/smoke_paired_client.py: four handshakes, two quality and four
+throughput subprocess launches, six resets, and matched event pairs.

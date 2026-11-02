@@ -24,8 +24,8 @@ def reset_cache():
 def main():
  p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--tokenizer',required=True);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
  with (a.out/'events.jsonl').open('w',buffering=1) as ledger:
-  def event(label,**kw):
-   row={**stamp(),'event':label,**kw};ledger.write(json.dumps(row)+'\n');print(json.dumps(row),flush=True)
+  def event(name,**kw):
+   row={**stamp(),'event':name,**kw};ledger.write(json.dumps(row)+'\n');print(json.dumps(row),flush=True)
   def run(label,cmd,folder):
    (folder/(label+'-command.json')).write_text(json.dumps(cmd,indent=2))
    (folder/(label+'-metrics-before.txt')).write_text(get('/metrics'))
