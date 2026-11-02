@@ -1,51 +1,76 @@
 # DGX Spark (GB10) — serving & benchmark findings
 
-Field notes from running one NVIDIA DGX Spark (GB10 Grace-Blackwell, 121 GB unified
-memory, aarch64/sm_121a) hard. Two independent tracks:
+Measurements and recipes from one NVIDIA DGX Spark (GB10, 121 GiB unified
+memory). Latest results are from a fresh installation on **November 2, 2026**.
 
-- **[hardware/](hardware/README.md) — platform, firmware, power, thermals, crashes.**
-  Applies to *any* GB10 workload. **Read this first if your Spark is mysteriously slow
-  or crashing under load** — this unit shipped with a firmware power fault that a
-  `fwupdmgr` update fixed.
-- **This page + [docs/](docs/), [recipes/](recipes/) — the LLM serving work below.**
+## Headline results — current benchmark suite
+
+| Model / checkpoint | Serving setup | Quality /100 | Median turn | Decode c1 tok/s | Prefill c1 tok/s | Decode c4 aggregate tok/s |
+|---|---|---:|---:|---:|---:|---:|
+| **[Qwen3.8-27B NVFP4](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4)** | vLLM + [Qwen3.8-27B-DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) | **88** (184/208 points) | 2.1s | 33.0 | **2,331** | 72.2 |
+| **[NVIDIA Nemotron 3.5 Bolt 74B-A9B 24GB](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB)** | vLLM + [Bolt LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-LiLiCorr) | 76 (159/208 points) | **1.6s** | **38.4** | 1,837 | **82.2** |
+
+**Which models?** Qwen is the dense 27B NVIDIA NVFP4 checkpoint. Bolt has **74B
+total / 9B active parameters**, using the **24GB mixed-precision checkpoint**
+(IQ2_XXS 2-bit experts, NVFP4 Mamba layers, Q8_0 embedding/output layers).
+The small DFlash2 and LiLiCorr models assist generation; they are not separate
+quality-test candidates. Both deployments use seven speculative tokens.
+
+**How measured:** same tool-eval-bench **v3.0.1.dev9**, hard mode, **104 scenarios**,
+seed 42, thinking off, one quality trial each. Speed columns are normal-clock
+llama-benchy **v0.4.1.dev1** means at **pp2048/tg128, depth 0**, three measured
+runs per shape. C4 is total throughput across four concurrent requests. Quality
+turn latency is from the tool suite, not the throughput test.
+
+## What we found
+
+- **Qwen scored higher on the current tool suite; Bolt had shorter median turns.**
+  Qwen passed the sleeper-injection, least-privilege, multi-hop-injection and
+  policy-authority cases that Bolt failed. Qwen still had **two safety-critical
+  failures**, including another tenant's data disclosure. Neither result supports
+  unattended use of consequential tools without application-level controls.
+- **Qwen's measured prefill was faster; Bolt's measured decode was faster.**
+  The full depth/concurrency matrix matters: Bolt's aggregate c4 decode fell from
+  **82.2 tok/s at depth 0 to 35.0 at 8K**; Qwen fell from **72.2 to 28.0**.
+  Output rates depend on the text and speculative acceptance; individual samples
+  vary substantially. These are observations from two serving recipes, not a
+  statistically established universal model ranking.
+- **The 80% maximum-clock runs completed with one server kept loaded per model.**
+  Random corpus passages and normal-then-capped ordering prevent a causal
+  efficiency conclusion. Identical-prompt replays with alternating profiles are
+  the next controlled test. GPU clocks already operated near the requested cap.
+- **Thermals are measured, not inferred from GPU temperature alone.** Full-campaign
+  hottest ACPI readings were **82.8°C for Qwen** and **90.6°C for Bolt**; these
+  were different-duration runs with unmeasured ambient, not controlled cooling
+  comparisons. [Fan RPM, firmware and sensor findings](hardware/FAN-OBSERVATIONS-20261102.txt).
+
+**Reports, exact pins, raw data and recipes:**
+[Qwen versus Bolt comparison](docs/QWEN-BOLT-COMPARISON-20261102.txt) ·
+[Bolt current-suite report](docs/BOLT-STANDARD-BENCHMARKS.txt) ·
+[Forum versus NVIDIA playbook runtime pilot](docs/BOLT-RESULTS.txt) ·
+[Raw Qwen artifacts](experiments/qwen-standard-20261102/) ·
+[Raw Bolt artifacts](experiments/bolt-standard-20261102/).
+Qwen was tested in supported **text-only mode** after vision initialization hit a
+CUDA compatibility error; this does not validate vision serving. Firmware and EC
+settings were unchanged. Clock limits and the queue runtime were restored.
 
 ---
 
-## Fresh Qwen versus Bolt baseline — November 2026
-
-Same current 104-scenario hard-mode suite: **Qwen 88/100; Bolt 76/100**.
-Median turn: Qwen **2.1s**, Bolt **1.6s**. Qwen still has two safety-critical
-failures. Zero-depth llama-benchy decode: Qwen **33.0 tok/s c1, 72.2 aggregate c4**;
-Bolt **38.4 c1, 82.2 aggregate c4**. Qwen's measured prefill rates were higher.
-[Full comparison, capped runs, caveats and recipes](docs/QWEN-BOLT-COMPARISON-20261102.txt).
-
-## November 2026 Bolt benchmarks
-
-Current tool-eval-bench hard mode: **76/100 on 104 scenarios**, with injection
-and action-boundary failures. Current llama-benchy zero-depth decode: **38.4 tok/s
-single-stream, 82.2 aggregate at c4**. [Full matrix, reports, and version caveats](docs/BOLT-STANDARD-BENCHMARKS.txt).
-The historical Qwen quality score used an older suite and is not directly comparable.
-
-## November 2026 Bolt pilot
-
-Fresh-install comparison of the forum and NVIDIA Spark playbook runtimes, with
-normal and 80% maximum-clock profiles: [results and recipes](docs/BOLT-RESULTS.txt).
-Both setups completed all pilot requests. These fixed-output throughput tests
-are separate from the historical quality and llama-benchy results below.
-
 ## Historical LLM benchmarks
 
-Benchmarks of locally-served LLMs. All quality runs use
+The table below preserves earlier runs on the previous installation. **Do not
+rank these quality scores against the current 104-scenario table above.**
+These historical quality runs use
 [tool-eval-bench](https://github.com/SeraphimSerapis/tool-eval-bench) **hard mode**
 (v2.5.1.dev30, seed 42, 84 scenarios); all throughput runs use
 [llama-benchy](https://github.com/eugr/llama-benchy) (pp2048/tg128, depths 0/4k/8k,
 concurrency 1/2/4, 3 runs each). Full chronology, configs, and caveats: [RESULTS.md](RESULTS.md).
 
-> **Benchmarking caveat (see [hardware/](hardware/README.md)):** all numbers here were
+> **Benchmarking caveat (see [hardware/](hardware/README.md)):** the historical numbers below were
 > taken *after* fixing a firmware power-clamp that silently caps this box at ~15 W. Pre-fix
 > figures ran 2–3× low. Always verify GB10 clocks before trusting a throughput number.
 
-## Headline table
+## Historical results — August 2026
 
 | model | quality (hardmode) | median turn | decode c1 tok/s | prefill c1 tok/s | c4 aggregate |
 |---|---|---|---|---|---|
@@ -69,7 +94,7 @@ prompt-injection resistance — Safety & Boundaries fell 92%→65% and it active
 planted instructions (activated a cross-turn sleeper injection). Research-only; it loses
 exactly the judgment that makes the stock model useful. See RESULTS.md.
 
-## Key findings
+## Historical findings — August 2026
 
 1. **Quality clusters (85–89) for every properly-quantized model; speed varies 20×.**
    On unified-memory Blackwell, architecture (active params) and quantization decide
