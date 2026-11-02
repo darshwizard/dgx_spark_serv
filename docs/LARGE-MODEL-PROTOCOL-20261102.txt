@@ -43,7 +43,8 @@ llama-benchy 0.4.1.dev1, commit e9be344578cec17745066b220798b80a0d2686d3:
   concurrency 1/2/4; three measured runs plus one warmup per matrix cell.
   NumPy corpus selection seed 42 and request seed 42 for each invocation.
   Reset server prefix cache before each quality or throughput suite, checking
-  the API response. Upstream's within-suite context caching behavior remains.
+  the API response (including success=true). Both pinned runtimes require
+  VLLM_SERVER_DEV_MODE=1 for this endpoint; enable it only on isolated loopback. Upstream's within-suite context caching behavior remains.
 
 One resident server per model: normal, capped, capped, normal (ABBA).
 Full quality suites run in the first normal and first capped phase; all four
@@ -88,3 +89,8 @@ available and ~52 C hottest. No OOM occurred. For subsequent attempts, swap
 growth is an early-stop condition only when available RAM is also below 4 GiB.
 The independent 2 GiB / 90 C hard stops, job swap ban, and host VM settings are
 unchanged. Preserve these attempts as startup failures, not model scores.
+
+Super attempt 03 loaded and served successfully (626 s startup), then stopped
+before quality because the cache-reset API was not enabled (HTTP 404). Enable
+the documented developer API on isolated loopback for subsequent attempts.
+This is a benchmark-harness failure; it yields no model quality score.

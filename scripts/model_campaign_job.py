@@ -30,7 +30,7 @@ def main():
  target=ROOT/'models'/('NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4' if a.model=='super' else 'Qwen3.8-Flash-Next-FP4-Local')
  command=[sys.executable,'-m','vllm.entrypoints.cli.main','serve',str(target),'--served-model-name','candidate','--host','127.0.0.1','--port','8000','--trust-remote-code','--max-model-len','32768','--max-num-seqs','4','--enable-auto-tool-choice']
  env=os.environ.copy();cache='/workspace/cache/large-'+a.model
- env.update({'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','HF_HOME':'/workspace/cache/hf','HF_MODULES_CACHE':'/workspace/cache/hf-modules','PYTHONDONTWRITEBYTECODE':'1','XDG_CACHE_HOME':cache,'TORCHINDUCTOR_CACHE_DIR':cache+'/inductor','TRITON_CACHE_DIR':cache+'/triton','VLLM_CACHE_ROOT':cache+'/vllm','CUDA_CACHE_PATH':cache+'/cuda','VLLM_NO_USAGE_STATS':'1','DO_NOT_TRACK':'1','OMP_NUM_THREADS':'8'})
+ env.update({'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','HF_HOME':'/workspace/cache/hf','HF_MODULES_CACHE':'/workspace/cache/hf-modules','PYTHONDONTWRITEBYTECODE':'1','XDG_CACHE_HOME':cache,'TORCHINDUCTOR_CACHE_DIR':cache+'/inductor','TRITON_CACHE_DIR':cache+'/triton','VLLM_CACHE_ROOT':cache+'/vllm','CUDA_CACHE_PATH':cache+'/cuda','VLLM_SERVER_DEV_MODE':'1','VLLM_NO_USAGE_STATS':'1','DO_NOT_TRACK':'1','OMP_NUM_THREADS':'8'})
  env.pop('HF_TOKEN',None)
  if a.model=='super':
   draft=ROOT/'models/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr'

@@ -11,10 +11,16 @@ def stamp():return {'utc':dt.datetime.now(dt.timezone.utc).isoformat(),'monotoni
 def get(path):
  with urllib.request.urlopen(BASE+path,timeout=20) as r:return r.read().decode()
 def reset_cache():
- req=urllib.request.Request(BASE+'/reset_prefix_cache',data=b'',method='POST')
- with urllib.request.urlopen(req,timeout=60) as r:
-  if r.status!=200:raise RuntimeError('Prefix cache reset was not accepted')
-  return {'status':r.status,'body':r.read().decode()}
+ for attempt in range(5):
+  req=urllib.request.Request(BASE+'/reset_prefix_cache',data=b'',method='POST')
+  with urllib.request.urlopen(req,timeout=60) as r:
+   body=r.read().decode()
+   if r.status!=200:raise RuntimeError('Prefix cache reset was not accepted')
+   result=json.loads(body)
+   if result.get('success') is True:return {'status':r.status,'body':body,'attempts':attempt+1}
+   if result.get('success') is not False:raise RuntimeError('Unknown prefix cache reset response: '+body)
+  time.sleep(1)
+ raise RuntimeError('Prefix cache remained busy after five reset attempts')
 def main():
  p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--tokenizer',required=True);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
  with (a.out/'events.jsonl').open('w',buffering=1) as ledger:
