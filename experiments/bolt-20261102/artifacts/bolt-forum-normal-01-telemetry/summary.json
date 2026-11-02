@@ -1,0 +1,26 @@
+{
+  "samples": 612,
+  "gpu_error_samples": 0,
+  "sample_duration_s": {
+    "min": 0.02848756400635466,
+    "max": 1.366952019976452,
+    "mean": 0.06221837545541538
+  },
+  "thermal_zone_celsius": {
+    "min": 38.0,
+    "max": 82.6,
+    "mean": 51.561834733893555
+  },
+  "gpu_reported_power_w": {
+    "min": 3.61,
+    "max": 90.02,
+    "mean": 22.56482026143791
+  },
+  "min_mem_available_gib": 45.85387420654297,
+  "gpu_reported_energy_j": 13814.890907072442,
+  "energy_coverage_s": 611.563771140005,
+  "energy_note": "Approximate trapezoidal integration of GPU-reported power. Not wall/system energy; long gaps excluded.",
+  "ended_utc": "2026-11-02T02:57:45.230220+00:00",
+  "interrupted": true,
+  "thermal_alarm_samples": 0
+}

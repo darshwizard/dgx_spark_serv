@@ -11,7 +11,14 @@ memory, aarch64/sm_121a) hard. Two independent tracks:
 
 ---
 
-## LLM benchmarks
+## November 2026 Bolt pilot
+
+Fresh-install comparison of the forum and NVIDIA Spark playbook runtimes, with
+normal and 80% maximum-clock profiles: [results and recipes](docs/BOLT-RESULTS.txt).
+Both setups completed all pilot requests. These fixed-output throughput tests
+are separate from the historical quality and llama-benchy results below.
+
+## Historical LLM benchmarks
 
 Benchmarks of locally-served LLMs. All quality runs use
 [tool-eval-bench](https://github.com/SeraphimSerapis/tool-eval-bench) **hard mode**

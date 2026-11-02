@@ -1,0 +1,30 @@
+{
+  "hostname": "fa22f5ee5845",
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.13.0+cu130",
+    "vllm": "0.32.0rc1.dev100+g77154ca61",
+    "b12x": "1.5.1",
+    "flashinfer-python": "0.7.0.post1",
+    "transformers": "5.19.0",
+    "triton": "3.7.1",
+    "nvidia-modelopt": null
+  },
+  "imports": {
+    "torch": "ok",
+    "vllm": "ok",
+    "b12x": "ok",
+    "flashinfer": "ok"
+  },
+  "cgroup": {
+    "memory.max": "103079215104",
+    "memory.current": "547713024",
+    "memory.peak": "548839424",
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0",
+    "cpu.max": "1600000 100000"
+  },
+  "cuda_available": true,
+  "gpu_name": "NVIDIA GB10",
+  "cuda_matmul_correct": true,
+  "vllm_help": 0
+}

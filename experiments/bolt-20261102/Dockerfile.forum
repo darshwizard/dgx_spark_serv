@@ -1,0 +1,3 @@
+FROM vllm/vllm-openai@sha256:1ee85ca80e0fc110017d79ea2081a0cbef9a208a05d7f22724801bcf6a956620
+COPY b12x-1.5.1-py3-none-any.whl /tmp/
+RUN pip install --no-deps /tmp/b12x-1.5.1-py3-none-any.whl && rm /tmp/b12x-1.5.1-py3-none-any.whl && python3 -c "from importlib.metadata import version; assert version('b12x') == '1.5.1'"

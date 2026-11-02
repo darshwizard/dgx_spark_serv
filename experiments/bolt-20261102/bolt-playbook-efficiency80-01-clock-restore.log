@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/d_wizard/local-ai/dgx_spark_serv/scripts/clock_profile.py", line 91, in <module>
+    if __name__=='__main__': main()
+                             ^^^^^^
+  File "/home/d_wizard/local-ai/dgx_spark_serv/scripts/clock_profile.py", line 56, in main
+    restore(state)
+  File "/home/d_wizard/local-ai/dgx_spark_serv/scripts/clock_profile.py", line 42, in restore
+    if errors: raise RuntimeError('; '.join(errors))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: /sys/devices/system/cpu/cpufreq/policy11: ; /sys/devices/system/cpu/cpufreq/policy8: ; /sys/devices/system/cpu/cpufreq/policy6: ; /sys/devices/system/cpu/cpufreq/policy18: ; /sys/devices/system/cpu/cpufreq/policy4: ; /sys/devices/system/cpu/cpufreq/policy16: ; /sys/devices/system/cpu/cpufreq/policy2: ; /sys/devices/system/cpu/cpufreq/policy14: ; /sys/devices/system/cpu/cpufreq/policy0: ; /sys/devices/system/cpu/cpufreq/policy12: ; /sys/devices/system/cpu/cpufreq/policy9: ; /sys/devices/system/cpu/cpufreq/policy10: ; /sys/devices/system/cpu/cpufreq/policy7: ; /sys/devices/system/cpu/cpufreq/policy19: ; /sys/devices/system/cpu/cpufreq/policy5: ; /sys/devices/system/cpu/cpufreq/policy17: ; /sys/devices/system/cpu/cpufreq/policy3: ; /sys/devices/system/cpu/cpufreq/policy15: ; /sys/devices/system/cpu/cpufreq/policy1: ; /sys/devices/system/cpu/cpufreq/policy13: 

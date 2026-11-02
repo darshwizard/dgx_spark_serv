@@ -1,0 +1,41 @@
+{
+  "forum": {
+    "source": "https://github.com/hasso5703/alzeo/blob/main/install-nemotron.sh",
+    "base": "vllm/vllm-openai@sha256:1ee85ca80e0fc110017d79ea2081a0cbef9a208a05d7f22724801bcf6a956620",
+    "b12x": "1.5.1",
+    "wheel_sha256": "8731e23571d8d45db26d78e7699ec0b23e7ba20b52487adf8c1063c8d8b53a3d",
+    "local_image_id": "sha256:59069021a160c7dac96582b0e980f175868141a5621102886a6cb42eaeec5698",
+    "architecture": "arm64",
+    "repo_digests": [
+      "bolt-forum@sha256:59069021a160c7dac96582b0e980f175868141a5621102886a6cb42eaeec5698"
+    ]
+  },
+  "playbook": {
+    "source": "https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/refs/heads/main/nvidia/playbook-vllm/assets/sync-vllm-spark-64gb-nemotron35-bolt.sh",
+    "image_tag": "eugr/spark-vllm:nightly-20261016",
+    "local_image_id": "sha256:431593a0a7064bd41d9b2720ca5d00185540ce0fdf1e893adf85af9c07dc7175",
+    "architecture": "arm64",
+    "repo_digests": [
+      "eugr/spark-vllm@sha256:431593a0a7064bd41d9b2720ca5d00185540ce0fdf1e893adf85af9c07dc7175"
+    ]
+  },
+  "model_comparison": [
+    {
+      "model": "NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB",
+      "forum_revision": "c6cc2e8ffa353403213d6b9b18aaf8eb684d705a",
+      "downloaded_revision": "cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f",
+      "different_files": [
+        "README.md"
+      ]
+    },
+    {
+      "model": "NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-LiLiCorr",
+      "forum_revision": "4c6a5613b6d887194a3a5493e3a18a5b3930bb86",
+      "downloaded_revision": "449d24140160b8e51871bfc0f0a7338abf640aa1",
+      "different_files": [
+        "README.md",
+        "config.json"
+      ]
+    }
+  ]
+}
