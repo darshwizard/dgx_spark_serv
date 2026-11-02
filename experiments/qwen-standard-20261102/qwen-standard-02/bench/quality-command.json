@@ -1,0 +1,14 @@
+[
+  "tool-eval-bench",
+  "run",
+  "--base-url",
+  "http://127.0.0.1:8000",
+  "--model",
+  "qwen",
+  "--hardmode",
+  "--seed",
+  "42",
+  "--no-think",
+  "--output-dir",
+  "/workspace/results/qwen-standard-02/bench/quality"
+]

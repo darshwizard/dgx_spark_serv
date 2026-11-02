@@ -87,7 +87,12 @@ Sources: [forum thread 370304](https://forums.developer.nvidia.com/t/-/370304),
 
 ---
 
-## 4. Thermals — measured, and why the fan is invisible
+## 4. Thermals — historical measurements
+
+**November fresh-install update:** both fan RPM sensors are now readable;
+sustained workloads reached higher ACPI-zone temperatures than the historical
+measurements below. See [current fan and firmware observations](FAN-OBSERVATIONS-20261102.txt).
+The following measurements describe the earlier installation.
 
 Sampled across load states (GPU rail power, GPU temp, SM clock):
 

@@ -1,0 +1,41 @@
+DGX Spark fan and thermal observations — 2026-11-02
+
+Current host: fresh installation, spark-aae1. These measurements supersede the
+older host's assumption that fan tachometers are unavailable. No firmware or EC
+settings were changed. External accessory research is kept locally, not here.
+
+Firmware readback: EC3.13.7(0x03000d07), SoC2.158.15(0x02009e0f), PD5.25.
+Two acpi_fan hwmon fan1_input nodes expose read-only RPM; no standard pwm nodes.
+Linux exposes two Fan cooling devices with max_state100. We did not write them.
+
+Full current-harness Bolt campaign (quality, normal throughput, capped throughput):
+26.2minutes,1573samples. Idle fans1988/2040RPM, hottest zone40.8C.
+Peak hottest ACPI zone90.6C at03:43:24UTC, TSOC and TGPU both90.6C;
+nvidia-smi GPU temperature81C at that instant, utilization96%, power84.49W,
+clock2398MHz. Fans2513/2588RPM at that instant, later maxima3080/3161RPM.
+Reported software/hardware thermal slowdown flags were inactive throughout.
+Minimum host available RAM45.79GiB.95C guard did not trip;90C advisory2samples.
+
+After the80%maximum-clock settings were applied at03:45:02UTC:
+Hottest sensor83.1C at03:50:54UTC; fans3048/3143RPM at that instant.
+Maximum nvidia-smi GPU temperature over capped phase76C.
+Observed peak difference7.5C is not a controlled causal estimate: capped phase
+ran second with already faster fans, different corpus prompts, unmatched start
+temperatures and unmeasured ambient. No long-term hardware-damage claim follows
+from these logs. Raw evidence: experiments/bolt-standard-20261102/telemetry/.
+
+Firmware/community findings (not locally reproduced)
+Forum382536 and386805 report EC3.13.7 accepting ACPI fan writes without RPM change.
+An Oct28 correction reports EC-only downgrade3.5.8 with currentSoC2.158.15 permits
+ACPI targets, without a kernel module. The previous broad incompatibility claim
+was retracted: one mailbox path failed, but ACPI had not been tested.
+Community driver floors preserve the controller's ability to add cooling; the
+reported ACPI target replaces automatic control at ordinary temperatures, and
+low targets reportedly stall fans. This is not an endorsed procedure for our host.
+The exact firmware mechanism and proposed dual curves remain community claims.
+Our observed RPM steps resemble the reported slow curve; boot selection is unproven.
+Owner preference: keep firmware and EC settings unchanged.
+
+Sources:
+https://forums.developer.nvidia.com/t/dgx-spark-fan-control-kernel-module-running-on-dual-sparks-since-mid-august/382536
+https://forums.developer.nvidia.com/t/new-dgx-spark-fans-barely-speed-up-at-high-temps-and-cant-be-adjusted-critical-please-open-fan-control/386805/21

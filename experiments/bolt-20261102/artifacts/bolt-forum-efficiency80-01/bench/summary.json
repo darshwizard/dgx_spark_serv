@@ -1,0 +1,8 @@
+{
+  "profile": "efficiency80",
+  "mode": "suite",
+  "requests": 71,
+  "errors": 0,
+  "median_wall_s": 4.3436864810064435,
+  "note": "Mixed pilot workloads, not a quality score. See individual requests and batches."
+}

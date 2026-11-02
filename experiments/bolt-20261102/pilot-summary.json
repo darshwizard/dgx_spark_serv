@@ -1,0 +1,649 @@
+{
+  "note": "Fixed 256-token throughput workloads generally truncate; not completed-task quality. Retrieval and smoke gates are narrow checks. Energy is GPU-reported only, excludes startup, includes prefill and inter-request gaps; no wall/system efficiency claim. Sequential pilot, not randomized paired thermal trials.",
+  "runs": [
+    {
+      "run": "bolt-forum-efficiency80-01",
+      "launch": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "vllm.entrypoints.cli.main",
+          "serve",
+          "/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB",
+          "--served-model-name",
+          "bolt",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--trust-remote-code",
+          "--load-format",
+          "auto",
+          "--tensor-parallel-size",
+          "1",
+          "--max-model-len",
+          "32768",
+          "--max-num-seqs",
+          "4",
+          "--gpu-memory-utilization",
+          "0.55",
+          "--enable-chunked-prefill",
+          "--kv-cache-dtype",
+          "fp8",
+          "--linear-backend",
+          "b12x",
+          "--moe-backend",
+          "b12x",
+          "--attention-backend",
+          "FLASHINFER",
+          "--mamba-backend",
+          "flashinfer",
+          "--mamba-ssm-cache-dtype",
+          "bfloat16",
+          "--mamba-cache-dtype",
+          "bfloat16",
+          "--block-size",
+          "64",
+          "--prefix-match-unit",
+          "64",
+          "--enable-mamba-shared-prefix-checkpoint",
+          "--seed",
+          "42",
+          "--limit-mm-per-prompt",
+          "{\"image\": 1, \"video\": 0}",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "qwen3_coder",
+          "--reasoning-parser-plugin",
+          "/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/ultra_v3_reasoning_parser.py",
+          "--reasoning-parser",
+          "ultra_v3",
+          "--speculative-config",
+          "{\"method\": \"dflash\", \"model\": \"/workspace/models/forum-LiLiCorr\", \"num_speculative_tokens\": 7, \"rejection_sample_method\": \"standard\", \"attention_backend\": \"FLASHINFER\", \"draft_load_config\": {\"load_format\": \"auto\"}}"
+        ],
+        "profile": "efficiency80",
+        "recipe": "forum",
+        "cpu_policies": {
+          "/sys/devices/system/cpu/cpufreq/policy11/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy8/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy18/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy16/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy14/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy12/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy9/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy10/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy19/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy17/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy3/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy15/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy1/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy13/scaling_max_freq": "2246400"
+        },
+        "queue_limits": {
+          "memory_gib": 96,
+          "cpu_quota": 16,
+          "shm_gib": 4
+        },
+        "note": "Profile label supplied by host; observed clock telemetry determines actual effect."
+      },
+      "requests": 71,
+      "request_errors": 0,
+      "gates": {
+        "coherence": true,
+        "tool_parse": true
+      },
+      "retrieval_correct": 6,
+      "retrieval_total": 6,
+      "timed_interval_s": 154.35795829899143,
+      "timed_output_tokens": 16146,
+      "timed_gpu_reported_energy_j": 8534.834507641857,
+      "energy_coverage_s": 154.35795829899143,
+      "gpu_reported_j_per_output_token": 0.5286036484356409,
+      "timed_peak_sensor_c": 80.5,
+      "timed_gpu_sm_mhz_median": 2385.0,
+      "timed_gpu_sm_mhz_max": 2392.0,
+      "timed_gpu_power_w_mean": 55.30811688311688,
+      "thermal_slowdown_samples": 0,
+      "truncated_throughput_requests": 63,
+      "batches": [
+        {
+          "workload": "prose",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 55.509399718279546
+        },
+        {
+          "workload": "prose",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 89.06266891161137
+        },
+        {
+          "workload": "prose",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 126.979014346495
+        },
+        {
+          "workload": "code",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 89.96516442449675
+        },
+        {
+          "workload": "code",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 130.9465574043521
+        },
+        {
+          "workload": "code",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 191.4681887286865
+        },
+        {
+          "workload": "structured",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 125.82035862888905
+        },
+        {
+          "workload": "structured",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 202.45683152026677
+        },
+        {
+          "workload": "structured",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 309.8951826070106
+        }
+      ]
+    },
+    {
+      "run": "bolt-forum-normal-01",
+      "launch": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "vllm.entrypoints.cli.main",
+          "serve",
+          "/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB",
+          "--served-model-name",
+          "bolt",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--trust-remote-code",
+          "--load-format",
+          "auto",
+          "--tensor-parallel-size",
+          "1",
+          "--max-model-len",
+          "32768",
+          "--max-num-seqs",
+          "4",
+          "--gpu-memory-utilization",
+          "0.55",
+          "--enable-chunked-prefill",
+          "--kv-cache-dtype",
+          "fp8",
+          "--linear-backend",
+          "b12x",
+          "--moe-backend",
+          "b12x",
+          "--attention-backend",
+          "FLASHINFER",
+          "--mamba-backend",
+          "flashinfer",
+          "--mamba-ssm-cache-dtype",
+          "bfloat16",
+          "--mamba-cache-dtype",
+          "bfloat16",
+          "--block-size",
+          "64",
+          "--prefix-match-unit",
+          "64",
+          "--enable-mamba-shared-prefix-checkpoint",
+          "--seed",
+          "42",
+          "--limit-mm-per-prompt",
+          "{\"image\": 1, \"video\": 0}",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "qwen3_coder",
+          "--reasoning-parser-plugin",
+          "/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/ultra_v3_reasoning_parser.py",
+          "--reasoning-parser",
+          "ultra_v3",
+          "--speculative-config",
+          "{\"method\": \"dflash\", \"model\": \"/workspace/models/forum-LiLiCorr\", \"num_speculative_tokens\": 7, \"rejection_sample_method\": \"standard\", \"attention_backend\": \"FLASHINFER\", \"draft_load_config\": {\"load_format\": \"auto\"}}"
+        ],
+        "profile": "normal",
+        "recipe": "forum",
+        "cpu_policies": {
+          "/sys/devices/system/cpu/cpufreq/policy11/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy8/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy18/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy16/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy14/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy12/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy9/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy10/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy19/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy17/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy3/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy15/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy1/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy13/scaling_max_freq": "2808000"
+        },
+        "queue_limits": {
+          "memory_gib": 96,
+          "cpu_quota": 16,
+          "shm_gib": 4
+        },
+        "note": "Profile label supplied by host; observed clock telemetry determines actual effect."
+      },
+      "requests": 71,
+      "request_errors": 0,
+      "gates": {
+        "coherence": true,
+        "tool_parse": true
+      },
+      "retrieval_correct": 6,
+      "retrieval_total": 6,
+      "timed_interval_s": 169.8407654800103,
+      "timed_output_tokens": 16146,
+      "timed_gpu_reported_energy_j": 8942.787548049853,
+      "energy_coverage_s": 169.8407654800103,
+      "gpu_reported_j_per_output_token": 0.5538701565743747,
+      "timed_peak_sensor_c": 82.6,
+      "timed_gpu_sm_mhz_median": 2392.0,
+      "timed_gpu_sm_mhz_max": 2411.0,
+      "timed_gpu_power_w_mean": 52.792529411764704,
+      "thermal_slowdown_samples": 0,
+      "truncated_throughput_requests": 63,
+      "batches": [
+        {
+          "workload": "prose",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 55.8561712757951
+        },
+        {
+          "workload": "prose",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 89.63593542579372
+        },
+        {
+          "workload": "prose",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 127.67280586188303
+        },
+        {
+          "workload": "code",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 89.29505548014394
+        },
+        {
+          "workload": "code",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 138.36588472455972
+        },
+        {
+          "workload": "code",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 195.98642343239882
+        },
+        {
+          "workload": "structured",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 127.45752134946946
+        },
+        {
+          "workload": "structured",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 204.35635804345074
+        },
+        {
+          "workload": "structured",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 309.0030921261121
+        }
+      ]
+    },
+    {
+      "run": "bolt-playbook-efficiency80-01",
+      "launch": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "vllm.entrypoints.cli.main",
+          "serve",
+          "/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB",
+          "--served-model-name",
+          "bolt",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--trust-remote-code",
+          "--load-format",
+          "instanttensor",
+          "--tensor-parallel-size",
+          "1",
+          "--max-model-len",
+          "32768",
+          "--max-num-seqs",
+          "4",
+          "--gpu-memory-utilization",
+          "0.55",
+          "--enable-chunked-prefill",
+          "--kv-cache-dtype",
+          "fp8",
+          "--block-size",
+          "64",
+          "--prefix-match-unit",
+          "64",
+          "--enable-mamba-shared-prefix-checkpoint",
+          "--seed",
+          "42",
+          "--limit-mm-per-prompt",
+          "{\"image\": 1, \"video\": 0}",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "qwen3_coder",
+          "--reasoning-parser",
+          "nemotron_v3",
+          "--speculative-config",
+          "{\"method\": \"dflash\", \"model\": \"/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-LiLiCorr\", \"num_speculative_tokens\": 7}",
+          "--max-num-batched-tokens",
+          "4096"
+        ],
+        "profile": "efficiency80",
+        "recipe": "playbook",
+        "cpu_policies": {
+          "/sys/devices/system/cpu/cpufreq/policy11/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy8/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy18/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy16/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy14/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy12/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy9/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy10/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy19/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy17/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy3/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy15/scaling_max_freq": "3120000",
+          "/sys/devices/system/cpu/cpufreq/policy1/scaling_max_freq": "2246400",
+          "/sys/devices/system/cpu/cpufreq/policy13/scaling_max_freq": "2246400"
+        },
+        "queue_limits": {
+          "memory_gib": 96,
+          "cpu_quota": 16,
+          "shm_gib": 4
+        },
+        "note": "Profile label supplied by host; observed clock telemetry determines actual effect."
+      },
+      "requests": 71,
+      "request_errors": 0,
+      "gates": {
+        "coherence": true,
+        "tool_parse": true
+      },
+      "retrieval_correct": 6,
+      "retrieval_total": 6,
+      "timed_interval_s": 133.1316782599897,
+      "timed_output_tokens": 16146,
+      "timed_gpu_reported_energy_j": 7451.778824345565,
+      "energy_coverage_s": 133.1316782599897,
+      "gpu_reported_j_per_output_token": 0.4615247630586873,
+      "timed_peak_sensor_c": 79.9,
+      "timed_gpu_sm_mhz_median": 2385.0,
+      "timed_gpu_sm_mhz_max": 2385.0,
+      "timed_gpu_power_w_mean": 56.03451127819549,
+      "thermal_slowdown_samples": 0,
+      "truncated_throughput_requests": 63,
+      "batches": [
+        {
+          "workload": "prose",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 58.83228330954189
+        },
+        {
+          "workload": "prose",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 100.43777562113509
+        },
+        {
+          "workload": "prose",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 144.54215204806022
+        },
+        {
+          "workload": "code",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 107.7408794195241
+        },
+        {
+          "workload": "code",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 150.9698369551721
+        },
+        {
+          "workload": "code",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 215.5360157271743
+        },
+        {
+          "workload": "structured",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 138.94336061184845
+        },
+        {
+          "workload": "structured",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 219.65665263683087
+        },
+        {
+          "workload": "structured",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 352.989595862665
+        }
+      ]
+    },
+    {
+      "run": "bolt-playbook-normal-01",
+      "launch": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "vllm.entrypoints.cli.main",
+          "serve",
+          "/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB",
+          "--served-model-name",
+          "bolt",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--trust-remote-code",
+          "--load-format",
+          "instanttensor",
+          "--tensor-parallel-size",
+          "1",
+          "--max-model-len",
+          "32768",
+          "--max-num-seqs",
+          "4",
+          "--gpu-memory-utilization",
+          "0.55",
+          "--enable-chunked-prefill",
+          "--kv-cache-dtype",
+          "fp8",
+          "--block-size",
+          "64",
+          "--prefix-match-unit",
+          "64",
+          "--enable-mamba-shared-prefix-checkpoint",
+          "--seed",
+          "42",
+          "--limit-mm-per-prompt",
+          "{\"image\": 1, \"video\": 0}",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "qwen3_coder",
+          "--reasoning-parser",
+          "nemotron_v3",
+          "--speculative-config",
+          "{\"method\": \"dflash\", \"model\": \"/workspace/models/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-LiLiCorr\", \"num_speculative_tokens\": 7}",
+          "--max-num-batched-tokens",
+          "4096"
+        ],
+        "profile": "normal",
+        "recipe": "playbook",
+        "cpu_policies": {
+          "/sys/devices/system/cpu/cpufreq/policy11/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy8/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy18/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy16/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy14/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy12/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy9/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy10/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy19/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy5/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy17/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy3/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy15/scaling_max_freq": "3900000",
+          "/sys/devices/system/cpu/cpufreq/policy1/scaling_max_freq": "2808000",
+          "/sys/devices/system/cpu/cpufreq/policy13/scaling_max_freq": "2808000"
+        },
+        "queue_limits": {
+          "memory_gib": 96,
+          "cpu_quota": 16,
+          "shm_gib": 4
+        },
+        "note": "Profile label supplied by host; observed clock telemetry determines actual effect."
+      },
+      "requests": 71,
+      "request_errors": 0,
+      "gates": {
+        "coherence": true,
+        "tool_parse": true
+      },
+      "retrieval_correct": 6,
+      "retrieval_total": 6,
+      "timed_interval_s": 136.23262794699986,
+      "timed_output_tokens": 16146,
+      "timed_gpu_reported_energy_j": 7610.263151517493,
+      "energy_coverage_s": 136.23262794699986,
+      "gpu_reported_j_per_output_token": 0.4713404652246682,
+      "timed_peak_sensor_c": 81.2,
+      "timed_gpu_sm_mhz_median": 2392.0,
+      "timed_gpu_sm_mhz_max": 2411.0,
+      "timed_gpu_power_w_mean": 55.92470588235294,
+      "thermal_slowdown_samples": 0,
+      "truncated_throughput_requests": 63,
+      "batches": [
+        {
+          "workload": "prose",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 66.62528060364558
+        },
+        {
+          "workload": "prose",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 104.33620846221955
+        },
+        {
+          "workload": "prose",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 139.9627281280553
+        },
+        {
+          "workload": "code",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 107.1853990254889
+        },
+        {
+          "workload": "code",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 158.64140364678553
+        },
+        {
+          "workload": "code",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 206.31725972708418
+        },
+        {
+          "workload": "structured",
+          "concurrency": 1,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 138.6201512543124
+        },
+        {
+          "workload": "structured",
+          "concurrency": 2,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 242.58508230889663
+        },
+        {
+          "workload": "structured",
+          "concurrency": 4,
+          "n": 3,
+          "median_aggregate_output_tokens_per_wall_s": 353.67285486654447
+        }
+      ]
+    }
+  ]
+}

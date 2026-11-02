@@ -1,0 +1,14 @@
+[
+  {
+    "repo": "nvidia/Qwen3.8-27B-NVFP4",
+    "revision": "482ca0f3832238542f8f5295dde86b5f22711d80",
+    "path": "/home/d_wizard/local-ai/qwen-baseline/models/Qwen3.8-27B-NVFP4",
+    "downloaded_unix": 1793651404.756383
+  },
+  {
+    "repo": "z-lab/Qwen3.8-27B-DFlash2",
+    "revision": "50307d4c4cde6860d4eee73e2547cd786fe8e8a4",
+    "path": "/home/d_wizard/local-ai/qwen-baseline/models/Qwen3.8-27B-DFlash2",
+    "downloaded_unix": 1793651407.993763
+  }
+]

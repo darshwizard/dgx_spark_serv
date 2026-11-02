@@ -1,0 +1,7 @@
+{
+  "exit_code": 1,
+  "failures": [
+    "server_not_ready"
+  ],
+  "ended_utc": "2026-11-02T02:32:51.031338+00:00"
+}

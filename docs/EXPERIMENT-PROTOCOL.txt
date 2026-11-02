@@ -1,0 +1,103 @@
+Planning protocol retained for future experiments.
+Completed pilot results and deviations: BOLT-RESULTS.txt.
+Some proposed controls below (balanced paired trials, ambient measurements)
+were not implemented in the first pilot.
+
+Fresh-host model comparison — prepared 2026-11-02
+
+User confirmed factory-reset hardware and no prior model weights. Treat August
+spark-cb90 results as history, not the current spark-aae1 baseline. Start with new
+models: Bolt, Super VL, then Flash-Next if compatible. Bolt target and LiLiCorr weights downloaded and staged; see BOLT-STATUS.txt.
+
+Logging now implemented
+scripts/telemetry.py runs read-only on the HOST, with no Docker or sudo required.
+Sample once per second, starting before model startup and continuing through
+warmup, timed requests and cooldown. JSONL is line-flushed. UTC and monotonic
+timestamps permit alignment with request events on the same host. metadata.json
+records boot ID, CPU policy settings, GPU XML inventory, commit and dirty state.
+Keep model names/revisions, image digest, exact launch flags, job ID, prompt hash,
+room temperature and physical airflow arrangement in each campaign manifest.
+
+Available sensors confirmed on spark-aae1:
+- Both acpi_fan RPM sensors (distinct hwmon IDs; same chip name).
+- All seven ACPI zones with firmware paths: TSOC, TS0E, TS0P, TS1E, TS1P,
+  TGPU, TUNC. Use maximum zone temperature, not only nvidia-smi GPU temperature.
+- GPU temperature, reported power, GPU/memory utilization, graphics/SM clocks,
+  P-state, power/thermal/brake event flags. N/A is missing, never zero.
+- All CPU policy frequencies, limits and governors; /proc/stat CPU counters.
+- Host available RAM, cache, swap, major faults, OOM counter, CPU/memory/IO PSI,
+  disk IO counters, NVMe temperatures.
+- No system/wall-power sensor confirmed. Integrated GPU power is only a partial
+  energy metric. Use an external logging wattmeter for whole-machine joules/task.
+- Logger summary excludes long telemetry gaps from energy integration and
+  reports covered duration; keep raw timestamps. GPU power sampling is approximate.
+
+Request/job logging to implement with each model harness
+Inside the queued job, run the model server and benchmark client on loopback;
+the current job network is disabled from the host. Record request start, first
+token, finish, prompt/output/reasoning token counts, actual served model, errors,
+correctness result, context length, concurrency and prefix-cache state in JSONL.
+SSE chunks are not tokens; use server usage counts. Reasoning parser buffering
+can invalidate apparent decode/TTFT: retain end-to-end time and engine metrics.
+Capture server logs and before/after engine metrics, cgroup memory.current/peak,
+memory.events, cpu.stat and memory.max/cpu.max INSIDE the job container.
+No claim that request logging or cgroup logging has been validated yet.
+
+Normal versus efficiency experiment
+Define efficiency80 as an 80% MAXIMUM CLOCK policy, not 80% power or throughput.
+Use hardware CPU policy maxima and the GPU's reported maximum clock as explicit
+references, and record normal observed loaded clocks for interpretation.
+Observed initial references: GPU max SM 3003MHz -> target <=2402MHz; E CPU
+2808000kHz ->2246400kHz; P CPU3900000kHz ->3120000kHz. Driver rounding may apply.
+Keep governors, memory clocks, CPU quota, model flags, prompts, contexts and
+concurrency identical. CPU frequency control is not the queue's 16-CPU quota.
+GPU wattage limits are N/A: do not use nvidia-smi -pl as a power-cap recipe.
+Proposed GPU control: nvidia-smi -lgc 0,2402; reset: nvidia-smi -rgc.
+CPU control: scaling_max_freq per policy, preserving min <= max.
+These controls have NOT been applied or validated under load in this session.
+The GPU may normally sustain ~2400MHz anyway: 80% of advertised max might have
+little effect. Report that honestly; an additional lower cap needs a separately
+named experiment rather than silently changing the meaning of efficiency80.
+
+Control lifecycle required before experiments
+Host caps affect every process. Reserve an otherwise idle machine/queue, snapshot
+all CPU min/max/governor values and establish the GPU's pre-existing lock state.
+Do not overwrite unknown pre-existing GPU locks; resetting them is not restoration.
+Run normal and capped GPU/CPU qualification loads through compute-job, verify
+observed clocks obey caps, and monitor perf/temperature; an accepted command alone
+is not proof. Restore original CPU limits and established GPU baseline in finally
+and on signals; verify readback. Persist rollback instructions before applying.
+No permanent service or firmware changes needed. Do not bypass queue controls.
+
+Comparison design
+1. Qualify telemetry and hardware health, then each model's coherence/tool parser.
+2. Separate cold startup/JIT time and peak RAM from warmed inference measurements.
+3. Start normal/capped trials at comparable hottest-zone temps (target within2C);
+   hold ambient/airflow constant and record fan hysteresis. Do not equate idle
+   GPU SW Power Cap flag with a hardware fault; inspect deltas and loaded behavior.
+4. Same fixed prompts, seeds, thinking budget, output limit, quant, drafter and
+   runtime within each model's A/B. Measure c1, c2, c4; actual aggregate and per-
+   request speed, TTFT,p50/p95,total task time and correctness. Small pilot samples
+   do not support stable p95; retain every request and report sample counts.
+5. Include short and long cold-prefill workloads, warm-prefix agent turns,
+   code vs prose and sustained finite load. Repeat>=3 paired runs, alternating
+   AB/BA order to reduce warmup/thermal bias. Quality runs also repeat when needed.
+6. Report throughput retained, time/task, peak hottest-zone temperature,
+   fan RPM, peak RAM, GPU-reported joules/task and tokens/joule with coverage.
+   Lower watts but longer runs can consume more energy. No whole-system energy
+   claim without wall measurement. No extrapolation from short idle sampling.
+
+Stop policy
+Logger only raises thermal_alarm at90C; it DOES NOT cancel or throttle anything.
+Before sustained load, add a tested queue-aware watchdog tied only to our job ID:
+cancel on hottest zone>=95C, sustained host MemAvailable<8GiB, or sensor loss.
+Record reason, cancel result, and cooldown. Never terminate another user's job.
+Thresholds are conservative experiment boundaries, not manufacturer guarantees.
+
+Current prerequisite blockers (updated after first queued startup)
+agent-bench is enrolled; SSH staging and queued CUDA matrix math passed.
+Bolt target and LiLiCorr weights are staged offline. First startup failed with
+b12x rejected for an unquantized MoE layer. No inference results exist yet.
+See BOLT-STATUS.txt for evidence and proposed administrator runtime change.
+No clock caps have been applied. Request/cgroup logging is implemented, with
+mock SSE tests and startup health capture; inference validation remains pending.

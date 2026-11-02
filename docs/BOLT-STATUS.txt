@@ -1,0 +1,4 @@
+Completed all four forum/playbook normal/efficiency80 pilot runs.
+See BOLT-RESULTS.txt and experiments/bolt-20261102 for results and raw evidence.
+Original queue runtime/references and CPU/GPU clock defaults restored.
+No forum posts made.

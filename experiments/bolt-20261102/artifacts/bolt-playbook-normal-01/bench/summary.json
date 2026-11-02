@@ -1,0 +1,8 @@
+{
+  "profile": "normal",
+  "mode": "suite",
+  "requests": 71,
+  "errors": 0,
+  "median_wall_s": 3.8404294419451617,
+  "note": "Mixed pilot workloads, not a quality score. See individual requests and batches."
+}

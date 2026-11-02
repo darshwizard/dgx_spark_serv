@@ -1,0 +1,86 @@
+Bolt runtime comparison — 2026-11-02
+
+Four successful pilot runs on a factory-reset DGX Spark / GB10, 121 GiB RAM.
+Both runtimes passed basic response and forced tool-call parsing gates. Each run
+completed 71 requests with zero transport errors and 6/6 retrieval checks correct.
+These narrow checks do not establish coding quality, agent reliability, vision
+support, or parity with the historical Qwen quality scores.
+
+Median aggregate output tokens per second, including request overhead (3 batches
+per workload/concurrency). Single-request figures below; full c1/c2/c4 data in
+experiments/bolt-20261102/pilot-summary.json.
+
+Runtime/profile                 prose     code     structured   peak sensor C
+forum-efficiency80                55.5     90.0      125.8         80.5
+forum-normal                      55.9     89.3      127.5         82.6
+playbook-efficiency80             58.8    107.7      138.9         79.9
+playbook-normal                   66.6    107.2      138.6         81.2
+
+The playbook runtime improved code generation speed in this pilot. The forum
+runtime also works. This compares two serving recipes, not merely two versions:
+loader, parser, backend defaults, batch-token settings and draft config differ.
+Weights loaded in about 22 seconds in the playbook startup versus roughly
+124–144 seconds with the forum loader. Entire startup includes compilation and
+warmup and is much longer. Cache histories differ; no controlled cold-disk claim.
+
+Efficiency80 means maximum clocks at 80% of reported hardware maxima:
+CPU 2.2464/3.120 GHz, GPU requested maximum 2.402 GHz. The normal GPU already ran
+around 2.4 GHz; this is predominantly a CPU reduction for this workload. Actual
+clock traces and per-run launch limits are retained. Commands and readback were
+verified; original CPU limits and default GPU clocks restored after experiments.
+The final CPU restoration initially failed its immediate readback assertions;
+subsequent retry passed all readbacks. Original queue image and references restored.
+
+Methods and limits
+- Exact image pins and model revision comparisons: runtime-pins.json.
+- Forum base ARM64 image plus checksum-verified b12x1.5.1 wheel; Dockerfile.forum.
+- Playbook community image eugr/spark-vllm:nightly-20261016, pinned locally by digest.
+- Adaptations shared by both: context32768, max4 sequences, GPU utilization0.55,
+  queue16 CPU/96GiB/4GiB shm, network disabled, read-only root, local offline paths,
+  OMP_NUM_THREADS8, V2 runner, seed42. Images use Python3, not a python alias.
+- Text-only tests; image1/video0 limits. Thinking off, greedy requests, max256
+  output tokens for throughput; these outputs truncate by design. Code was not
+  executed/scored. Structured output is a throughput workload, not JSON validation.
+- Each suite repeats prose/code/structured at concurrency1/2/4 three times, plus
+  a 700-record retrieval prompt cold-intent and exact-repeat (cache hits require
+  metrics confirmation). Prompt bodies, hashes, usage and output are retained.
+- Four separate queue jobs reloaded identical weight files for each profile.
+  Startup is excluded from inference throughput and energy. Future clock A/B
+  tests should keep one server loaded and alternate profiles after warmup.
+- Sequential normal then capped runs, one server session each, not randomized
+  paired thermal trials. First use may compile workload-specific kernels. Ambient
+  temperature was not measured; start temperatures/fan hysteresis were not matched.
+  Temperature and energy differences cannot establish causal efficiency savings.
+- Host telemetry1Hz records all7 ACPI zones, both fans, GPU reported power/clocks/
+  slowdown flags, CPU policy clocks, host RAM/PSI and disk counters. Container
+  health logs record cgroup counters and stop thresholds. GPU allocations are not
+  fully reflected by the container memory counter; host available RAM matters.
+- GPU-reported energy is approximate, excludes startup, includes prefill and gaps
+  between requests; no wall/system energy claim. Raw coverage is reported.
+- Historical Qwen numbers use different tests and a previous installation. Do not
+  divide these rates by the historical headline table to claim a model speedup.
+
+Reproduce
+1. Build the forum image using Dockerfile.forum and the wheel/hash in runtime-pins.
+   Pull the playbook image by recorded digest. Administrator pins each runtime
+   into the compute queue while idle; keep original image for restoration.
+2. Download target/draft snapshots at recorded revisions. For forum-LiLiCorr use
+   the forum draft config (num_target_layers0); other draft files match downloaded
+   revision. Main target differs from forum revision only in README.
+3. Stage scripts/bolt_job.py, bolt_bench.py and bolt_probe.py as /workspace/code;
+   place checkpoints in paths documented in bolt_job.py. All GPU work uses queue.
+4. Submit Python3 /workspace/code/bolt_job.py --profile normal --mode suite
+   --recipe forum --run-id UNIQUE_ID; repeat recipe playbook. Start host telemetry
+   before submitting. Queue spec metadata includes commit/dataset/parameters.
+5. For capped runs on a reserved idle host, use scripts/clock_profile.py apply
+   with a new rollback-state file and explicitly established default GPU baseline.
+   Restore in finally even if the job fails. Caps affect the whole host.
+6. Collect result folders and matching host telemetry. summarize_bolt.py accepts
+   uncompressed local JSONL; committed raw JSONL/server logs are gzip-compressed.
+   Gunzip a working copy before regenerating summaries. Keep failed attempts.
+
+Sources
+https://github.com/hasso5703/alzeo/blob/main/docs/nemotron-lane.md
+https://github.com/hasso5703/alzeo/blob/main/install-nemotron.sh
+https://build.nvidia.com/spark/vllm/intermediate
+https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/refs/heads/main/nvidia/playbook-vllm/assets/sync-vllm-spark-64gb-nemotron35-bolt.sh
