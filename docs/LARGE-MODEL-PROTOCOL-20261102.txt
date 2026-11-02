@@ -1,0 +1,83 @@
+Large-model comparison protocol — 2026-11-02
+
+Status: preparation; no scores for these models yet.
+
+Approved order
+1. NVIDIA Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr (7 draft tokens).
+2. NVIDIA Qwen3.8-Flash-Next-FP4-Local + MTP (4 draft tokens).
+3. DeepSeek V4.1 Flash 1017, SAGE EXL3 1.62 bpw, last, with a 262144-token
+   server context window. This is a planned separate experiment; not downloaded.
+
+Super and Flash Next use a common 32768-token server context window for this
+comparison. Configuring a window does not demonstrate reliable retrieval across
+that entire window; our throughput matrix reaches 8192 context + 2048 prompt.
+
+Pinned weights
+Super: nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4
+  8a115b9d966adce8c059a7bcf47f49a1e57957d8
+Draft: nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr
+  7c7221aeb4cb3139307aa457f7dce11a8fb6ceb2
+Flash: nvidia/Qwen3.8-Flash-Next-FP4-Local
+  b9ce18a6887e18c089fdea8509a33e63429a3300
+
+Recipes
+Super: https://github.com/hasso5703/alzeo/blob/main/install-nemotron-super.sh
+  and docs/nemotron-super-lane.md in that repository. Same pinned community
+  runtime previously validated for Bolt, plus our benchmark wheels installed
+  without dependency upgrades. FlashInfer Mamba backend and FP16 SSM state with
+  stochastic rounding. Adaptations: 32K context, four active sequences, one image
+  and no video, job-local loopback, offline staged weights, queue isolation.
+Flash: https://github.com/NVIDIA/dgx-spark-playbooks/blob/main/nvidia/playbook-vllm/assets/sync-vllm-spark-128gb-qwen38-flash-next.sh
+  eugr/spark-vllm-b12x:nightly-20261015, pinned locally by immutable image ID.
+  Disk-backed PLE, io_uring, b12x load/linear/MoE/GDN, FP8 KV, MTP4, GPU memory
+  utilization 0.8. Adaptations: 32K instead of 256K, four instead of eight active
+  sequences, non-root queued offline serving with a read-only container root.
+  The recipe's seccomp/AppArmor exceptions are applied only for this temporary
+  runtime; cap-drop ALL and no-new-privileges remain in place.
+
+Matched tests
+tool-eval-bench 3.0.1.dev9, commit 2ad584631702f042295862a363396ccbc6ac0fe9:
+  hard mode, 104 scenarios, seed 42, thinking disabled, in both clock profiles.
+llama-benchy 0.4.1.dev1, commit e9be344578cec17745066b220798b80a0d2686d3:
+  prompt 2048; exactly 128 generated tokens; context depth 0/4096/8192;
+  concurrency 1/2/4; three measured runs plus one warmup per matrix cell.
+  NumPy corpus selection seed 42 and request seed 42 for each invocation.
+  Reset server prefix cache before each quality or throughput suite, checking
+  the API response. Upstream's within-suite context caching behavior remains.
+
+One resident server per model: normal, capped, capped, normal (ABBA).
+Full quality suites run in the first normal and first capped phase; all four
+phases run throughput. Retain individual passes and dispersion, not only means.
+Before releasing each phase, wait at least 30 seconds; target <=60 C hottest
+sensor, with a five-minute wait limit. Record actual starting temperature and
+whether that target was reached. This is not proof of identical thermal state.
+
+Normal = default CPU/GPU clock limits, 20 CPU quota. Capped = 80% hardware-max
+CPU clock limits plus a GPU SM ceiling at 80% of reported maximum; same 20 CPU
+quota. Record actual clocks. GPU normally runs below its maximum, so the GPU
+ceiling may have little effect. This is a frequency-cap experiment, not a
+claim of 20% less power or 20% less throughput.
+
+Temporary job backstop: 118 GiB charged-memory limit, no anonymous job swap,
+16 GiB shared memory. GPU allocations on this shared-memory platform are not
+fully represented in the cgroup charge, so host memory pressure is primary.
+Root watchdog outside the job cgroup samples every 100 ms and cancels only our
+job at hottest ACPI >=90 C, host available memory <2 GiB, host swap growth
+>64 MiB, required sensor loss, or controller loss. Phase admission needs >=3 GiB
+available. An in-job guard backs it up. Restore original runtime, limits, public
+reference pages and clock ceilings after the experiment, including failures.
+Firmware, EC, automatic fan control and host swap configuration stay unchanged.
+
+Interpretation
+Report quality scores/failures, prefill/decode and aggregate concurrency speed,
+wall duration, temperature, both fan RPMs, memory minima, actual clocks and
+approximate GPU-reported joules per completed workload. Integrate only intervals
+covered by power samples; report gaps. Exclude profile transitions and cooldowns
+from workload energy; report startup separately. These are GPU rail estimates,
+not wall/system energy. No whole-machine efficiency winner without a wall meter.
+
+Earlier Qwen 27B/Bolt quality scores use the same current 104-scenario harness.
+Their throughput used random corpus offsets, natural EOS and a 16 CPU quota.
+Keep those speed results labeled as an earlier protocol; they are not matched
+controls for the new exact-length, seeded, 20 CPU comparison. Token rates across
+different tokenizers also do not guarantee equal semantic work.
