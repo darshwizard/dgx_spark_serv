@@ -111,3 +111,13 @@ Retain immediate <2 GiB, >=90 C, controller-loss and sensor-loss stops. Continue
 recording swap growth; do not change host VM settings or anonymous job swap.
 Apply the soft floor during the entire run, not only loading. Super results are
 unaffected by this change: its completed benchmark stayed above 17 GiB.
+
+Flash attempt 06 crossed the unchanged 2 GiB hard floor while repacking and
+was cancelled. Community cross-check found a direct match:
+https://huggingface.co/diffbot/Qwen3.8-Flash-Next-FP4-Local-DGX-Spark#how-it-fits-in-one-spark
+Its author reports excessive retained load-time CUDA allocations on unified RAM
+and uses PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True. Attempt 07 adds ONLY
+that allocator setting to the same pinned NVIDIA recipe runtime and checkpoint.
+Keep MTP4, vision configuration, precision, GPU utilization 0.8, 32K context,
+all benchmark settings, and memory/thermal floors unchanged. This tests the
+allocator mitigation; it does not adopt the recipe's other kernel patches.
