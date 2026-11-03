@@ -2,6 +2,12 @@
 
 One NVIDIA DGX Spark, GB10, 121.7 GiB usable unified RAM.
 
+**Run update, November 3:** Qwen 27B completed the new paired comparison.
+Nemotron Bolt reached the 90 C thermal stop during normal-clock throughput;
+its incomplete run is preserved and has no paired efficiency result. Super VL
+and Flash Next are continuing separately. The quality table below still shows
+the earlier campaign until the new results and raw records are collected.
+
 **November 3, 2026: new experiments starting now.** Qwen 27B, Nemotron Bolt,
 Nemotron Super VL and Qwen Flash Next will be compared at normal settings and
 **GPU ceiling 1,800 MHz + CPU 60%**. New measurements are pending; the completed

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Synthetic end-to-end collection/publication test; no GPU, Git or network calls."""
-import json,runpy,tempfile
+import json,runpy,tempfile,shutil
 from pathlib import Path
 from unittest.mock import patch
 source=Path(__file__).resolve().parents[1]
@@ -34,3 +34,15 @@ with tempfile.TemporaryDirectory() as tmp:
  assert any(c[-2:]==['origin','HEAD:main'] for c in calls)
  assert not any('force' in str(c) for c in calls)
  print('PASS: all four synthetic runs collected, 1800 MHz validation, tables/archives/manifest generated; Git/network mocked')
+ # A guard-stopped run must remain visible, with no invented paired result.
+ shutil.rmtree(repo/'experiments/cap1800-20261103')
+ bolt=root/'bolt-gpu1800-01';(bolt/'result/outcome.json').unlink();(bolt/'result/bench/completed.json').unlink()
+ (bolt/'status.json').write_text('{"state":"cancelled"}');(bolt/'watchdog').mkdir()
+ (bolt/'watchdog/abort.json').write_text('{"reason":"thermal_limit_90C"}')
+ (bolt/'watchdog/health.jsonl').write_text('{"hottest_c":90.1}\n')
+ with patch('subprocess.run',lambda cmd,**kw:calls.append(cmd)):
+  summary=ns['publish'](root,repo)
+ assert 'profiles' not in summary['bolt'] and summary['bolt']['guard_peak_c']==90.1
+ assert 'Thermal-stopped comparison' in (repo/'README.md').read_text()
+ assert (repo/'experiments/cap1800-20261103/bolt/incomplete.json').exists()
+ print('PASS: thermal-stopped Bolt is archived and explicitly excluded from paired results')

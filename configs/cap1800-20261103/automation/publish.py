@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish only a complete, validated four-model campaign. Preserve older runs."""
+"""Publish validated comparisons and explicitly archive thermal-stopped runs."""
 import csv,hashlib,json,re,shutil,statistics,subprocess,tarfile
 from pathlib import Path
 LIMIT='gpu1800_cpu60'
@@ -7,8 +7,8 @@ MODELS={'qwen27':('Qwen3.8-27B NVFP4 + DFlash2','nvidia/Qwen3.8-27B-NVFP4'),'bol
 def render(summary,matrix):
  text='''# DGX Spark (GB10) — serving & benchmark findings
 
-One NVIDIA DGX Spark, GB10, 121.7 GiB usable unified RAM. Latest complete campaign:
-**November 3, 2026 — all four models, normal versus 60% GPU clock limit.**
+One NVIDIA DGX Spark, GB10, 121.7 GiB usable unified RAM. Latest campaign update:
+**November 3, 2026 — normal versus 60% GPU clock limit / CPU 60%.**
 
 ## Model quality — measured at normal clocks
 
@@ -27,7 +27,7 @@ Quality differences in a single trial are not an established universal ranking.
 Model safety findings are in the full quality reports; they are not attributed
 to the clock limit.
 
-## Paired speed, energy and heat — all four models
+## Paired speed, energy and heat — completed comparisons
 
 **Normal:** default CPU/GPU clock limits. **60% GPU clock limit:** GPU ceiling
 **1,800 MHz** (about 60% of the reported 3,003 MHz maximum), with CPU frequency
@@ -56,6 +56,7 @@ tokens before answer generation. The speed columns below use depth 0.
 |---|---|---:|---:|---:|---:|---:|---:|
 '''
  for model,(label,_) in MODELS.items():
+  if 'profiles' not in summary[model]:continue
   for prof,pname in [('normal','Normal'),(LIMIT,'60% GPU limit — 1,800 MHz; CPU 60%')]:
    a=next(r for r in matrix if r['model']==model and r['profile']==prof and r['depth']==0 and r['concurrency']==1);b=next(r for r in matrix if r['model']==model and r['profile']==prof and r['depth']==0 and r['concurrency']==4);s=summary[model]['profiles'][prof]
    text+=f"| {label} | {pname} | {a['decode_mean']:.1f} | {a['prefill_mean']:,.0f} | {b['decode_mean']:.1f} | {s['seconds_mean']:.1f} | {s['gpu_j_mean']/1000:.2f} | {s['peak_acpi_c']:.1f} |\n"
@@ -83,6 +84,7 @@ I/O and SMART snapshots are in this campaign’s raw records.
 
 '''
  for model,(label,_) in MODELS.items():
+  if 'profiles' not in summary[model]:continue
   n=summary[model]['profiles']['normal'];c=summary[model]['profiles'][LIMIT]
   text+=f"- **{label}:** GPU-reported matrix energy changed **{100*(c['gpu_j_mean']/n['gpu_j_mean']-1):+.1f}%**, and elapsed time **{100*(c['seconds_mean']/n['seconds_mean']-1):+.1f}%**, under the 60% GPU limit / CPU 60% profile.\n"
  text+='''
@@ -112,14 +114,32 @@ restored before publication. DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw at
 Those measurements used different clock settings and/or benchmark protocols;
 the raw records are preserved rather than overwritten.
 '''
+ for model,record in summary.items():
+  if 'incomplete' in record:
+   notice=f"**Thermal-stopped comparison — {MODELS[model][0]}:** the normal-clock run reached the 90 C safety stop (guard peak {record['guard_peak_c']:.1f} C). Its quality trial completed, but no paired speed/energy result is available. The incomplete run and guard logs are archived; the temperature limit was not raised.\n\n"
+   text=text.replace('## Model quality',notice+'## Model quality',1)
  return text
 def publish(root,repo):
  import runpy
  energy=runpy.run_path(str(repo/'scripts/workload_energy.py'))['main']
  summary={};matrix=[];dest=repo/'experiments/cap1800-20261103';dest.mkdir(exist_ok=False)
  for model in MODELS:
-  src=root/(model+'-gpu1800-01');result=src/'result';assert json.loads((result/'outcome.json').read_text())['exit_code']==0
-  assert (result/'bench/completed.json').exists()
+  src=root/(model+'-gpu1800-01');result=src/'result'
+  complete=(result/'outcome.json').exists() and json.loads((result/'outcome.json').read_text())['exit_code']==0 and (result/'bench/completed.json').exists()
+  for path in src.rglob('*'):
+   if path.is_file() and path.suffix in ['.json','.jsonl','.log','.md'] and re.search(r'hf_[A-Za-z0-9]{25,}|-----BEGIN (?:OPENSSH|RSA|EC) PRIVATE KEY-----',path.read_text(errors='replace')):raise RuntimeError('Credential-like content: '+str(path))
+  if not complete:
+   abort=json.loads((src/'watchdog/abort.json').read_text());assert abort['reason']=='thermal_limit_90C'
+   assert json.loads((src/'status.json').read_text())['state']=='cancelled'
+   log=(result/'bench/phase-1-normal/quality.log').read_text()
+   q={'score':int(re.search(r'Score:\s+(\d+) /',log)[1]),'points':int(re.search(r'Points:\s+(\d+)/208',log)[1]),'median_turn_s':float(re.search(r'median turn: ([\d.]+)s',log)[1])}
+   health=[json.loads(x) for x in (src/'watchdog/health.jsonl').read_text().splitlines()]
+   summary[model]={'quality':q,'incomplete':{'reason':abort['reason'],'paired_result_available':False},'guard_peak_c':max(x['hottest_c'] for x in health),'job_id':(src/'job-id').read_text()}
+   out=dest/model;out.mkdir();(out/'incomplete.json').write_text(json.dumps(summary[model],indent=2)+'\n')
+   for name in ['spec.json','status.json','job-id','nvme-smart-before.json','nvme-smart-after.json']:shutil.copy2(src/name,out/name)
+   shutil.copy2(next((result/'bench/phase-1-normal/quality').rglob('*.md')),out/'quality.md')
+   with tarfile.open(out/'raw-run.tar.gz','w:gz') as tf:tf.add(src,arcname=src.name)
+   continue
   import sys
   old=sys.argv;sys.argv=['workload_energy.py','--events',str(result/'bench/events.jsonl'),'--sensors',str(src/'telemetry/sensors.jsonl'),'--out',str(src/'workload-summary.json')]
   try:energy()
@@ -155,14 +175,15 @@ def publish(root,repo):
   with tarfile.open(out/'raw-run.tar.gz','w:gz') as tf:tf.add(src,arcname=src.name)
  with (dest/'throughput-matrix.csv').open('w',newline='') as f:w=csv.DictWriter(f,fieldnames=list(matrix[0]));w.writeheader();w.writerows(matrix)
  (dest/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
- for name in ['schedule.json','run.py','switch-runtime.py','publish.py','entry.py','recover.py']:shutil.copy2(root/name,dest/name)
+ for name in ['schedule.json','run.py','switch-runtime.py','publish.py','entry.py','recover.py','resume.py']:
+  if (root/name).exists():shutil.copy2(root/name,dest/name)
  old=(repo/'README.md').read_text();history=old[old.index('\n---\n'):];(repo/'README.md').write_text(render(summary,matrix)+history)
- report='Completed four-model campaign: normal vs GPU 1800 MHz (about 60% hardware maximum), CPU ceilings60%.\nOne normal-clock quality trial per model; quality warnings are behavioral findings in each quality report, not power effects.\nFull model/profile means and measurements:\n'+json.dumps(summary,indent=2)+'\nRaw data, per-pass JSON, quality Markdown and exact configs: ../experiments/cap1800-20261103/\n20CPU quota,118GiB charged RAM,16GiB shm;90C hottest-zone stop;2GiB hard/6GiB30s soft memory floors. No fan/firmware/EC change. GPU-reported energy is not wall/system energy. Two matrices/profile; descriptive results on one host. All models unloaded/settings restored before publication.\n'
+ report='Campaign results (complete comparisons and explicitly marked thermal-stopped runs): normal vs GPU 1800 MHz (about 60% hardware maximum), CPU ceilings60%.\nOne normal-clock quality trial per model; quality warnings are behavioral findings in each quality report, not power effects.\nFull model/profile means and measurements:\n'+json.dumps(summary,indent=2)+'\nRaw data, per-pass JSON, quality Markdown and exact configs: ../experiments/cap1800-20261103/\n20CPU quota,118GiB charged RAM,16GiB shm;90C hottest-zone stop;2GiB hard/6GiB30s soft memory floors. No fan/firmware/EC change. GPU-reported energy is not wall/system energy. Two matrices/profile; descriptive results on one host. All models unloaded/settings restored before publication.\n'
  (repo/'docs/CAP1800-RESULTS-20261103.txt').write_text(report)
  files={str(p.relative_to(dest)):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in dest.rglob('*') if p.is_file()};(dest/'manifest.json').write_text(json.dumps(files,indent=2)+'\n')
  subprocess.run(['git','diff','--check'],cwd=repo,check=True)
  subprocess.run(['git','add','README.md','docs/CAP1800-RESULTS-20261103.txt','experiments/cap1800-20261103'],cwd=repo,check=True)
- subprocess.run(['git','-c','user.name=Codex','-c','user.email=codex@openai.com','commit','-m','Replace headline comparison with completed 1800 MHz four-model reruns'],cwd=repo,check=True)
+ subprocess.run(['git','-c','user.name=Codex','-c','user.email=codex@openai.com','commit','-m','Publish validated 1800 MHz comparisons and explicit thermal-stop findings'],cwd=repo,check=True)
  subprocess.run(['git','fetch','origin'],cwd=repo,check=True);subprocess.run(['git','-c','user.name=Codex','-c','user.email=codex@openai.com','rebase','origin/main'],cwd=repo,check=True)
  import os
  env=os.environ.copy();env['GIT_SSH_COMMAND']='ssh -o BatchMode=yes -o IdentityAgent=none'
