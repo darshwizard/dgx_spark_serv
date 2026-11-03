@@ -112,6 +112,8 @@ restored before publication. DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw at
 
 **DeepSeek1017 attempt:** stopped before a complete comparison; see the [failure report](docs/DEEPSEEK1017-RESULTS-20261103.txt) and [raw evidence](experiments/deepseek1017-20261103/). No complete efficiency result is claimed.
 
+**DeepSeek1017 attempt02:** stopped before a complete comparison; see the [failure report](docs/DEEPSEEK1017-RESULTS-20261103-attempt02.txt) and [raw evidence](experiments/deepseek1017-20261103-attempt02/). No complete efficiency result is claimed.
+
 ## Earlier results retained for reference
 
 [Bolt runs stopped at the original 90°C guard](docs/BOLT-NORMAL-REPEAT-20261103.txt)

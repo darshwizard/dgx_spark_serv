@@ -1,0 +1,28 @@
+{
+  "attempt": "02",
+  "placement": "Expanded cold alias: union2347 experts,13.766GiB side file;more NVMe offload than upstream1418-expert default",
+  "model": "DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5",
+  "complete": false,
+  "context_configured": 262144,
+  "actual_matrix_max_depth": 8192,
+  "server_max_num_seqs": 1,
+  "client_concurrency": [
+    1,
+    2,
+    4
+  ],
+  "job_id": "90e853ef3b38462eaa8123613f8fa29e",
+  "controller_error": null,
+  "outcome": {
+    "exit_code": 1,
+    "failures": [
+      "server_not_ready"
+    ],
+    "utc": "2026-11-03T17:54:43.807183+00:00",
+    "monotonic_s": 594191.916378856
+  },
+  "abort": null,
+  "profiles": {},
+  "matrix": [],
+  "quality": null
+}
