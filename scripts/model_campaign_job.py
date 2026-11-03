@@ -42,7 +42,7 @@ def main():
  elif a.model=='deepseek1017':
   command=['bash','/workspace/code/deepseek1017/serve_inner.sh']
   env.update(json.loads((ROOT/'code/deepseek1017/serve-env.json').read_text()))
-  for path in ['B12X_COMPILE_CACHE_DIR','B12X_CUTE_COMPILE_CACHE_DIR','CUDA_CACHE_PATH','CUTE_DSL_CACHE_DIR','TILELANG_CACHE_DIR','TRITON_CACHE_DIR','XDG_CACHE_HOME','VLLM_CACHE_ROOT']:
+  for path in ['TMPDIR','B12X_COMPILE_CACHE_DIR','B12X_CUTE_COMPILE_CACHE_DIR','CUDA_CACHE_PATH','CUTE_DSL_CACHE_DIR','TILELANG_CACHE_DIR','TRITON_CACHE_DIR','XDG_CACHE_HOME','VLLM_CACHE_ROOT']:
    Path(env[path]).mkdir(parents=True,exist_ok=True)
  elif a.model=='super':
   draft=ROOT/'models/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr'

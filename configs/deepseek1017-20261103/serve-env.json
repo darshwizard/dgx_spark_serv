@@ -64,5 +64,6 @@
   "TILELANG_CACHE_DIR": "/workspace/cache/deepseek1017/jit/tilelang",
   "TRITON_CACHE_DIR": "/workspace/cache/deepseek1017/jit/triton",
   "XDG_CACHE_HOME": "/workspace/cache/deepseek1017/jit",
-  "VLLM_CACHE_ROOT": "/workspace/cache/deepseek1017/jit/vllm-r5o"
+  "VLLM_CACHE_ROOT": "/workspace/cache/deepseek1017/jit/vllm-r5o",
+  "TMPDIR": "/workspace/cache/deepseek1017/tmp"
 }
