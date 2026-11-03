@@ -1,0 +1,46 @@
+{
+  "command": [
+    "python3",
+    "/workspace/code/model_campaign_job.py",
+    "--thermal-stop-c",
+    "95",
+    "--model",
+    "bolt",
+    "--run-id",
+    "bolt-gpu1800normal-02",
+    "--limited-profile",
+    "gpu1800_cpu60",
+    "--quality-mode",
+    "normal-only",
+    "--phase-mode",
+    "normal-only"
+  ],
+  "metadata": {
+    "commit": "deec39be5ac50b816347458d36b6325b092965c9",
+    "dataset": "tool-eval-104-and-seeded-llama-benchy-v2",
+    "parameters": {
+      "model": "bolt",
+      "thermal_stop_c": 95,
+      "campaign": "bolt95-repeat-20261103",
+      "profiles": [
+        "normal",
+        "normal"
+      ],
+      "exact_output_tokens": 128,
+      "numpy_seed": 42,
+      "request_seed": 42,
+      "context": 32768,
+      "cpus": 20,
+      "memory_ceiling_gib": 118,
+      "gpu_ceiling_mhz": null,
+      "cpu_ceiling_fraction": 1.0,
+      "quality_mode": "none",
+      "source_hashes": {
+        "model_campaign_job.py": "b492af48bd28b51479bf93bb2c42373fddb1d7a9587c0fc3d9ace6788cc44fc8",
+        "paired_model_bench.py": "788d7e16acc847be15bd887f21982e8f1c20df1c37655727967539dc146eeb86",
+        "campaign_guard.py": "a6b529a6668f68ffb1569e1fdbc9abcbaf5d03d3e710e79d4a7e311dc3fb0f31",
+        "clock_profile.py": "92fd3f900cae6f0e85dd1fc1a90157eb960f92f87e88146f556b3af2d28421ce"
+      }
+    }
+  }
+}

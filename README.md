@@ -70,6 +70,10 @@ GPU-reported energy is not whole-machine energy; CPU, NVMe, fans and PSU losses
 are not fully accounted for. Different tokenizers also imply different text at
 equal token counts. No wall meter or ambient-temperature sensor was available.
 
+## Bolt default clocks with a 95°C stop
+
+The Nov 3 repeat completed both throughput matrices (sampled guard peak **91.2°C**). Stock automatic fans and safety guards were retained. A simultaneous low-priority DeepSeek weight download makes this an observational thermal repeat, **not a paired energy comparison**. [Report and telemetry](docs/BOLT95-REPEAT-20261103.txt) · [Raw evidence](experiments/bolt95-repeat-20261103/).
+
 ## Bolt default-clock repeat
 
 The Nov 3 repeat stopped again at the **90°C guard** (sampled peak **90.0°C**). Stock automatic fans and safety guards were retained. A simultaneous low-priority DeepSeek weight download makes this an observational thermal repeat, **not a paired energy comparison**. [Report and telemetry](docs/BOLT-NORMAL-REPEAT-20261103.txt) · [Raw evidence](experiments/bolt-normal-repeat-20261103/).

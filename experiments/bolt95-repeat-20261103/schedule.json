@@ -1,0 +1,37 @@
+{
+  "start_utc": "2026-11-03T15:57:57.554156+00:00",
+  "start_local": "Immediate start authorized by owner",
+  "repo": "/home/d_wizard/local-ai/bolt95-repeat-20261103/repo",
+  "source_commit": "deec39be5ac50b816347458d36b6325b092965c9",
+  "models": [
+    "bolt"
+  ],
+  "gpu_max_mhz": null,
+  "cpu_max_fraction": 1.0,
+  "quality_mode": "none",
+  "stock_fans": true,
+  "images": {
+    "qwen-benchmarks:20261102": "sha256:accfefdbcc2891d76e4d25a70f73218358af41fcc798052838c034448f94eb5a",
+    "bolt-benchmarks:20261102": "sha256:0a40f298d1c54547bccb42863c92e81bec6f897b967f0a29ea5743e3f371df81",
+    "super-benchmarks:20261102": "sha256:b523c5e541c32fa5503afe4375d174460f0a96ca75347aad7836d5ab2007d49a",
+    "flash-benchmarks:20261102": "sha256:cbedcf30b3d09a910ca78c25afb2d82fe3850b5c6c71eca54332edd25fab0336"
+  },
+  "host_original_sha256": {
+    "/opt/compute-host/queue.py": "8b169b5a7b9b1b79665e0dddec0d8ab4d88599271ebe6ed69b377abfc67f44b1",
+    "/opt/compute-host/web.py": "617ed37907b416e1310ff1559038e5217a45a34575758614b317a5aeb72481b5",
+    "/opt/compute-host/AGENTS.md": "91130d021f835c04739c6519c4876ab36a0dc0cc54c9df53d00ed19a091820f6",
+    "/home/d_wizard/AGENTS.md": "130a971ef5802e64198817980ed2223f384c1167238ed47c88cb42353a92de80"
+  },
+  "controller_sha256": {
+    "entry.py": "de31a10aeefedb560a6e64b5bd74a9080504fa0ffefbac441a99b32600de30f8",
+    "run.py": "174922c7fb0ac8ba903dc6226fec0566873c46f994c0ed208b7983d75797a606",
+    "recover.py": "51d9c0a51dc336551b256bcc9b4957ab303eae5735908ee4c41a4e47850100d5",
+    "switch-runtime.py": "083aeba0a852aaf31a014c1a063f17a57e87c78e1d66b7b4d55193cc667b9797"
+  },
+  "superseded_start_utc": "2026-11-03T07:00:00+00:00",
+  "systemd_service": "spark-bench-bolt95-repeat-20261103.service",
+  "phase_mode": "normal-only",
+  "background_download": "/home/d_wizard/local-ai/deepseek1017-20261103/download-status.json",
+  "thermal_stop_c": 95,
+  "authorization": "Owner explicitly requested95C thermal stop and another default-clock Bolt test; other runs retain90C"
+}

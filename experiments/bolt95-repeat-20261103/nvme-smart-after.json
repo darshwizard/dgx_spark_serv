@@ -1,0 +1,30 @@
+{
+  "utc": "2026-11-03T16:15:13.280319+00:00",
+  "device": "/dev/nvme0",
+  "smart": {
+    "critical_warning": 0,
+    "temperature": 332,
+    "avail_spare": 100,
+    "spare_thresh": 10,
+    "percent_used": 0,
+    "endurance_grp_critical_warning_summary": 0,
+    "data_units_read": 3956032,
+    "data_units_written": 2067673,
+    "host_read_commands": 137234254,
+    "host_write_commands": 9036855,
+    "controller_busy_time": 32,
+    "power_cycles": 39,
+    "power_on_hours": 7,
+    "unsafe_shutdowns": 15,
+    "media_errors": 0,
+    "num_err_log_entries": 0,
+    "warning_temp_time": 0,
+    "critical_comp_time": 0,
+    "temperature_sensor_1": 333,
+    "temperature_sensor_2": 332,
+    "thm_temp1_trans_count": 0,
+    "thm_temp2_trans_count": 0,
+    "thm_temp1_total_time": 0,
+    "thm_temp2_total_time": 0
+  }
+}

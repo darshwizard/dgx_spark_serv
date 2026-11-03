@@ -1,0 +1,124 @@
+{
+  "note": "GPU-reported energy only, not wall/system energy. Trapezoidal interpolation, excluding gaps >2.5s. Throughput energy includes harness warmups and context prefill. Partial workloads are not efficiency comparisons. CPU/NVMe/VM activity is host-wide and uses first/last samples inside workload, excluding boundary fractions; it is not per-job accounting. Swap counters count kernel pages.",
+  "completed_workloads": [
+    {
+      "seq": 1,
+      "profile": "normal",
+      "workload": "throughput",
+      "exit_code": 0,
+      "elapsed_s": 421.0066841560183,
+      "gpu_reported_energy_j": 29370.561732349863,
+      "power_coverage_s": 421.0066841560183,
+      "power_coverage_fraction": 1.0,
+      "covered_mean_gpu_power_w": 69.76269697766985,
+      "max_acpi_c": 91.0,
+      "min_available_gib": 27.825576782226562,
+      "fan_rpm": {
+        "hwmon0/fan1_input": {
+          "min": 1984.0,
+          "max": 3069.0,
+          "mean": 2458.080760095012
+        },
+        "hwmon1/fan1_input": {
+          "min": 2036.0,
+          "max": 3161.0,
+          "mean": 2530.3657957244654
+        }
+      },
+      "host_nvme_activity": {
+        "nvme0n1": {
+          "read_bytes": 326458019840,
+          "written_bytes": 22153527296
+        }
+      },
+      "host_cpu_busy_percent": 11.253434111311455,
+      "host_cpu_iowait_percent": 0.244216818406236,
+      "host_vmstat_delta": {
+        "pswpin": 3,
+        "pswpout": 63,
+        "pgmajfault": 90,
+        "oom_kill": 0
+      },
+      "gpu_sample_stats": {
+        "clocks.sm": {
+          "min": 2353.0,
+          "max": 2411.0,
+          "mean": 2390.4418052256533,
+          "median": 2392.0
+        },
+        "utilization.gpu": {
+          "min": 0.0,
+          "max": 96.0,
+          "mean": 95.27553444180522,
+          "median": 96.0
+        },
+        "power.draw": {
+          "min": 10.66,
+          "max": 84.63,
+          "mean": 69.76218527315915,
+          "median": 77.2
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "profile": "normal",
+      "workload": "throughput",
+      "exit_code": 0,
+      "elapsed_s": 422.9158887739759,
+      "gpu_reported_energy_j": 30177.526887488228,
+      "power_coverage_s": 422.9158887739759,
+      "power_coverage_fraction": 1.0,
+      "covered_mean_gpu_power_w": 71.35585984951342,
+      "max_acpi_c": 90.4,
+      "min_available_gib": 48.459510803222656,
+      "fan_rpm": {
+        "hwmon0/fan1_input": {
+          "min": 2024.0,
+          "max": 3075.0,
+          "mean": 2576.501182033097
+        },
+        "hwmon1/fan1_input": {
+          "min": 2079.0,
+          "max": 3167.0,
+          "mean": 2652.579196217494
+        }
+      },
+      "host_nvme_activity": {
+        "nvme0n1": {
+          "read_bytes": 643072,
+          "written_bytes": 251953152
+        }
+      },
+      "host_cpu_busy_percent": 7.5683579227138775,
+      "host_cpu_iowait_percent": 0.06828951422837012,
+      "host_vmstat_delta": {
+        "pswpin": 8,
+        "pswpout": 0,
+        "pgmajfault": 7,
+        "oom_kill": 0
+      },
+      "gpu_sample_stats": {
+        "clocks.sm": {
+          "min": 2372.0,
+          "max": 2411.0,
+          "mean": 2391.026004728132,
+          "median": 2392.0
+        },
+        "utilization.gpu": {
+          "min": 0.0,
+          "max": 96.0,
+          "mean": 95.4869976359338,
+          "median": 96.0
+        },
+        "power.draw": {
+          "min": 12.06,
+          "max": 84.84,
+          "mean": 71.35912529550828,
+          "median": 79.44
+        }
+      }
+    }
+  ],
+  "unfinished_workloads": []
+}

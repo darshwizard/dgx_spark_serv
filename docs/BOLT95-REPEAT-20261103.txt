@@ -1,0 +1,200 @@
+Bolt default-clock repeat with95C stop — Nov3,2026
+Same validated Bolt+LiLiCorr7 recipe,32K configured context,20CPU quota,automatic stock fans. Two seeded throughput matrices requested, no repeat quality suite. GPU clock limit reset to defaults before startup; CPU ceilings at hardware maximum. Owner explicitly requested a95C stop for this run only; memory guards unchanged. Default90C retained for all other runs. Firmware/EC settings unchanged.
+Concurrent DeepSeek1017 download was authorized; host-wide CPU/NVMe activity may confound heat, speed and energy. This is a thermal repeat, not a paired comparison against prior limited-only results.
+{
+  "completed": true,
+  "thermal_stop": false,
+  "job_id": "9542b0bda61b4ce7be828fa9abc1418a",
+  "peak_acpi_c": 91.2,
+  "thermal_stop_c": 95,
+  "normal_clocks": true,
+  "paired_comparison": false,
+  "background_download": "DeepSeek1017 download started concurrently, low CPU/disk priority; actual overlap recorded in host telemetry",
+  "controller_error": null,
+  "abort": null,
+  "outcome": {
+    "exit_code": 0,
+    "failures": [],
+    "utc": "2026-11-03T16:15:09.888432+00:00",
+    "monotonic_s": 588217.997624316
+  },
+  "completed_matrices": 2,
+  "workload_summaries": [
+    {
+      "seq": 1,
+      "profile": "normal",
+      "workload": "throughput",
+      "exit_code": 0,
+      "elapsed_s": 421.0066841560183,
+      "gpu_reported_energy_j": 29370.561732349863,
+      "power_coverage_s": 421.0066841560183,
+      "power_coverage_fraction": 1.0,
+      "covered_mean_gpu_power_w": 69.76269697766985,
+      "max_acpi_c": 91.0,
+      "min_available_gib": 27.825576782226562,
+      "fan_rpm": {
+        "hwmon0/fan1_input": {
+          "min": 1984.0,
+          "max": 3069.0,
+          "mean": 2458.080760095012
+        },
+        "hwmon1/fan1_input": {
+          "min": 2036.0,
+          "max": 3161.0,
+          "mean": 2530.3657957244654
+        }
+      },
+      "host_nvme_activity": {
+        "nvme0n1": {
+          "read_bytes": 326458019840,
+          "written_bytes": 22153527296
+        }
+      },
+      "host_cpu_busy_percent": 11.253434111311455,
+      "host_cpu_iowait_percent": 0.244216818406236,
+      "host_vmstat_delta": {
+        "pswpin": 3,
+        "pswpout": 63,
+        "pgmajfault": 90,
+        "oom_kill": 0
+      },
+      "gpu_sample_stats": {
+        "clocks.sm": {
+          "min": 2353.0,
+          "max": 2411.0,
+          "mean": 2390.4418052256533,
+          "median": 2392.0
+        },
+        "utilization.gpu": {
+          "min": 0.0,
+          "max": 96.0,
+          "mean": 95.27553444180522,
+          "median": 96.0
+        },
+        "power.draw": {
+          "min": 10.66,
+          "max": 84.63,
+          "mean": 69.76218527315915,
+          "median": 77.2
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "profile": "normal",
+      "workload": "throughput",
+      "exit_code": 0,
+      "elapsed_s": 422.9158887739759,
+      "gpu_reported_energy_j": 30177.526887488228,
+      "power_coverage_s": 422.9158887739759,
+      "power_coverage_fraction": 1.0,
+      "covered_mean_gpu_power_w": 71.35585984951342,
+      "max_acpi_c": 90.4,
+      "min_available_gib": 48.459510803222656,
+      "fan_rpm": {
+        "hwmon0/fan1_input": {
+          "min": 2024.0,
+          "max": 3075.0,
+          "mean": 2576.501182033097
+        },
+        "hwmon1/fan1_input": {
+          "min": 2079.0,
+          "max": 3167.0,
+          "mean": 2652.579196217494
+        }
+      },
+      "host_nvme_activity": {
+        "nvme0n1": {
+          "read_bytes": 643072,
+          "written_bytes": 251953152
+        }
+      },
+      "host_cpu_busy_percent": 7.5683579227138775,
+      "host_cpu_iowait_percent": 0.06828951422837012,
+      "host_vmstat_delta": {
+        "pswpin": 8,
+        "pswpout": 0,
+        "pgmajfault": 7,
+        "oom_kill": 0
+      },
+      "gpu_sample_stats": {
+        "clocks.sm": {
+          "min": 2372.0,
+          "max": 2411.0,
+          "mean": 2391.026004728132,
+          "median": 2392.0
+        },
+        "utilization.gpu": {
+          "min": 0.0,
+          "max": 96.0,
+          "mean": 95.4869976359338,
+          "median": 96.0
+        },
+        "power.draw": {
+          "min": 12.06,
+          "max": 84.84,
+          "mean": 71.35912529550828,
+          "median": 79.44
+        }
+      }
+    }
+  ],
+  "matrix_seconds_mean": 421.9612864649971,
+  "gpu_kj_mean": 29.774044309919045,
+  "fan_temperature_bands": {
+    "0-85C": {
+      "sample_count": 679,
+      "fans": {
+        "hwmon0/fan1_input": {
+          "min_rpm": 1980.0,
+          "max_rpm": 3072.0,
+          "mean_rpm": 2318.301914580265
+        },
+        "hwmon1/fan1_input": {
+          "min_rpm": 2032.0,
+          "max_rpm": 3166.0,
+          "mean_rpm": 2384.1281296023562
+        }
+      }
+    },
+    "85-90C": {
+      "sample_count": 340,
+      "fans": {
+        "hwmon0/fan1_input": {
+          "min_rpm": 2493.0,
+          "max_rpm": 3075.0,
+          "mean_rpm": 2695.0264705882355
+        },
+        "hwmon1/fan1_input": {
+          "min_rpm": 2567.0,
+          "max_rpm": 3167.0,
+          "mean_rpm": 2775.894117647059
+        }
+      }
+    },
+    "90-93C": {
+      "sample_count": 12,
+      "fans": {
+        "hwmon0/fan1_input": {
+          "min_rpm": 2505.0,
+          "max_rpm": 3061.0,
+          "mean_rpm": 2689.9166666666665
+        },
+        "hwmon1/fan1_input": {
+          "min_rpm": 2576.0,
+          "max_rpm": 3159.0,
+          "mean_rpm": 2772.75
+        }
+      }
+    },
+    "93-95C": {
+      "sample_count": 0,
+      "fans": {}
+    },
+    "95-200C": {
+      "sample_count": 0,
+      "fans": {}
+    }
+  }
+}
+Defaults/runtime restored and model unloaded before publication. GPU-reported joules are not whole-system energy. Interrupted matrix does not establish efficiency.
