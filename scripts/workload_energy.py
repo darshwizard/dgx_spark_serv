@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Align paired benchmark events with host telemetry; GPU rail energy only."""
-import argparse,json,math,re
+import argparse,json,math,re,statistics
 from pathlib import Path
 
 def integrate(rows,start,end,max_gap=2.5):
@@ -46,6 +46,11 @@ def main():
      if k.startswith('fan') and v.get('raw') is not None:fans.setdefault(h['id']+'/'+k,[]).append(v['raw'])
   available=[r['meminfo_kib']['MemAvailable']/1048576 for r in selected if 'MemAvailable' in r.get('meminfo_kib',{})]
   activity=host_activity(selected[0],selected[-1]) if len(selected)>1 else {}
+  gpu_stats={}
+  for field in ['clocks.sm','utilization.gpu','power.draw']:
+   values=[g[field] for r in selected for g in r.get('gpus',[]) if isinstance(g.get(field),(int,float)) and math.isfinite(g[field])]
+   gpu_stats[field]={'min':min(values),'max':max(values),'mean':statistics.mean(values),'median':statistics.median(values)} if values else None
+  activity['gpu_sample_stats']=gpu_stats
   results.append({**profile,'workload':event['label'],'exit_code':event['exit_code'],'elapsed_s':hi-lo,'gpu_reported_energy_j':energy if covered else None,'power_coverage_s':covered,'power_coverage_fraction':covered/(hi-lo) if hi>lo else None,'covered_mean_gpu_power_w':energy/covered if covered else None,'max_acpi_c':max(temps,default=None),'min_available_gib':min(available,default=None),'fan_rpm':{k:{'min':min(v),'max':max(v),'mean':sum(v)/len(v)} for k,v in fans.items()},**activity})
  output={'note':'GPU-reported rail energy only, not wall/system energy. Trapezoidal interpolation, excluding gaps >2.5s. Throughput energy includes harness warmups and context prefill. Partial workloads are not efficiency comparisons. CPU/NVMe/VM activity is host-wide and uses first/last samples inside workload, excluding boundary fractions; it is not per-job accounting. Swap counters count kernel pages.','completed_workloads':results,'unfinished_workloads':list(pending)}
  a.out.write_text(json.dumps(output,indent=2)+'\n')
