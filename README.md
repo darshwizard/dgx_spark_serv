@@ -99,6 +99,9 @@ Different tokenizers also mean equal token counts need not represent equal text.
   Capped throughput peaks were **74.7°C / 69.9°C**. Fans remained automatic;
   ambient was unmeasured and Super's first normal pass included fan ramp-up, so
   these are not controlled cooling comparisons. [Fan observations](hardware/FAN-OBSERVATIONS-20261102.txt).
+  These peaks refer to the hottest ACPI zone. CPU-labelled zones and the GPU
+  can peak at different times; Flash startup showed a 24.3°C CPU-zone lead.
+  [Temperature timelines and sensor definitions](docs/THERMAL-HISTORY-20261103.txt).
 
 **Reports and reproducibility:** [Complete new-model report](docs/LARGE-MODEL-RESULTS-20261103.txt)
 · [Recipes and startup fixes](docs/LARGE-MODEL-RECIPES-20261103.txt)

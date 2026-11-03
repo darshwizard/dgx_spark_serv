@@ -36,6 +36,11 @@ The exact firmware mechanism and proposed dual curves remain community claims.
 Our observed RPM steps resemble the reported slow curve; boot selection is unproven.
 Owner preference: keep firmware and EC settings unchanged.
 
+CPU/GPU time-series analysis added Nov 3: ../docs/THERMAL-HISTORY-20261103.txt
+and ../experiments/thermal-history-20261103/temperature-timelines.png.
+TSOC/hottest-zone is not a dedicated CPU reading. CPU-labelled cluster zones
+and ACPI TGPU can diverge substantially; NVML GPU is a separate temperature.
+
 Sources:
 https://forums.developer.nvidia.com/t/dgx-spark-fan-control-kernel-module-running-on-dual-sparks-since-mid-august/382536
 https://forums.developer.nvidia.com/t/new-dgx-spark-fans-barely-speed-up-at-high-temps-and-cant-be-adjusted-critical-please-open-fan-control/386805/21

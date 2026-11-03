@@ -1,0 +1,114 @@
+{
+  "qwen": {
+    "source": "experiments/qwen-standard-20261102/telemetry-02/sensors.jsonl.gz",
+    "samples": 2066,
+    "cpu_zone_peak_c": 79.7,
+    "acpi_gpu_peak_c": 82.8,
+    "nvml_gpu_peak_c": 77.0,
+    "mean_cpu_minus_acpi_gpu_c": 0.7086156824782187,
+    "cpu_hotter_by_over_1c_fraction": 0.5556631171345595,
+    "gpu_hotter_by_over_1c_fraction": 0.2744433688286544,
+    "largest_cpu_lead": {
+      "utc": "2026-11-02T20:37:45.340297+00:00",
+      "monotonic_s": 517573.449473263,
+      "minute": 4.393868615049481,
+      "cpu_zone_max_c": 78.6,
+      "acpi_gpu_c": 60.9,
+      "nvml_gpu_c": 58.0,
+      "soc_c": 78.6
+    },
+    "largest_gpu_lead": {
+      "utc": "2026-11-02T21:06:35.036894+00:00",
+      "monotonic_s": 519303.146063754,
+      "minute": 33.22214512323262,
+      "cpu_zone_max_c": 69.9,
+      "acpi_gpu_c": 80.4,
+      "nvml_gpu_c": 74.0,
+      "soc_c": 80.4
+    }
+  },
+  "bolt": {
+    "source": "experiments/bolt-standard-20261102/telemetry/sensors.jsonl.gz",
+    "samples": 1573,
+    "cpu_zone_peak_c": 84.1,
+    "acpi_gpu_peak_c": 90.6,
+    "nvml_gpu_peak_c": 83.0,
+    "mean_cpu_minus_acpi_gpu_c": -3.7244755244755243,
+    "cpu_hotter_by_over_1c_fraction": 0.08200890019071837,
+    "gpu_hotter_by_over_1c_fraction": 0.7997457088366179,
+    "largest_cpu_lead": {
+      "utc": "2026-11-02T03:27:46.799207+00:00",
+      "monotonic_s": 455774.908383445,
+      "minute": 1.784035058216735,
+      "cpu_zone_max_c": 57.1,
+      "acpi_gpu_c": 47.8,
+      "nvml_gpu_c": 45.0,
+      "soc_c": 57.1
+    },
+    "largest_gpu_lead": {
+      "utc": "2026-11-02T03:48:10.318146+00:00",
+      "monotonic_s": 456998.42731595,
+      "minute": 22.176017266633185,
+      "cpu_zone_max_c": 71.8,
+      "acpi_gpu_c": 82.7,
+      "nvml_gpu_c": 75.0,
+      "soc_c": 82.7
+    }
+  },
+  "super": {
+    "source": "experiments/large-models-20261102/super/raw-run.tar.gz",
+    "samples": 3864,
+    "cpu_zone_peak_c": 79.2,
+    "acpi_gpu_peak_c": 80.9,
+    "nvml_gpu_peak_c": 75.0,
+    "mean_cpu_minus_acpi_gpu_c": 1.2437888198757763,
+    "cpu_hotter_by_over_1c_fraction": 0.45160455486542445,
+    "gpu_hotter_by_over_1c_fraction": 0.22282608695652173,
+    "largest_cpu_lead": {
+      "utc": "2026-11-02T23:39:51.914661+00:00",
+      "monotonic_s": 528500.023838193,
+      "minute": 7.486313134001103,
+      "cpu_zone_max_c": 61.4,
+      "acpi_gpu_c": 51.8,
+      "nvml_gpu_c": 49.0,
+      "soc_c": 61.4
+    },
+    "largest_gpu_lead": {
+      "utc": "2026-11-03T00:19:28.792044+00:00",
+      "monotonic_s": 530876.901217073,
+      "minute": 47.10093611533327,
+      "cpu_zone_max_c": 64.1,
+      "acpi_gpu_c": 72.2,
+      "nvml_gpu_c": 65.0,
+      "soc_c": 72.2
+    }
+  },
+  "flash-next": {
+    "source": "experiments/large-models-20261102/flash-next/raw-run.tar.gz",
+    "samples": 4585,
+    "cpu_zone_peak_c": 79.5,
+    "acpi_gpu_peak_c": 74.7,
+    "nvml_gpu_peak_c": 70.0,
+    "mean_cpu_minus_acpi_gpu_c": 2.154896401308615,
+    "cpu_hotter_by_over_1c_fraction": 0.4778625954198473,
+    "gpu_hotter_by_over_1c_fraction": 0.21221374045801528,
+    "largest_cpu_lead": {
+      "utc": "2026-11-03T00:57:34.093153+00:00",
+      "monotonic_s": 533162.202326754,
+      "minute": 7.001954383965737,
+      "cpu_zone_max_c": 79.5,
+      "acpi_gpu_c": 55.2,
+      "nvml_gpu_c": 53.0,
+      "soc_c": 79.5
+    },
+    "largest_gpu_lead": {
+      "utc": "2026-11-03T00:57:17.088344+00:00",
+      "monotonic_s": 533145.197520652,
+      "minute": 6.718540948932059,
+      "cpu_zone_max_c": 58.9,
+      "acpi_gpu_c": 67.4,
+      "nvml_gpu_c": 63.0,
+      "soc_c": 67.4
+    }
+  }
+}
