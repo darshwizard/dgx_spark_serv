@@ -7,6 +7,8 @@ def pending():
   return db.execute("select id,state from jobs where state in ('running','queued')").fetchall()
 if pending(): raise SystemExit('Queue not idle; refusing runtime switch')
 mode=sys.argv[1]
+thermal_stop_c=int(sys.argv[3]) if len(sys.argv)>3 else 90
+if thermal_stop_c not in [90,95]:raise SystemExit('Unsupported thermal stop')
 if mode=='restore':
  image=None;label='original NGC image'
 else:
@@ -27,7 +29,7 @@ try:
   if 'Flash' in label:
    q=q.replace("'--security-opt=no-new-privileges'", "'--security-opt=no-new-privileges','--security-opt=seccomp=unconfined','--security-opt=apparmor=unconfined'")
   ast.parse(q);pathlib.Path('/opt/compute-host/queue.py').write_text(q)
-  paragraph=f'Jobs run sequentially in the temporarily pinned {label} runtime.\nImage ID: {image}.\nOwner-authorized large-model comparison is in progress; validation is pending. Host watchdog stops our job below 2 GiB available RAM or at 90 C. Job swap is disabled.\nOriginal NGC image is retained for rollback.'
+  paragraph=f'Jobs run sequentially in the temporarily pinned {label} runtime.\nImage ID: {image}.\nOwner-authorized large-model comparison is in progress; validation is pending. Host watchdog stops our job below 2 GiB available RAM or at {thermal_stop_c} C. Job swap is disabled.\nOriginal NGC image is retained for rollback.'
   for dst,src in [('/opt/compute-host/AGENTS.md','AGENTS.md'),('/home/d_wizard/AGENTS.md','home-AGENTS.md')]:
    s=(base/src).read_text();a=s.index('Jobs run sequentially');b=s.index('This is the existing installed image',a)
    updated=s[:a]+paragraph+'\n'+s[b:]

@@ -3,10 +3,11 @@
 import argparse,json,os,pwd,signal,sqlite3,subprocess,time
 from pathlib import Path
 
-def decision(available_bytes,temperatures,low_seconds=0):
+def decision(available_bytes,temperatures,low_seconds=0,thermal_stop_c=90):
+ if thermal_stop_c not in [90,95]:raise ValueError("Unsupported thermal stop")
  if available_bytes is None or len(temperatures)!=7:return 'required_sensor_missing'
  if available_bytes<2*1024**3:return 'host_available_below_2GiB'
- if max(temperatures)>=90:return 'thermal_limit_90C'
+ if max(temperatures)>=thermal_stop_c:return f'thermal_limit_{thermal_stop_c}C'
  if available_bytes<6*1024**3 and low_seconds>=30:return 'available_below_6GiB_for_30s'
  return None
 
@@ -24,7 +25,7 @@ def cpu_feedback():
  return result
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--job',required=True);p.add_argument('--parent',type=int,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--thermal-stop-c',type=int,choices=[90,95],default=90);p.add_argument('--job',required=True);p.add_argument('--parent',type=int,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
  if os.geteuid()!=0:raise SystemExit('Owner/root required')
  if len(a.job)!=32 or any(c not in '0123456789abcdef' for c in a.job):raise SystemExit('Invalid queue job ID')
  uid=pwd.getpwnam('agent-bench').pw_uid
@@ -59,7 +60,7 @@ def main():
      if low_since is None:low_since=now
     else:low_since=None
     low_seconds=now-low_since if low_since is not None else 0
-    reason=decision(mem.get('MemAvailable'),temps,low_seconds)
+    reason=decision(mem.get('MemAvailable'),temps,low_seconds,a.thermal_stop_c)
     if tick%10==0 or reason:
      f.write(json.dumps({'unix_s':time.time(),'monotonic_s':time.monotonic(),'mem_available_bytes':mem.get('MemAvailable'),'hottest_c':max(temps,default=None),'swap_used_bytes':mem['SwapTotal']-mem['SwapFree'],'swap_growth_bytes':swap_growth,'below_6GiB_s':low_seconds,'cpu_frequency_feedback_khz':cpu_feedback(),'reason':reason})+'\n')
     if reason:cancel(reason);return
