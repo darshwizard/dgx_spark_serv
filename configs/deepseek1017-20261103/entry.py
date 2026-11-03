@@ -96,7 +96,9 @@ def main():
  state('building_benchmark_layer')
  build=Path('/home/d_wizard/local-ai/benchmark-tools/build')
  image_id=prep['image_id'];assert re.fullmatch('sha256:[a-f0-9]{64}',image_id)
- (build/'Dockerfile.deepseek1017').write_text('FROM '+image_id+'\nCOPY wheels /opt/benchmark-wheels\nRUN pip install --no-deps /opt/benchmark-wheels/*.whl && tool-eval-bench --help && python3 -m llama_benchy --help\n')
+ image_tag=prep['image'];assert re.fullmatch('[a-z0-9._/-]+:[a-zA-Z0-9._-]+',image_tag)
+ assert subprocess.check_output(['docker','image','inspect',image_tag,'--format','{{.Id}}'],text=True).strip()==image_id
+ (build/'Dockerfile.deepseek1017').write_text('FROM '+image_tag+'\nCOPY wheels /opt/benchmark-wheels\nRUN pip install --no-deps /opt/benchmark-wheels/*.whl && tool-eval-bench --help && python3 -m llama_benchy --help\n')
  subprocess.run(['docker','build','-f',str(build/'Dockerfile.deepseek1017'),'-t','deepseek1017-benchmarks:20261103',str(build)],check=True)
  (ROOT/'image-pin.json').write_text(subprocess.check_output(['docker','image','inspect','deepseek1017-benchmarks:20261103'],text=True))
  assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==cfg['source_commit']
