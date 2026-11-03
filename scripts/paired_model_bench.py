@@ -22,7 +22,7 @@ def reset_cache():
   time.sleep(1)
  raise RuntimeError('Prefix cache remained busy after five reset attempts')
 def main():
- p=argparse.ArgumentParser();p.add_argument('--phase-mode',choices=['paired','limited-only'],default='paired');p.add_argument('--out',type=Path,required=True);p.add_argument('--tokenizer',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80','gpu1800_cpu60'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
+ p=argparse.ArgumentParser();p.add_argument('--phase-mode',choices=['paired','limited-only','normal-only'],default='paired');p.add_argument('--out',type=Path,required=True);p.add_argument('--tokenizer',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80','gpu1800_cpu60'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
  with (a.out/'events.jsonl').open('w',buffering=1) as ledger:
   def event(name,**kw):
    row={**stamp(),'event':name,**kw};ledger.write(json.dumps(row)+'\n');print(json.dumps(row),flush=True)
@@ -35,7 +35,8 @@ def main():
    (folder/(label+'-metrics-after.txt')).write_text(get('/metrics'))
    if rc:raise RuntimeError(label+' failed with exit code '+str(rc))
   (a.out/'models.json').write_text(get('/v1/models'))
-  for seq,profile in enumerate(([a.limited_profile]*2 if a.phase_mode=='limited-only' else ['normal',a.limited_profile,a.limited_profile,'normal']),1):
+  phases={'limited-only':[a.limited_profile]*2,'normal-only':['normal']*2,'paired':['normal',a.limited_profile,a.limited_profile,'normal']}[a.phase_mode]
+  for seq,profile in enumerate(phases,1):
    folder=a.out/f'phase-{seq}-{profile}';folder.mkdir()
    request={'seq':seq,'profile':profile,**stamp()};tmp=a.out/'phase-request.tmp';tmp.write_text(json.dumps(request));tmp.replace(a.out/'phase-request.json')
    reply=a.out/f'phase-{seq}-ack.json';event('waiting_for_profile',**request)

@@ -8,6 +8,7 @@ source=Path(__file__).resolve().parents[1]
 ns=runpy.run_path(str(source/'configs/cap1800-20261103/automation/run.py'))
 assert ns['run_label']('bolt','01')=='bolt-gpu1800-01'
 assert ns['run_label']('bolt','01',True)=='bolt-gpu1800limited-01'
+assert ns['run_label']('bolt','01',normal_only=True)=='bolt-gpu1800normal-01'
 with tempfile.TemporaryDirectory() as tmp:
  root=Path(tmp);calls=[];g=ns['model_run'].__globals__
  with patch.dict(g,ROOT=root,remote=lambda cmd:calls.append(cmd) or 'exists\n',switch=lambda *args:(_ for _ in ()).throw(AssertionError('Runtime must remain unchanged'))):

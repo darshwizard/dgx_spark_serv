@@ -23,12 +23,13 @@ def switch(image,label=None):
  if label:cmd.append(label)
  run(cmd)
  run(['curl','-fsS','--retry','5','--retry-connrefused','--retry-delay','1','http://192.168.1.240:8080/agents'],stdout=subprocess.DEVNULL)
-def run_label(model,attempt,limited_only=False):
+def run_label(model,attempt,limited_only=False,normal_only=False):
+ if limited_only and normal_only:raise ValueError('Conflicting phase modes')
  if model not in ['qwen27','bolt','super','flash'] or not re.fullmatch('[0-9]+',attempt):raise ValueError('Invalid model or attempt')
- return f'{model}-gpu1800{"limited" if limited_only else ""}-{attempt}'
-def model_run(model,attempt,limited_only=False):
- phases=['gpu1800_cpu60']*2 if limited_only else ['normal','gpu1800_cpu60','gpu1800_cpu60','normal']
- label=run_label(model,attempt,limited_only)
+ return f'{model}-gpu1800{"limited" if limited_only else "normal" if normal_only else ""}-{attempt}'
+def model_run(model,attempt,limited_only=False,normal_only=False):
+ phases=['normal']*2 if normal_only else ['gpu1800_cpu60']*2 if limited_only else ['normal','gpu1800_cpu60','gpu1800_cpu60','normal']
+ label=run_label(model,attempt,limited_only,normal_only)
  # Refuse stale remote output before changing clocks/runtime or submitting work.
  if remote(f'test -e ~/workspace/results/{label} && echo exists || true').strip():raise RuntimeError('Remote run output already exists: '+label)
  local=ROOT/label;local.mkdir(exist_ok=False)
@@ -38,8 +39,8 @@ def model_run(model,attempt,limited_only=False):
  try:
   limits=cpu()
   if any(v['scaling_max_freq']!=v['cpuinfo_max_freq'] for v in limits.values()):raise RuntimeError('Unexpected pre-existing CPU cap; refusing to overwrite')
-  spec={'command':['python3','/workspace/code/model_campaign_job.py','--model',model,'--run-id',label,'--limited-profile','gpu1800_cpu60','--quality-mode','normal-only','--phase-mode','limited-only' if limited_only else 'paired'],
-   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'campaign':ROOT.name,'profiles':phases,'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':1800,'cpu_ceiling_fraction':0.6,'quality_mode':'none' if limited_only else 'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
+  spec={'command':['python3','/workspace/code/model_campaign_job.py','--model',model,'--run-id',label,'--limited-profile','gpu1800_cpu60','--quality-mode','normal-only','--phase-mode','normal-only' if normal_only else 'limited-only' if limited_only else 'paired'],
+   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'campaign':ROOT.name,'profiles':phases,'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':None if normal_only else 1800,'cpu_ceiling_fraction':1.0 if normal_only else 0.6,'quality_mode':'none' if limited_only or normal_only else 'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
   (local/'spec.json').write_text(json.dumps(spec,indent=2));run(SCP+[str(local/'spec.json'),HOST+':workspace/campaign-spec.json'])
   smart_snapshot(local,'nvme-smart-before.json')
   logger=subprocess.Popen(['python3',str(REPO/'scripts/telemetry.py'),'--out',str(local/'telemetry'),'--duration','21600','--label',label],stdout=subprocess.DEVNULL,stderr=open(local/'telemetry.log','w'))

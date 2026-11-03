@@ -16,8 +16,8 @@ def process(cmd,**kw):calls.append(cmd);return 0
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),API)
 threading.Thread(target=server.serve_forever,daemon=True).start()
 try:
- for limited,quality_mode,quality_count,phase_mode in [('efficiency80','both',2,'paired'),('gpu1800_cpu80','normal-only',1,'paired'),('gpu1800_cpu60','normal-only',1,'paired'),('gpu1800_cpu60','normal-only',0,'limited-only')]:
-  phases=2 if phase_mode=='limited-only' else 4
+ for limited,quality_mode,quality_count,phase_mode in [('efficiency80','both',2,'paired'),('gpu1800_cpu80','normal-only',1,'paired'),('gpu1800_cpu60','normal-only',1,'paired'),('gpu1800_cpu60','normal-only',0,'limited-only'),('gpu1800_cpu60','normal-only',0,'normal-only')]:
+  phases=4 if phase_mode=='paired' else 2
   calls.clear();API.resets=0
   with tempfile.TemporaryDirectory() as tmp:
    out=Path(tmp)/'bench';stop=threading.Event()
@@ -34,7 +34,7 @@ try:
     main.__globals__['BASE']=f'http://127.0.0.1:{server.server_port}'
     with patch.object(sys,'argv',['paired_model_bench.py','--out',str(out),'--tokenizer','offline-model','--limited-profile',limited,'--quality-mode',quality_mode,'--phase-mode',phase_mode]),patch('subprocess.call',process),contextlib.redirect_stdout(io.StringIO()):main()
     events=[json.loads(x) for x in (out/'events.jsonl').read_text().splitlines()]
-    assert [e['profile'] for e in events if e['event']=='profile_ready']==([limited]*2 if phase_mode=='limited-only' else ['normal',limited,limited,'normal'])
+    assert [e['profile'] for e in events if e['event']=='profile_ready']==(['normal']*2 if phase_mode=='normal-only' else [limited]*2 if phase_mode=='limited-only' else ['normal',limited,limited,'normal'])
     assert sum(e['event']=='workload_start' for e in events)==phases+quality_count
     assert sum(e['event']=='workload_end' for e in events)==phases+quality_count
     assert API.resets==phases+quality_count and len(calls)==phases+quality_count
