@@ -1,7 +1,7 @@
 {
   "SERVED_MODEL_NAME": "candidate",
   "VLLM_EXL3_MODEL_DIR": "/workspace/models/DSV4.1-Flash-1017-SAGE-EXL3-1.62bpw",
-  "VLLM_EXL3_ATS_ALIAS_DIR": "/workspace/models/deepseek1017-alias",
+  "VLLM_EXL3_ATS_ALIAS_DIR": "/workspace/models/deepseek1017-alias-headroom",
   "MAXLEN": "262144",
   "KVB": "1073741824",
   "MNBT": "2112",

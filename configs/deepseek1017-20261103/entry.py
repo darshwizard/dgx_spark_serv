@@ -17,7 +17,7 @@ def collect(repo,error):
  outcome=json.loads((result/'outcome.json').read_text()) if (result/'outcome.json').exists() else None
  abort=json.loads((src/'watchdog/abort.json').read_text()) if (src/'watchdog/abort.json').exists() else None
  complete=bool(outcome and outcome['exit_code']==0 and (bench/'completed.json').exists())
- summary={'model':NAME,'complete':complete,'context_configured':262144,'actual_matrix_max_depth':8192,'server_max_num_seqs':1,'client_concurrency':[1,2,4],'job_id':(src/'job-id').read_text().strip(),'controller_error':error,'outcome':outcome,'abort':abort,'profiles':{},'matrix':[],'quality':None}
+ summary={'attempt':LABEL.rsplit('-',1)[1],'placement':'Expanded cold alias: union2347 experts,13.766GiB side file;more NVMe offload than upstream1418-expert default','model':NAME,'complete':complete,'context_configured':262144,'actual_matrix_max_depth':8192,'server_max_num_seqs':1,'client_concurrency':[1,2,4],'job_id':(src/'job-id').read_text().strip(),'controller_error':error,'outcome':outcome,'abort':abort,'profiles':{},'matrix':[],'quality':None}
  if (bench/'events.jsonl').exists():
   argv=sys.argv;sys.argv=['workload_energy.py','--events',str(bench/'events.jsonl'),'--sensors',str(src/'telemetry/sensors.jsonl'),'--out',str(src/'workload-summary.json')]
   try:runpy.run_path(str(repo/'scripts/workload_energy.py'))['main']()
@@ -53,10 +53,12 @@ def publish(repo,summary):
   if p.is_file() and p.suffix in ['.json','.jsonl','.log','.md'] and re.search(r'hf_[A-Za-z0-9]{25,}|-----BEGIN (?:OPENSSH|RSA|EC) PRIVATE KEY-----',p.read_text(errors='replace')):raise RuntimeError('Credential-like content in '+str(p))
  env=os.environ.copy();env['GIT_SSH_COMMAND']='ssh -o BatchMode=yes -o IdentityAgent=none'
  subprocess.run(['git','fetch','origin'],cwd=repo,env=env,check=True);subprocess.run(['git','merge','--ff-only','origin/main'],cwd=repo,check=True)
- dest=repo/'experiments/deepseek1017-20261103';dest.mkdir(exist_ok=False)
+ suffix='' if summary['attempt']=='01' else '-attempt'+summary['attempt']
+ artifact='deepseek1017-20261103'+suffix;report='DEEPSEEK1017-RESULTS-20261103'+suffix+'.txt'
+ dest=repo/'experiments'/artifact;dest.mkdir(exist_ok=False)
  for name in ['spec.json','job-id','status.json','summary.json','workload-summary.json','nvme-smart-before.json','nvme-smart-after.json']:
   if (src/name).exists():shutil.copy2(src/name,dest/name)
- for name in ['entry.py','run.py','recover.py','switch-runtime.py','schedule.json','download-pin.json','prepare-status.json','stage-status.json','image-pin.json']:
+ for name in ['entry.py','run.py','recover.py','switch-runtime.py','schedule.json','download-pin.json','prepare-status.json','stage-status.json','image-pin.json','cold-alias-headroom.json','cold-alias-headroom-provenance.json']:
   if (ROOT/name).exists():shutil.copy2(ROOT/name,dest/name)
  for phase in (src/'result/bench').glob('phase-*') if (src/'result/bench').exists() else []:
   if phase.is_dir():
@@ -64,9 +66,10 @@ def publish(repo,summary):
     if (phase/name).exists():shutil.copy2(phase/name,dest/(phase.name+'-'+name))
    for p in (phase/'quality').rglob('*.md') if (phase/'quality').exists() else []:shutil.copy2(p,dest/'quality.md')
  with tarfile.open(dest/'raw-run.tar.gz','w:gz') as tf:tf.add(src,arcname=src.name)
- (repo/'docs/DEEPSEEK1017-RESULTS-20261103.txt').write_text('DeepSeek V4.1 Flash1017 SAGE EXL3 1.62bpw,256K configured context\nNormal vsGPU1800MHz/CPU60,one normal-clock quality trial,ABBA throughput,20CPUquota. Default90C/2GiB hard/6GiB30s guards;stock fans. Server max-num-seqs1 per verified recipe: clients c2/c4 queue,not parallel engine execution. 256K configured is NOT a256K retrieval-quality result. Exact upstream command retained except paths,served-name and MAXLEN262144;serial compile workers1. No host VM/sysctl/swap/cache-drop changes. Runtime/clocks restored before publication. Read/write counters host-wide,GPUjoules not wallenergy.\n'+json.dumps(summary,indent=2)+'\n')
+ (repo/'docs'/report).write_text('DeepSeek V4.1 Flash1017 SAGE EXL3 1.62bpw,256K configured context\nNormal vsGPU1800MHz/CPU60,one normal-clock quality trial,ABBA throughput,20CPUquota. Default90C/2GiB hard/6GiB30s guards;stock fans. Server max-num-seqs1 per verified recipe: clients c2/c4 queue,not parallel engine execution. 256K configured is NOT a256K retrieval-quality result. Placement adaptation:2347 cold experts (union of upstream current1418 and initial1380 routing-informed selections),13.766GiB side file versus8.595GiB upstream. More NVMe offload to preserve6GiB sustained free RAM;weights/precision unchanged. This is not the upstream default placement/performance recipe. Exact upstream command otherwise retained except paths,served-name and MAXLEN262144;serial compile workers1. No host VM/sysctl/swap/cache-drop changes. Runtime/clocks restored before publication. Read/write counters host-wide,GPUjoules not wallenergy.\n'+json.dumps(summary,indent=2)+'\n')
  p=repo/'README.md';text=p.read_text()
  if summary['complete']:
+  text=re.sub(r'^\*\*DeepSeek1017 attempt[^\n]*\n\n','',text,flags=re.M)
   q=summary['quality'];label='[DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5](https://huggingface.co/vcruz305/DSV4.1-Flash-1017-SAGE-EXL3-1.62bpw)'
   marker='\nQuality differences in a single trial';assert marker in text
   text=text.replace(marker,f"| {label} | {q['score']} ({q['points']}/208) | {q['median_turn_s']:.1f}s |\n"+marker,1)
@@ -74,19 +77,20 @@ def publish(repo,summary):
   for prof,title in [('normal','Normal‡'),('gpu1800_cpu60','60% GPU limit — 1,800 MHz; CPU 60%‡')]:
    c1=next(x for x in summary['matrix'] if x['profile']==prof and x['depth']==0 and x['concurrency']==1);c4=next(x for x in summary['matrix'] if x['profile']==prof and x['depth']==0 and x['concurrency']==4);s=summary['profiles'][prof]
    rows+=f"| {NAME} | {title} | {c1['decode_mean']:.1f} | {c1['prefill_mean']:,.0f} | {c4['decode_mean']:.1f} | {s['seconds_mean']:.1f} | {s['gpu_kj_mean']:.2f} | {s['peak_acpi_c']:.1f} |\n"
-  marker='\n† **Bolt';assert marker in text;text=text.replace(marker,rows+'\n‡ DeepSeek uses **256K configured context** and **one active engine sequence**; c2/c4 clients queue. Its measured matrix reaches8K depth, not256K retrieval. [DeepSeek report](docs/DEEPSEEK1017-RESULTS-20261103.txt).\n'+marker,1)
+  marker='\n† **Bolt';assert marker in text;text=text.replace(marker,rows+'\n‡ DeepSeek uses **256K configured context** and **one active engine sequence**; c2/c4 clients queue. Placement uses2347 cold experts to retain our6GiB RAM guard;additional NVMe offload differs from the upstream default. Its measured matrix reaches8K depth, not256K retrieval. [DeepSeek report](docs/'+report+').\n'+marker,1)
   text=text.replace('DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw at\n**256K configured context** remains a separate planned test, not measured here.','DeepSeek V4.1 Flash1017 at **256K configured context** is included in the tables; its different serving configuration is noted above.')
   text=text.replace('All use 20 CPU quota and 32K configured context.','All use 20 CPU quota; context is32K except DeepSeek’s256K.')
  else:
-  note='**DeepSeek1017 attempt:** stopped before a complete comparison; see the [failure report](docs/DEEPSEEK1017-RESULTS-20261103.txt) and [raw evidence](experiments/deepseek1017-20261103/). No complete efficiency result is claimed.\n\n'
+  note=f'**DeepSeek1017 attempt{summary["attempt"]}:** stopped before a complete comparison; see the [failure report](docs/{report}) and [raw evidence](experiments/{artifact}/). No complete efficiency result is claimed.\n\n'
   text=text.replace('## Earlier results retained for reference',note+'## Earlier results retained for reference',1)
  p.write_text(text)
  (dest/'manifest.json').write_text(json.dumps({str(p.relative_to(dest)):hashlib.sha256(p.read_bytes()).hexdigest() for p in dest.rglob('*') if p.is_file()},indent=2)+'\n')
- subprocess.run(['git','diff','--check'],cwd=repo,check=True);subprocess.run(['git','add','README.md','docs/DEEPSEEK1017-RESULTS-20261103.txt','experiments/deepseek1017-20261103'],cwd=repo,check=True)
+ subprocess.run(['git','diff','--check'],cwd=repo,check=True);subprocess.run(['git','add','README.md','docs/'+report,'experiments/'+artifact],cwd=repo,check=True)
  subprocess.run(['git','-c','user.name=Codex','-c','user.email=codex@openai.com','commit','-m','Publish DeepSeek1017 guarded256K experiment evidence'],cwd=repo,check=True);subprocess.run(['git','push','origin','HEAD:main'],cwd=repo,env=env,check=True)
 
 def main():
- cfg=json.loads((ROOT/'schedule.json').read_text());repo=Path(cfg['repo']);deadline=time.monotonic()+43200;state('waiting_for_preparation')
+ global LABEL
+ cfg=json.loads((ROOT/'schedule.json').read_text());attempt=str(cfg.get('attempt','01'));assert attempt.isdigit();LABEL='deepseek1017-gpu1800-'+attempt;repo=Path(cfg['repo']);deadline=time.monotonic()+43200;state('waiting_for_preparation')
  while True:
   prep=json.loads((ROOT/'prepare-status.json').read_text());stage=json.loads((ROOT/'stage-status.json').read_text())
   if prep['state']=='failed' or stage['state']=='failed':raise RuntimeError('Preparation/staging failed; inspect logs before submitting GPU work')
@@ -110,7 +114,7 @@ def main():
  for n in ['model_campaign_job.py','paired_model_bench.py']:subprocess.run(control.SCP+[str(repo/'scripts'/n),control.HOST+':workspace/code/'],check=True)
  for n in ['serve_inner.sh','serve-env.json']:subprocess.run(control.SCP+[str(repo/'configs/deepseek1017-20261103'/n),control.HOST+':workspace/code/deepseek1017/'],check=True)
  state('running');(ROOT/'runtime-touched').write_text('Owner-authorized DeepSeek1017 comparison\n');error=None
- try:control.model_run('deepseek1017','01')
+ try:control.model_run('deepseek1017',attempt)
  except Exception as e:error=repr(e)
  finally:load('recover').cleanup()
  summary=collect(repo,error);state('publishing',complete=summary['complete']);publish(repo,summary);state('complete' if summary['complete'] else 'stopped',summary=summary)
