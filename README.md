@@ -60,7 +60,7 @@ tokens before answer generation. The speed columns below use depth 0.
 | DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5 | Normal‡ | 18.4 | 527 | 12.2 | 1394.1 | 66.20 | 81.1 |
 | DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5 | 60% GPU limit — 1,800 MHz; CPU 60%‡ | 14.1 | 460 | 10.4 | 1651.2 | 37.44 | 58.5 |
 
-‡ DeepSeek uses **256K configured context** and **one active engine sequence**; c2/c4 clients queue. Placement uses2347 cold experts to retain our6GiB RAM guard;additional NVMe offload differs from the upstream default. Its measured matrix reaches8K depth, not256K retrieval. [DeepSeek report](docs/DEEPSEEK1017-RESULTS-20261103-attempt03.txt).
+‡ DeepSeek uses **256K configured context** and **one active engine sequence**; c2/c4 clients queue. Placement uses 2,347 cold experts to retain our 6 GiB RAM guard; additional NVMe offload differs from the upstream default. Its measured matrix reaches 8K depth; 256K retrieval remains untested. [DeepSeek report](docs/DEEPSEEK1017-RESULTS-20261103-attempt03.txt).
 
 † **Bolt used separate two-pass runs**, rather than the resident paired protocol.
 The normal run used a **95°C stop** and completed; its matrix peak was **91.0°C**
@@ -72,9 +72,9 @@ estimate. [Normal results and fan telemetry](docs/BOLT95-REPEAT-20261103.txt) ·
 
 Seeded llama-benchy 0.4.1.dev1: pp2048, exactly 128 generated tokens in matrix
 requests, depth 0/4096/8192, concurrency 1/2/4, three measured runs plus warmup
-per shape. Qwen 27B, Super VL and Flash Next use two passes per profile,
+per shape. Qwen 27B, Super VL, Flash Next and DeepSeek use two passes per profile,
 **Normal → 60% GPU limit → 60% GPU limit → Normal**, keeping one server loaded.
-All use 20 CPU quota; context is32K except DeepSeek’s256K. Prefix cache resets verified
+All use 20 CPU quota; context is 32K except DeepSeek’s 256K. Prefix cache resets verified
 before suites; cache/prompt details,
 per-pass values and descriptive SD are in the report and raw data.
 
@@ -95,6 +95,8 @@ I/O and SMART snapshots are in this campaign’s raw records.
 - **Qwen3.8-27B NVFP4 + DFlash2:** GPU-reported matrix energy changed **-43.7%**, and elapsed time **+6.9%**, under the 60% GPU limit / CPU 60% profile.
 - **Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr:** GPU-reported matrix energy changed **-44.3%**, and elapsed time **+5.5%**, under the 60% GPU limit / CPU 60% profile.
 - **Qwen3.8-Flash-Next FP4-Local + MTP4:** GPU-reported matrix energy changed **-43.8%**, and elapsed time **+6.9%**, under the 60% GPU limit / CPU 60% profile.
+
+- **DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5:** GPU-reported matrix energy changed **-43.4%**, and elapsed time **+18.4%**. Peaks were **81.1°C normal / 58.5°C limited**. This adapted placement averaged **307 / 310 GB host NVMe reads** and **5.35 / 5.59 GB writes** per normal / limited matrix. The one-sequence serving configuration queues simultaneous agents and is substantially slower than the other tested setups.
 
 Only two passes per profile on one host: these are measured observations, not
 confidence intervals. Fans remained automatic; starting temperatures, fan speeds
