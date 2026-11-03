@@ -1,0 +1,96 @@
+{
+  "gpu_ceiling_mhz": null,
+  "cpu_ceiling_fraction": 1.0,
+  "seq": 1,
+  "profile": "normal",
+  "ready": true,
+  "utc": "2026-11-03T17:59:26.827125+00:00",
+  "monotonic_s": 594474.936336465,
+  "hottest_c": 45.0,
+  "available_gib": 8.616424560546875,
+  "cooldown_s": 30.05548626591917,
+  "temperature_target_met": true,
+  "cpu": {
+    "policy11": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy8": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy6": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy18": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy4": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy16": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy2": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy14": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy0": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy12": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy9": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy10": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy7": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy19": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy5": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy17": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy3": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy15": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy1": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy13": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    }
+  },
+  "gpu_snapshot": "2398 MHz, 3003 MHz, 43, 9.95 W"
+}

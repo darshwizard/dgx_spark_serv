@@ -16,6 +16,7 @@ findings. These tests use text and mocked tools, not real-world tool actions.
 | [Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB) | 77 (161/208) | 1.6s |
 | [Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4) | 80 (167/208) | 1.9s |
 | [Qwen3.8-Flash-Next FP4-Local + MTP4](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-FP4-Local) | 89 (185/208) | 1.9s |
+| [DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5](https://huggingface.co/vcruz305/DSV4.1-Flash-1017-SAGE-EXL3-1.62bpw) | 84 (174/208) | 4.5s |
 
 Quality differences in a single trial are not an established universal ranking.
 Model safety findings are in the full quality reports; they are not attributed
@@ -56,6 +57,10 @@ tokens before answer generation. The speed columns below use depth 0.
 | Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | 60% GPU limit — 1,800 MHz; CPU 60% | 30.9 | 2,037 | 71.5 | 460.6 | 10.88 | 62.6 |
 | Qwen3.8-Flash-Next FP4-Local + MTP4 | Normal | 38.8 | 1,806 | 59.7 | 459.2 | 18.11 | 78.2 |
 | Qwen3.8-Flash-Next FP4-Local + MTP4 | 60% GPU limit — 1,800 MHz; CPU 60% | 36.7 | 1,654 | 55.9 | 491.0 | 10.18 | 61.9 |
+| DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5 | Normal‡ | 18.4 | 527 | 12.2 | 1394.1 | 66.20 | 81.1 |
+| DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5 | 60% GPU limit — 1,800 MHz; CPU 60%‡ | 14.1 | 460 | 10.4 | 1651.2 | 37.44 | 58.5 |
+
+‡ DeepSeek uses **256K configured context** and **one active engine sequence**; c2/c4 clients queue. Placement uses2347 cold experts to retain our6GiB RAM guard;additional NVMe offload differs from the upstream default. Its measured matrix reaches8K depth, not256K retrieval. [DeepSeek report](docs/DEEPSEEK1017-RESULTS-20261103-attempt03.txt).
 
 † **Bolt used separate two-pass runs**, rather than the resident paired protocol.
 The normal run used a **95°C stop** and completed; its matrix peak was **91.0°C**
@@ -69,7 +74,7 @@ Seeded llama-benchy 0.4.1.dev1: pp2048, exactly 128 generated tokens in matrix
 requests, depth 0/4096/8192, concurrency 1/2/4, three measured runs plus warmup
 per shape. Qwen 27B, Super VL and Flash Next use two passes per profile,
 **Normal → 60% GPU limit → 60% GPU limit → Normal**, keeping one server loaded.
-All use 20 CPU quota and 32K configured context. Prefix cache resets verified
+All use 20 CPU quota; context is32K except DeepSeek’s256K. Prefix cache resets verified
 before suites; cache/prompt details,
 per-pass values and descriptive SD are in the report and raw data.
 
@@ -107,12 +112,7 @@ archived. No firmware, EC or fan-control changes were made for this experiment.
 [Fan/cooling notes](hardware/FAN-OBSERVATIONS-20261102.txt).
 
 Models were unloaded and default clock limits and the original queue runtime
-restored before publication. DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw at
-**256K configured context** remains a separate planned test, not measured here.
-
-**DeepSeek1017 attempt:** stopped before a complete comparison; see the [failure report](docs/DEEPSEEK1017-RESULTS-20261103.txt) and [raw evidence](experiments/deepseek1017-20261103/). No complete efficiency result is claimed.
-
-**DeepSeek1017 attempt02:** stopped before a complete comparison; see the [failure report](docs/DEEPSEEK1017-RESULTS-20261103-attempt02.txt) and [raw evidence](experiments/deepseek1017-20261103-attempt02/). No complete efficiency result is claimed.
+restored before publication. DeepSeek V4.1 Flash1017 at **256K configured context** is included in the tables; its different serving configuration is noted above.
 
 ## Earlier results retained for reference
 

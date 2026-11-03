@@ -1,0 +1,11 @@
+{
+  "purpose": "Increase free RAM to satisfy existing6GiB sustained headroom guard;no guard changes",
+  "selection": "Union of upstream current and initial measured routing-informed expert sets",
+  "upstream_current": "63220db0a7cc62dd8b783f71c9cf28f909c9b09b",
+  "historical_commit": "a9bf5934e4bc41870187eac92b97379da0e6f55b",
+  "current_experts": 1418,
+  "historical_experts": 1380,
+  "union_experts": 2347,
+  "weights_or_precision_changed": false,
+  "performance_caveat": "More weights read via NVMe;not the upstream default placement/performance recipe"
+}

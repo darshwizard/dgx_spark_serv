@@ -1,0 +1,172 @@
+{
+  "attempt": "03",
+  "placement": "Expanded cold alias: union2347 experts,13.766GiB side file;more NVMe offload than upstream1418-expert default",
+  "model": "DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5",
+  "complete": true,
+  "context_configured": 262144,
+  "actual_matrix_max_depth": 8192,
+  "server_max_num_seqs": 1,
+  "client_concurrency": [
+    1,
+    2,
+    4
+  ],
+  "job_id": "0baa5e244e0c4a338c917130f933311f",
+  "controller_error": null,
+  "outcome": {
+    "exit_code": 0,
+    "failures": [],
+    "utc": "2026-11-03T20:13:56.543350+00:00",
+    "monotonic_s": 602544.652542375
+  },
+  "abort": null,
+  "profiles": {
+    "normal": {
+      "seconds_mean": 1394.0560368814622,
+      "gpu_kj_mean": 66.20400599376066,
+      "peak_acpi_c": 81.1,
+      "nvme_read_gb_mean": 307.1356416,
+      "nvme_write_gb_mean": 5.34852608
+    },
+    "gpu1800_cpu60": {
+      "seconds_mean": 1651.1807544475305,
+      "gpu_kj_mean": 37.44403842979499,
+      "peak_acpi_c": 58.5,
+      "nvme_read_gb_mean": 309.627314176,
+      "nvme_write_gb_mean": 5.586120704
+    }
+  },
+  "matrix": [
+    {
+      "profile": "normal",
+      "depth": 0,
+      "concurrency": 1,
+      "decode_mean": 18.360062342198756,
+      "prefill_mean": 526.767591379837
+    },
+    {
+      "profile": "normal",
+      "depth": 0,
+      "concurrency": 2,
+      "decode_mean": 13.070641147670422,
+      "prefill_mean": 256.64056348173386
+    },
+    {
+      "profile": "normal",
+      "depth": 0,
+      "concurrency": 4,
+      "decode_mean": 12.24279932775684,
+      "prefill_mean": 214.82183172641373
+    },
+    {
+      "profile": "normal",
+      "depth": 4096,
+      "concurrency": 1,
+      "decode_mean": 14.797045302472922,
+      "prefill_mean": 775.3935677779846
+    },
+    {
+      "profile": "normal",
+      "depth": 4096,
+      "concurrency": 2,
+      "decode_mean": 9.892884149905042,
+      "prefill_mean": 488.6664211198845
+    },
+    {
+      "profile": "normal",
+      "depth": 4096,
+      "concurrency": 4,
+      "decode_mean": 8.67991857643141,
+      "prefill_mean": 416.44028830547006
+    },
+    {
+      "profile": "normal",
+      "depth": 8192,
+      "concurrency": 1,
+      "decode_mean": 16.17314956206817,
+      "prefill_mean": 824.6146508898157
+    },
+    {
+      "profile": "normal",
+      "depth": 8192,
+      "concurrency": 2,
+      "decode_mean": 8.641797303055998,
+      "prefill_mean": 613.8707051165102
+    },
+    {
+      "profile": "normal",
+      "depth": 8192,
+      "concurrency": 4,
+      "decode_mean": 7.177749472912004,
+      "prefill_mean": 544.8194206982042
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 0,
+      "concurrency": 1,
+      "decode_mean": 14.140600628802504,
+      "prefill_mean": 460.17669291527085
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 0,
+      "concurrency": 2,
+      "decode_mean": 10.92157964683695,
+      "prefill_mean": 206.45794341878536
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 0,
+      "concurrency": 4,
+      "decode_mean": 10.410252368109365,
+      "prefill_mean": 181.78554168038625
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 4096,
+      "concurrency": 1,
+      "decode_mean": 12.425990375753285,
+      "prefill_mean": 646.7531045581138
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 4096,
+      "concurrency": 2,
+      "decode_mean": 8.040665524249123,
+      "prefill_mean": 404.8326189619127
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 4096,
+      "concurrency": 4,
+      "decode_mean": 7.341451082782992,
+      "prefill_mean": 353.37215171353154
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 8192,
+      "concurrency": 1,
+      "decode_mean": 14.51952037209016,
+      "prefill_mean": 719.1006536532263
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 8192,
+      "concurrency": 2,
+      "decode_mean": 7.237703067524141,
+      "prefill_mean": 516.0503503588942
+    },
+    {
+      "profile": "gpu1800_cpu60",
+      "depth": 8192,
+      "concurrency": 4,
+      "decode_mean": 5.998192523555928,
+      "prefill_mean": 449.23677318613414
+    }
+  ],
+  "quality": {
+    "score": 84,
+    "points": 174,
+    "median_turn_s": 4.5
+  }
+}
