@@ -1,0 +1,46 @@
+{
+  "start_utc": "2026-11-03T05:28:14.294615+00:00",
+  "start_local": "Immediate start authorized by owner",
+  "repo": "/home/d_wizard/local-ai/cap1800-20261103/repo",
+  "source_commit": "6f2d68100d37b824f4c25f881b98afaf248dc83c",
+  "models": [
+    "qwen27",
+    "bolt",
+    "super",
+    "flash"
+  ],
+  "gpu_max_mhz": 1800,
+  "cpu_max_fraction": 0.6,
+  "quality_mode": "normal-only",
+  "stock_fans": true,
+  "images": {
+    "qwen-benchmarks:20261102": "sha256:accfefdbcc2891d76e4d25a70f73218358af41fcc798052838c034448f94eb5a",
+    "bolt-benchmarks:20261102": "sha256:0a40f298d1c54547bccb42863c92e81bec6f897b967f0a29ea5743e3f371df81",
+    "super-benchmarks:20261102": "sha256:b523c5e541c32fa5503afe4375d174460f0a96ca75347aad7836d5ab2007d49a",
+    "flash-benchmarks:20261102": "sha256:cbedcf30b3d09a910ca78c25afb2d82fe3850b5c6c71eca54332edd25fab0336"
+  },
+  "host_original_sha256": {
+    "/opt/compute-host/queue.py": "8b169b5a7b9b1b79665e0dddec0d8ab4d88599271ebe6ed69b377abfc67f44b1",
+    "/opt/compute-host/web.py": "617ed37907b416e1310ff1559038e5217a45a34575758614b317a5aeb72481b5",
+    "/opt/compute-host/AGENTS.md": "91130d021f835c04739c6519c4876ab36a0dc0cc54c9df53d00ed19a091820f6",
+    "/home/d_wizard/AGENTS.md": "130a971ef5802e64198817980ed2223f384c1167238ed47c88cb42353a92de80"
+  },
+  "controller_sha256": {
+    "run.py": "9ffc7e7409beb84d3af947c76c7d96e17ce175117060f11eb089e0aa2602fcf7",
+    "switch-runtime.py": "2d13c1c8f45854323d7b7a5a76d44ebecb76df875a5710a25445aa43b7565377",
+    "publish.py": "9c1ce4481fc0679c0482e454bd596b3ef7343d5cf2cf0005335875734e64392a",
+    "entry.py": "25631189aaa8ee4ca27fa4ed9a36520c6b4db49d076c54ad3dc24740793219a4",
+    "recover.py": "1859549b65fb600eed34f699df4198ecc9733fb9f24ab81dcca40fa8086ae91e",
+    "resume.py": "9705d414739e1557e543ecd219b30927eb025f28ad81b2961fc3eaae7c108286"
+  },
+  "superseded_start_utc": "2026-11-03T07:00:00+00:00",
+  "limited_profile": "gpu1800_cpu60",
+  "systemd_service": "spark-bench-1800-cpu60-continue-20261103.service",
+  "thermal_stopped_models": [
+    "bolt"
+  ],
+  "remaining_models": [
+    "super",
+    "flash"
+  ]
+}

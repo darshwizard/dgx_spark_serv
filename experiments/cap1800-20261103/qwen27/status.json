@@ -1,0 +1,9 @@
+{
+  "id": "f3824deb23204055a9a3b7450e883bba",
+  "uid": 1002,
+  "command": "[\"python3\", \"/workspace/code/model_campaign_job.py\", \"--model\", \"qwen27\", \"--run-id\", \"qwen27-gpu1800-01\", \"--limited-profile\", \"gpu1800_cpu60\", \"--quality-mode\", \"normal-only\"]",
+  "metadata": "{\"commit\": \"f95f59c6d39527fdc13bbd89a07e9d7f3ad08242\", \"dataset\": \"tool-eval-104-and-seeded-llama-benchy-v2\", \"parameters\": {\"model\": \"qwen27\", \"campaign\": \"cap1800-20261103\", \"profiles\": [\"normal\", \"gpu1800_cpu60\", \"gpu1800_cpu60\", \"normal\"], \"exact_output_tokens\": 128, \"numpy_seed\": 42, \"request_seed\": 42, \"context\": 32768, \"cpus\": 20, \"memory_ceiling_gib\": 118, \"gpu_ceiling_mhz\": 1800, \"cpu_ceiling_fraction\": 0.6, \"quality_mode\": \"normal-only\", \"source_hashes\": {\"model_campaign_job.py\": \"113b72530a83c98705a90ce2a19fdc7fa0ba92b7a8988acc1a18fa4b22ceea53\", \"paired_model_bench.py\": \"bd6eabc8c60d637ee3661e4c5af969f270c04799b0b2298c44bdbdb09bdb1f23\", \"campaign_guard.py\": \"f9c85f9c553cc18072842bdb95c5a62f76d0304a785094d421f1eddf16ff7edf\", \"clock_profile.py\": \"92fd3f900cae6f0e85dd1fc1a90157eb960f92f87e88146f556b3af2d28421ce\"}}}",
+  "state": "completed",
+  "exit_code": 0,
+  "created": 1793683698.036107
+}

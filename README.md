@@ -1,86 +1,112 @@
 # DGX Spark (GB10) — serving & benchmark findings
 
-One NVIDIA DGX Spark, GB10, 121.7 GiB usable unified RAM.
+One NVIDIA DGX Spark, GB10, 121.7 GiB usable unified RAM. Latest campaign update:
+**November 3, 2026 — normal versus 60% GPU clock limit / CPU 60%.**
 
-**Run update, November 3:** Qwen 27B completed the new paired comparison.
-Nemotron Bolt reached the 90 C thermal stop during normal-clock throughput;
-its incomplete run is preserved and has no paired efficiency result. Super VL
-and Flash Next are continuing separately. The quality table below still shows
-the earlier campaign until the new results and raw records are collected.
+**Thermal-stopped comparison — Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr:** the normal-clock run reached the 90 C safety stop (guard peak 90.1 C). Its quality trial completed, but no paired speed/energy result is available. The incomplete run and guard logs are archived; the temperature limit was not raised.
 
-**November 3, 2026: new experiments starting now.** Qwen 27B, Nemotron Bolt,
-Nemotron Super VL and Qwen Flash Next will be compared at normal settings and
-**GPU ceiling 1,800 MHz + CPU 60%**. New measurements are pending; the completed
-normal-clock quality results below are retained until replacement results pass
-validation. Earlier limited-profile findings are preserved in the deeper reports.
+## Model quality — measured at normal clocks
 
-| Requested CPU frequency ceiling | Normal / default | CPU 60% |
+Quality measures task behavior, separately from the clock/energy comparison.
+tool-eval-bench 3.0.1.dev9, hard mode, 104 scenarios, seed 42, thinking off;
+one quality trial per model. Full reports retain task failures and safety
+findings. These tests use text and mocked tools, not real-world tool actions.
+
+| Exact model / setup | Quality /100 (points) | Median turn |
+|---|---:|---:|
+| [Qwen3.8-27B NVFP4 + DFlash2](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4) | 88 (184/208) | 2.2s |
+| [Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB) | 77 (161/208) | 1.6s |
+| [Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4) | 80 (167/208) | 1.9s |
+| [Qwen3.8-Flash-Next FP4-Local + MTP4](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-FP4-Local) | 89 (185/208) | 1.9s |
+
+Quality differences in a single trial are not an established universal ranking.
+Model safety findings are in the full quality reports; they are not attributed
+to the clock limit.
+
+## Paired speed, energy and heat — completed comparisons
+
+**Normal:** default CPU/GPU clock limits. **60% GPU clock limit:** GPU ceiling
+**1,800 MHz** (about 60% of the reported 3,003 MHz maximum), with CPU frequency
+ceilings **60%** of their hardware maxima. CPU affinity stays unchanged. This is
+a combined CPU/GPU clock profile, not a 60%-power setting or a GPU-only causal test.
+
+**CPU speeds behind the profile labels** (requested frequency ceilings):
+
+| CPU cores | Normal / default | CPU 60% profile |
 |---|---:|---:|
 | 10 Cortex-X925 performance cores | 3,900 MHz | 2,340 MHz |
 | 10 Cortex-A725 efficiency cores | 2,808 MHz | 1,684.8 MHz |
 
-Normal permits default hardware-managed clocks, not fixed sustained speeds.
-The GPU limit is about 60% of the reported 3,003 MHz maximum, and about 75% of
-our previously observed ~2,400 MHz normal clock. This is a combined frequency
-profile, not a 60% watt limit. CPU settings are requested ceilings; hardware
-feedback is logged to check enforcement. CPU affinity and automatic fans stay
-unchanged. The models remain loaded across normal/limited profile transitions.
+Default permits operation up to these reported hardware maxima; it does not
+mean a fixed clock at all times. Driver requests are distinct from independently
+verified hardware clocks; the watchdog records hardware feedback for inspection.
+The CPU 60% ceilings are 2,340 MHz for performance cores and 1,684.8 MHz for
+efficiency cores. Older limited-profile results remain in the archived reports.
 
-## Headline quality — current 104-scenario tool suite
+`c` means concurrent requests. **c1 decode** is output tokens/second for one
+active request. **c4 decode total** is the combined rate for four simultaneous
+requests (60 total is about 15 each if balanced). **Prefill** processes input
+tokens before answer generation. The speed columns below use depth 0.
 
-Quality measures model behavior on the tool suite, using default clock limits.
-Power-profile comparisons are presented separately below; differences between
-individual quality trials do not establish an effect caused by clock limits.
+| Model / setup | Profile | c1 decode tok/s | c1 prefill tok/s | c4 decode total tok/s | Full matrix seconds | GPU-reported kJ | Matrix peak ACPI °C |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-27B NVFP4 + DFlash2 | Normal | 26.7 | 2,333 | 71.2 | 417.6 | 22.47 | 84.5 |
+| Qwen3.8-27B NVFP4 + DFlash2 | 60% GPU limit — 1,800 MHz; CPU 60% | 25.9 | 2,104 | 72.0 | 446.4 | 12.65 | 63.6 |
+| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | Normal | 32.0 | 2,201 | 72.6 | 436.6 | 19.53 | 81.0 |
+| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | 60% GPU limit — 1,800 MHz; CPU 60% | 30.9 | 2,037 | 71.5 | 460.6 | 10.88 | 62.6 |
+| Qwen3.8-Flash-Next FP4-Local + MTP4 | Normal | 38.8 | 1,806 | 59.7 | 459.2 | 18.11 | 78.2 |
+| Qwen3.8-Flash-Next FP4-Local + MTP4 | 60% GPU limit — 1,800 MHz; CPU 60% | 36.7 | 1,654 | 55.9 | 491.0 | 10.18 | 61.9 |
 
-| Exact checkpoint / serving setup | Quality /100 (points) | Median turn |
-|---|---:|---:|
-| **[Qwen3.8-Flash-Next-FP4-Local](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-FP4-Local)** + MTP4 | **89** (186/208) | 1.9s |
-| **[Qwen3.8-27B-NVFP4](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4)** + [DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) | **88** (184/208) | 2.1s |
-| **[NVIDIA Nemotron 3.5 Super VL 120B-A12B NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4)** + [LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr) | 79 (164/208) | 1.9s |
-| **[NVIDIA Nemotron 3.5 Bolt 74B-A9B 24GB](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB)** + [LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-LiLiCorr) | 76 (159/208) | **1.6s** |
+Seeded llama-benchy 0.4.1.dev1: pp2048, exactly 128 generated tokens in matrix
+requests, depth 0/4096/8192, concurrency 1/2/4, three measured runs plus warmup
+per shape. Two passes per profile, **Normal → 60% GPU limit → 60% GPU limit →
+Normal**, keeping one server loaded. All use 20 CPU quota and 32K configured
+context. Prefix cache resets verified before suites; cache/prompt details,
+per-pass values and descriptive SD are in the report and raw data.
 
-Same tool-eval-bench **3.0.1.dev9**, hard mode, seed 42, thinking off. One normal-clock
-quality trial per model; a one-point lead is not an established ranking. Safety
-findings belong to the model reports, alongside task failures. These are text/tool
-tests with mocked document tools; vision and full-window retrieval are unvalidated.
+Energy/time cover the full matrix including warmups and harness probes, whose
+small generation overhead can vary. They exclude clock transitions/cooldown.
+GPU-reported energy is not whole-machine energy; CPU, NVMe, fans and PSU losses
+are not fully accounted for. Different tokenizers also imply different text at
+equal token counts. No wall meter or ambient-temperature sensor was available.
 
-**Which Qwen?** The baseline is a dense **27B** model. Flash Next has a **125B
-main model / 6B active per token**, plus **51B n-gram embedding parameters and a
-4B MTP head**; its checkpoint is about 96 GiB on disk. Its tables are disk-backed
-in this recipe. Bolt's 24GB checkpoint mixes IQ2_XXS experts, NVFP4 Mamba layers,
-and Q8_0 embedding/output weights. Draft heads assist generation; they are not
-separate quality-test candidates.
+## Findings from this campaign
 
-## Current experiment and evidence
+**Disk-backed n-gram/PLE tables:** Flash Next can continue reading NVMe during
+inference. The earlier campaign averaged 61.2 GB host reads and 0.54 GB writes
+per ~7.6-minute matrix, not per answer. These are whole-host counters; reads
+do not consume the SSD write-endurance allowance byte-for-byte. New per-profile
+I/O and SMART snapshots are in this campaign’s raw records.
 
-Each model gets one normal-clock 104-scenario quality trial and four resident,
-seeded, exact-length throughput matrices: normal, limited, limited, normal.
-Record GPU-reported energy, CPU/GPU temperatures, both fan speeds, memory,
-NVMe activity and before/after SSD SMART counters. Stop at the hottest ACPI
-zone reaching 90 C or the established memory-pressure thresholds.
+- **Qwen3.8-27B NVFP4 + DFlash2:** GPU-reported matrix energy changed **-43.7%**, and elapsed time **+6.9%**, under the 60% GPU limit / CPU 60% profile.
+- **Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr:** GPU-reported matrix energy changed **-44.3%**, and elapsed time **+5.5%**, under the 60% GPU limit / CPU 60% profile.
+- **Qwen3.8-Flash-Next FP4-Local + MTP4:** GPU-reported matrix energy changed **-43.8%**, and elapsed time **+6.9%**, under the 60% GPU limit / CPU 60% profile.
 
-**Disk-backed n-gram/PLE tables:** Flash Next continues reading NVMe during
-inference. Earlier measurements averaged **61.2 GB host reads and 0.54 GB writes
-per ~7.6-minute matrix**, not per answer. These are whole-host counters, not
-file-specific attribution; reads do not consume the SSD write-endurance allowance
-byte-for-byte. Record storage activity alongside latency, temperature and energy.
+Only two passes per profile on one host: these are measured observations, not
+confidence intervals. Fans remained automatic; starting temperatures, fan speeds
+and elapsed-run history matter. Check the fan/temperature timelines before
+attributing a temperature difference to a particular component's power.
 
-New speed/energy headline tables will appear only after all four comparisons
-and cleanup validate. No new results are claimed yet. GPU-reported energy is
-not whole-machine energy. Quality warnings remain model-behavior findings in
-full reports, separate from the frequency comparison.
+Flash Next retains the validated `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`
+startup mitigation. Previous memory-pressure stops and older results remain
+archived. No firmware, EC or fan-control changes were made for this experiment.
 
-[Current protocol](docs/CAP1800-PLAN-20261103.txt) ·
-[Earlier Super/Flash report](docs/LARGE-MODEL-RESULTS-20261103.txt) ·
-[Earlier Qwen/Bolt report](docs/QWEN-BOLT-COMPARISON-20261102.txt) ·
+**Full evidence:** [Campaign report](docs/CAP1800-RESULTS-20261103.txt) ·
+[All matrix shapes/SD](experiments/cap1800-20261103/throughput-matrix.csv) ·
+[Exact commands, quality reports and raw data](experiments/cap1800-20261103/) ·
 [Serving recipes](docs/LARGE-MODEL-RECIPES-20261103.txt) ·
-[Fan and temperature notes](hardware/FAN-OBSERVATIONS-20261102.txt).
+[Fan/cooling notes](hardware/FAN-OBSERVATIONS-20261102.txt).
 
-**Following this comparison:** long-context usability on real documents/code;
-response latency under mixed prefill/decode load; sustained thermals and useful
-work per joule. Speculation and KV precision are model-specific investigations,
-not standard suite sweeps. No alternative Qwen recipe or cold/warm multi-agent
-session study. DeepSeek V4.1 Flash 1017 at 256K context remains last, untested.
+Models were unloaded and default clock limits and the original queue runtime
+restored before publication. DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw at
+**256K configured context** remains a separate planned test, not measured here.
+
+## Earlier results retained for reference
+
+[Earlier Super / Flash 2,402 MHz-limit campaign](docs/LARGE-MODEL-RESULTS-20261103.txt)
+· [Earlier Qwen 27B / Bolt comparison](docs/QWEN-BOLT-COMPARISON-20261102.txt).
+Those measurements used different clock settings and/or benchmark protocols;
+the raw records are preserved rather than overwritten.
 
 ---
 

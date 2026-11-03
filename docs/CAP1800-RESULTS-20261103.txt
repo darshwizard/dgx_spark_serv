@@ -1,0 +1,86 @@
+Campaign results (complete comparisons and explicitly marked thermal-stopped runs): normal vs GPU 1800 MHz (about 60% hardware maximum), CPU ceilings60%.
+One normal-clock quality trial per model; quality warnings are behavioral findings in each quality report, not power effects.
+Full model/profile means and measurements:
+{
+  "qwen27": {
+    "quality": {
+      "score": 88,
+      "points": 184,
+      "median_turn_s": 2.2
+    },
+    "profiles": {
+      "normal": {
+        "seconds_mean": 417.5708509104443,
+        "gpu_j_mean": 22465.21763463918,
+        "peak_acpi_c": 84.5,
+        "nvme_read_gb_mean": 0.01371136
+      },
+      "gpu1800_cpu60": {
+        "seconds_mean": 446.38324457150884,
+        "gpu_j_mean": 12652.673337740458,
+        "peak_acpi_c": 63.6,
+        "nvme_read_gb_mean": 0.0
+      }
+    },
+    "job_id": "f3824deb23204055a9a3b7450e883bba"
+  },
+  "bolt": {
+    "quality": {
+      "score": 77,
+      "points": 161,
+      "median_turn_s": 1.6
+    },
+    "incomplete": {
+      "reason": "thermal_limit_90C",
+      "paired_result_available": false
+    },
+    "guard_peak_c": 90.1,
+    "job_id": "20e05ef5371d4f19aecf050cdd816759"
+  },
+  "super": {
+    "quality": {
+      "score": 80,
+      "points": 167,
+      "median_turn_s": 1.9
+    },
+    "profiles": {
+      "normal": {
+        "seconds_mean": 436.56359846302075,
+        "gpu_j_mean": 19534.844970328122,
+        "peak_acpi_c": 81.0,
+        "nvme_read_gb_mean": 0.025227264
+      },
+      "gpu1800_cpu60": {
+        "seconds_mean": 460.6404271069914,
+        "gpu_j_mean": 10879.847835440978,
+        "peak_acpi_c": 62.6,
+        "nvme_read_gb_mean": 0.09037004800000001
+      }
+    },
+    "job_id": "9cdf99f944a9470b95184e1c637f6d53"
+  },
+  "flash": {
+    "quality": {
+      "score": 89,
+      "points": 185,
+      "median_turn_s": 1.9
+    },
+    "profiles": {
+      "normal": {
+        "seconds_mean": 459.2477780110203,
+        "gpu_j_mean": 18112.188916203842,
+        "peak_acpi_c": 78.2,
+        "nvme_read_gb_mean": 61.19939891200001
+      },
+      "gpu1800_cpu60": {
+        "seconds_mean": 491.02133637852967,
+        "gpu_j_mean": 10176.143796287019,
+        "peak_acpi_c": 61.9,
+        "nvme_read_gb_mean": 61.187448832
+      }
+    },
+    "job_id": "71216c1383d946b5a975d8b9a6b56ef7"
+  }
+}
+Raw data, per-pass JSON, quality Markdown and exact configs: ../experiments/cap1800-20261103/
+20CPU quota,118GiB charged RAM,16GiB shm;90C hottest-zone stop;2GiB hard/6GiB30s soft memory floors. No fan/firmware/EC change. GPU-reported energy is not wall/system energy. Two matrices/profile; descriptive results on one host. All models unloaded/settings restored before publication.

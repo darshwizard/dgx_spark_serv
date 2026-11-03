@@ -1,0 +1,13 @@
+{
+  "quality": {
+    "score": 77,
+    "points": 161,
+    "median_turn_s": 1.6
+  },
+  "incomplete": {
+    "reason": "thermal_limit_90C",
+    "paired_result_available": false
+  },
+  "guard_peak_c": 90.1,
+  "job_id": "20e05ef5371d4f19aecf050cdd816759"
+}
