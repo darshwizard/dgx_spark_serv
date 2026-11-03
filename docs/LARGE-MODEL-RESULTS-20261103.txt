@@ -135,7 +135,7 @@ received SIGTERM after the successful job ended; it does not mean job failure.
 
 Flash's default allocator crossed the memory guards during repacking. Adding
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to the SAME image/precision/
-checkpoint avoided that spike. The successful complete campaign stayed above
+checkpoint avoided that spike. The successful complete campaign had a sampled minimum of
 17.49 GiB available. We did not lower the 2 GiB hard floor. See the recipe report
 for the primary community references and archived failed attempts.
 
@@ -154,7 +154,8 @@ completion marker is present. All eight matrices contain nine shapes, each
 with three measured values and requested output length 128. The planned matrix
 responses total 10752 generated tokens per invocation. Server counter deltas
 were 10788-10795 for Super and 10760-10807 for Flash; additional harness probes
-account for small variable overhead and are included in suite energy. Thus the
+add small variable overhead and are included in suite energy. Counter-update
+timing also limits exact accounting from these snapshots. Thus the
 entire suite is not an exactly identical generated-token budget. No thermal
 slowdown samples or host oom_kill increments occurred in either successful run.
 All recorded runner/guard hashes match their job Git commits. CPU-only full

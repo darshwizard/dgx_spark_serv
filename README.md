@@ -66,7 +66,7 @@ Different tokenizers also mean equal token counts need not represent equal text.
 - **A community allocator setting resolved a startup memory spike here.** Stock
   Flash Next initialization crossed our 2 GiB available-RAM stop. Adding
   `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` to the same pinned recipe
-  avoided the failure; the successful campaign stayed above **17.5 GiB available**.
+  avoided the failure; the successful campaign's sampled minimum was **17.49 GiB available**.
   We kept the 2 GiB hard floor and 90°C thermal stop. [Evidence and recipes](docs/LARGE-MODEL-RECIPES-20261103.txt).
 - **Thermals and fans are recorded.** Full successful-campaign peaks were
   **80.9°C Super / 79.5°C Flash Next**; Flash's peak occurred during startup.
