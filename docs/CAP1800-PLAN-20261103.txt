@@ -12,6 +12,11 @@ GPU ceiling 1800 MHz (approximately 60% of reported 3003 MHz hardware maximum),
 with CPU ceilings 80% of hardware maxima and unchanged CPU affinity. This is
 neither a 60% watt limit nor a GPU-only test. We cannot isolate CPU versus GPU
 effects from a combined profile. Stock automatic fan control remains enabled.
+Default CPU ceilings: ten Cortex-X925 performance cores3900MHz; ten Cortex-A725
+efficiency cores2808MHz. CPU80% requests3120MHz and2246.4MHz respectively, a20%
+reduction (780/561.6MHz). A future P-core2600MHz-only profile would be33.3% below
+the3900MHz default and leave efficiency cores unchanged; it is not tonight's
+CPU80% profile. Default maxima are ceilings, not guaranteed sustained clocks.
 
 Run one normal-clock quality trial/model: tool-eval-bench 3.0.1.dev9, hard mode,
 104 scenarios, seed 42, thinking off. Report quality separately from efficiency.

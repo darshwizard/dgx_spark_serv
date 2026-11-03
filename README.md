@@ -8,6 +8,19 @@ fresh normal-clock controls versus **60% GPU clock limit — 1,800 MHz, CPU ceil
 80%**. The completed numbers below still use the earlier 2,402 MHz GPU ceiling.
 New headline results will replace them after all reruns complete; raw history stays.
 
+**CPU speeds behind the profile labels** (requested frequency ceilings):
+
+| CPU cores | Normal / default | CPU 80% profile | Reduction |
+|---|---:|---:|---:|
+| 10 Cortex-X925 performance cores | 3,900 MHz | 3,120 MHz | 780 MHz (20%) |
+| 10 Cortex-A725 efficiency cores | 2,808 MHz | 2,246.4 MHz | 561.6 MHz (20%) |
+
+Default means unrestricted up to these reported hardware maxima, not a fixed
+clock at all times. Hardware feedback is being logged to check enforcement.
+The proposed **2,600 MHz performance-core** follow-up is a **1,300 MHz / 33.3%**
+reduction from default, with efficiency cores left at their default ceiling;
+it is a separate experiment from the CPU 80% profile above.
+
 ## Headline quality — current 104-scenario tool suite
 
 Quality measures model behavior on the tool suite, using default clock limits.
