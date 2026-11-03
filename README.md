@@ -10,16 +10,15 @@ New headline results will replace them after all reruns complete; raw history st
 
 **CPU speeds behind the profile labels** (requested frequency ceilings):
 
-| CPU cores | Normal / default | CPU 80% profile | Reduction |
+| CPU cores | Normal / default | CPU 80% profile | CPU 60% profile |
 |---|---:|---:|---:|
-| 10 Cortex-X925 performance cores | 3,900 MHz | 3,120 MHz | 780 MHz (20%) |
-| 10 Cortex-A725 efficiency cores | 2,808 MHz | 2,246.4 MHz | 561.6 MHz (20%) |
+| 10 Cortex-X925 performance cores | 3,900 MHz | 3,120 MHz | 2,340 MHz |
+| 10 Cortex-A725 efficiency cores | 2,808 MHz | 2,246.4 MHz | 1,684.8 MHz |
 
 Default means unrestricted up to these reported hardware maxima, not a fixed
 clock at all times. Hardware feedback is being logged to check enforcement.
-The proposed **2,600 MHz performance-core** follow-up is a **1,300 MHz / 33.3%**
-reduction from default, with efficiency cores left at their default ceiling;
-it is a separate experiment from the CPU 80% profile above.
+The CPU 60% column defines the new profile; no measurements for it are published
+yet. Completed limited-profile results below used CPU 80%.
 
 ## Headline quality — current 104-scenario tool suite
 

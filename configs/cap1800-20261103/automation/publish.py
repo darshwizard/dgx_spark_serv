@@ -36,16 +36,16 @@ a combined CPU/GPU clock profile, not a 60%-power setting or a GPU-only causal t
 
 **CPU speeds behind the profile labels** (requested frequency ceilings):
 
-| CPU cores | Normal / default | CPU 80% profile | Reduction |
+| CPU cores | Normal / default | CPU 80% profile | CPU 60% profile |
 |---|---:|---:|---:|
-| 10 Cortex-X925 performance cores | 3,900 MHz | 3,120 MHz | 780 MHz (20%) |
-| 10 Cortex-A725 efficiency cores | 2,808 MHz | 2,246.4 MHz | 561.6 MHz (20%) |
+| 10 Cortex-X925 performance cores | 3,900 MHz | 3,120 MHz | 2,340 MHz |
+| 10 Cortex-A725 efficiency cores | 2,808 MHz | 2,246.4 MHz | 1,684.8 MHz |
 
 Default permits operation up to these reported hardware maxima; it does not
 mean a fixed clock at all times. Driver requests are distinct from independently
 verified hardware clocks; the watchdog records hardware feedback for inspection.
-The proposed performance-core-only **2,600 MHz** follow-up is **1,300 MHz / 33.3%**
-below default, with efficiency cores unchanged. It is not this CPU 80% profile.
+CPU 60% defines an additional profile; the results on this page identify which
+profile was actually measured.
 
 `c` means concurrent requests. **c1 decode** is output tokens/second for one
 active request. **c4 decode total** is the combined rate for four simultaneous
