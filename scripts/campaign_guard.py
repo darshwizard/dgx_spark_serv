@@ -3,11 +3,11 @@
 import argparse,json,os,pwd,signal,sqlite3,subprocess,time
 from pathlib import Path
 
-def decision(available_bytes,temperatures,swap_growth_bytes=0):
+def decision(available_bytes,temperatures,low_seconds=0):
  if available_bytes is None or len(temperatures)!=7:return 'required_sensor_missing'
  if available_bytes<2*1024**3:return 'host_available_below_2GiB'
  if max(temperatures)>=90:return 'thermal_limit_90C'
- if swap_growth_bytes>64*1024**2 and available_bytes<4*1024**3:return 'swap_growth_with_available_below_4GiB'
+ if available_bytes<6*1024**3 and low_seconds>=30:return 'available_below_6GiB_for_30s'
  return None
 
 def main():
@@ -33,7 +33,7 @@ def main():
  swap_baseline=baseline_mem['SwapTotal']-baseline_mem['SwapFree']
  try:
   with (a.out/'health.jsonl').open('w',buffering=1) as f:
-   tick=0
+   tick=0;low_since=None
    while True:
     if tick%10==0 and job() not in ['queued','running']:return
     try:os.kill(a.parent,0)
@@ -41,9 +41,14 @@ def main():
     mem={x.split(':')[0]:int(x.split()[1])*1024 for x in Path('/proc/meminfo').read_text().splitlines()}
     temps=[float(x.read_text())/1000 for x in Path('/sys/class/thermal').glob('thermal_zone*/temp')]
     swap_growth=mem['SwapTotal']-mem['SwapFree']-swap_baseline
-    reason=decision(mem.get('MemAvailable'),temps,swap_growth)
+    now=time.monotonic()
+    if mem.get('MemAvailable',0)<6*1024**3:
+     if low_since is None:low_since=now
+    else:low_since=None
+    low_seconds=now-low_since if low_since is not None else 0
+    reason=decision(mem.get('MemAvailable'),temps,low_seconds)
     if tick%10==0 or reason:
-     f.write(json.dumps({'unix_s':time.time(),'monotonic_s':time.monotonic(),'mem_available_bytes':mem.get('MemAvailable'),'hottest_c':max(temps,default=None),'swap_used_bytes':mem['SwapTotal']-mem['SwapFree'],'reason':reason})+'\n')
+     f.write(json.dumps({'unix_s':time.time(),'monotonic_s':time.monotonic(),'mem_available_bytes':mem.get('MemAvailable'),'hottest_c':max(temps,default=None),'swap_used_bytes':mem['SwapTotal']-mem['SwapFree'],'swap_growth_bytes':swap_growth,'below_6GiB_s':low_seconds,'reason':reason})+'\n')
     if reason:cancel(reason);return
     tick+=1;time.sleep(.1)
  except BaseException:
