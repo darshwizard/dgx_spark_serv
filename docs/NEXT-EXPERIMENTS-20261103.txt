@@ -1,0 +1,58 @@
+Next experiments — owner agreed Nov 3, 2026
+
+1. Complete the scheduled four-model comparison first
+The existing timer starts Nov 3 02:00 EST / 07:00 UTC. Order: Qwen3.8-27B NVFP4
++DFlash2, Nemotron3.5Bolt74B-A9B24GB+LiLiCorr, SuperVL120B-A12BNVFP4+LiLiCorr,
+Qwen3.8FlashNextFP4Local+MTP4. Normal versus GPU1800MHz and requested CPU80%
+ceilings; two throughput matrices/profile, resident server, one normal quality
+trial/model. Archive results and replace headline data only after all complete
+and original settings are restored. See CAP1800-PLAN-20261103.txt.
+
+2. Validate CPU frequency feedback, then isolate CPU and GPU effects
+Use Qwen27 and Flash Next first: a dense baseline and a contrasting disk-backed
+model. Keep the same pinned engines, 32K context, 20 CPU quota, prompt corpus,
+seeds, prefix-cache resets and exact128-token output matrix as the paired study.
+No repeated quality suite per clock condition. Do not change CPU affinity.
+
+Four conditions:
+A: normal GPU and CPU ceilings.
+B: GPU1800MHz only; CPU defaults.
+C: default GPU; performance-core ceiling2600MHz, efficiency-core defaults.
+D: GPU1800MHz plus performance-core2600MHz; efficiency-core defaults.
+Identify performance-core policies from their reported hardware maxima instead
+of hardcoding CPU IDs. C/D differ from tonight's all-core80% condition.
+
+Before interpreting C/D as physical CPU limits, validate hardware feedback under
+load against requested limits. Record auto_select, driver, governor and both
+scaling_cur_freq/cpuinfo_cur_freq. Autonomous mode can complicate enforcement;
+do not assume a matching driver request proves it. Any necessary control change
+must be understood, recorded and restored; no firmware/EC or fan changes.
+
+Suggested resident order A,B,D,C,C,D,B,A gives two passes/condition with reversed
+ordering. Retain the same per-phase conditioning and record whether the target
+temperature was reached. This balances order partly, not perfectly; repeat or
+change order if drift remains. Monitor all seven ACPI zones and both fans, plus
+CPU per-core activity, GPU clocks/utilization/power, RAM and NVMe activity.
+Report prefill/TTFT, c1/c4 decode, full-task elapsed time and GPU joules. Record
+speculative acceptance when available. GPU energy is not whole-machine energy.
+
+3. Find useful clock points after seeing the isolated effects
+If justified by stage2, sweep GPU1500/1800/2000/2100MHz with CPU held fixed, and
+P-core2600/3120/3900MHz with GPU held fixed. Start with the representative model
+whose results most need explanation; expand to other models only if useful.
+Compare energy/time/temperature tradeoffs rather than declaring a universal
+optimal percentage. Retain the90C hottest-zone guard and stock automatic fans.
+Record startup separately and allow a longer post-unload cooldown trace; a
+resident clock transition does not measure the effect on loading/JIT time.
+
+4. DeepSeek last
+Verify a current single-Spark recipe, then download/test DeepSeek V4.1 Flash1017,
+SAGE EXL3 1.62bpw, with256K (262144-token) configured context. Separate configured
+context capacity from demonstrated long-context quality and memory pressure.
+No results or completed download are claimed yet.
+
+Scheduling scope
+Only stage1 has an actual timer. Stages2-4 are the agreed research sequence,
+to implement after stage1 data is validated; no additional jobs have been
+submitted or silently appended to the overnight timer. Use the compute queue
+for execution and keep the same cleanup, telemetry and source-pin discipline.

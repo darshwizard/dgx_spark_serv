@@ -97,3 +97,7 @@ separately, where CPU sensitivity can differ. A wall meter is needed to rank
 whole-machine energy efficiency; especially important for Flash's NVMe reads.
 Compare joules/fixed workload or Wh/useful tokens subject to acceptable latency
 and temperature, not a temperature ratio or an advertised clock percentage.
+
+Owner agreed with this research direction. Concrete sequence and proposed
+four-condition protocol: NEXT-EXPERIMENTS-20261103.txt. Only the initial
+four-model1800MHz comparison is currently scheduled.
