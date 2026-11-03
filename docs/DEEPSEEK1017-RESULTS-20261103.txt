@@ -1,0 +1,27 @@
+DeepSeek V4.1 Flash1017 SAGE EXL3 1.62bpw,256K configured context
+Normal vsGPU1800MHz/CPU60,one normal-clock quality trial,ABBA throughput,20CPUquota. Default90C/2GiB hard/6GiB30s guards;stock fans. Server max-num-seqs1 per verified recipe: clients c2/c4 queue,not parallel engine execution. 256K configured is NOT a256K retrieval-quality result. Exact upstream command retained except paths,served-name and MAXLEN262144;serial compile workers1. No host VM/sysctl/swap/cache-drop changes. Runtime/clocks restored before publication. Read/write counters host-wide,GPUjoules not wallenergy.
+{
+  "model": "DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5",
+  "complete": false,
+  "context_configured": 262144,
+  "actual_matrix_max_depth": 8192,
+  "server_max_num_seqs": 1,
+  "client_concurrency": [
+    1,
+    2,
+    4
+  ],
+  "job_id": "2786c9d4d06647d0b4aa3b63262fc74f",
+  "controller_error": null,
+  "outcome": null,
+  "abort": {
+    "reason": "available_below_6GiB_for_30s",
+    "returncode": 0,
+    "stdout": "{\n  \"ok\": true,\n  \"result\": {\n    \"state\": \"cancelled\"\n  }\n}\n",
+    "stderr": "",
+    "unix_s": 1793727007.4937997
+  },
+  "profiles": {},
+  "matrix": [],
+  "quality": null
+}

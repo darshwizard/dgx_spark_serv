@@ -1,0 +1,151 @@
+[
+    {
+        "Id": "sha256:fbbf39f9b8ec2c0ab5964c8390ed6ed60390384aeae7d78ad7fa8c53b41367c1",
+        "RepoTags": [
+            "deepseek1017-benchmarks:20261103"
+        ],
+        "RepoDigests": [
+            "deepseek1017-benchmarks@sha256:fbbf39f9b8ec2c0ab5964c8390ed6ed60390384aeae7d78ad7fa8c53b41367c1"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-11-03T17:26:23.428547755Z",
+        "Config": {
+            "User": "root",
+            "Env": [
+                "PATH=/usr/local/cuda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NVARCH=sbsa",
+                "NVIDIA_REQUIRE_CUDA=cuda>=13.0 brand=unknown,driver>=535,driver<536 brand=grid,driver>=535,driver<536 brand=tesla,driver>=535,driver<536 brand=nvidia,driver>=535,driver<536 brand=quadro,driver>=535,driver<536 brand=quadrortx,driver>=535,driver<536 brand=nvidiartx,driver>=535,driver<536 brand=vapps,driver>=535,driver<536 brand=vpc,driver>=535,driver<536 brand=vcs,driver>=535,driver<536 brand=vws,driver>=535,driver<536 brand=cloudgaming,driver>=535,driver<536 brand=unknown,driver>=550,driver<551 brand=grid,driver>=550,driver<551 brand=tesla,driver>=550,driver<551 brand=nvidia,driver>=550,driver<551 brand=quadro,driver>=550,driver<551 brand=quadrortx,driver>=550,driver<551 brand=nvidiartx,driver>=550,driver<551 brand=vapps,driver>=550,driver<551 brand=vpc,driver>=550,driver<551 brand=vcs,driver>=550,driver<551 brand=vws,driver>=550,driver<551 brand=cloudgaming,driver>=550,driver<551 brand=unknown,driver>=565,driver<566 brand=grid,driver>=565,driver<566 brand=tesla,driver>=565,driver<566 brand=nvidia,driver>=565,driver<566 brand=quadro,driver>=565,driver<566 brand=quadrortx,driver>=565,driver<566 brand=nvidiartx,driver>=565,driver<566 brand=vapps,driver>=565,driver<566 brand=vpc,driver>=565,driver<566 brand=vcs,driver>=565,driver<566 brand=vws,driver>=565,driver<566 brand=cloudgaming,driver>=565,driver<566 brand=unknown,driver>=570,driver<571 brand=grid,driver>=570,driver<571 brand=tesla,driver>=570,driver<571 brand=nvidia,driver>=570,driver<571 brand=quadro,driver>=570,driver<571 brand=quadrortx,driver>=570,driver<571 brand=nvidiartx,driver>=570,driver<571 brand=vapps,driver>=570,driver<571 brand=vpc,driver>=570,driver<571 brand=vcs,driver>=570,driver<571 brand=vws,driver>=570,driver<571 brand=cloudgaming,driver>=570,driver<571 brand=unknown,driver>=575,driver<576 brand=grid,driver>=575,driver<576 brand=tesla,driver>=575,driver<576 brand=nvidia,driver>=575,driver<576 brand=quadro,driver>=575,driver<576 brand=quadrortx,driver>=575,driver<576 brand=nvidiartx,driver>=575,driver<576 brand=vapps,driver>=575,driver<576 brand=vpc,driver>=575,driver<576 brand=vcs,driver>=575,driver<576 brand=vws,driver>=575,driver<576 brand=cloudgaming,driver>=575,driver<576",
+                "NV_CUDA_CUDART_VERSION=13.0.96-1",
+                "CUDA_VERSION=13.0.2",
+                "LD_LIBRARY_PATH=/usr/local/nvidia/lib64:/usr/local/cuda/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64",
+                "NVIDIA_VISIBLE_DEVICES=all",
+                "NVIDIA_DRIVER_CAPABILITIES=compute,utility",
+                "DEBIAN_FRONTEND=noninteractive",
+                "CUDA_HOME=/usr/local/cuda",
+                "UV_HTTP_TIMEOUT=500",
+                "UV_INDEX_STRATEGY=unsafe-best-match",
+                "UV_LINK_MODE=copy",
+                "UV_PYTHON_INSTALL_DIR=/opt/uv/python",
+                "UV_CACHE_DIR=/opt/uv/cache",
+                "UV_OVERRIDE=/etc/uv-overrides.txt",
+                "VLLM_ENABLE_CUDA_COMPATIBILITY=0",
+                "TORCH_CUDA_ARCH_LIST=12.1a",
+                "VLLM_USAGE_SOURCE=production-docker-image",
+                "VLLM_BUILD_COMMIT=af1c01499b289be555c475669ba50a88e96d846e",
+                "VLLM_BUILD_PIPELINE=019d130e-464e-4ff7-b84b-492992c0c06b",
+                "VLLM_BUILD_URL=https://buildkite.com/vllm/release-v2/builds/6692",
+                "VLLM_IMAGE_TAG=vllm/vllm-openai:nightly-af1c01499b289be555c475669ba50a88e96d846e",
+                "PYTHONPATH=/opt/spark3/candidate/vllm:/opt/spark3/candidate/b12x",
+                "SPARKNET_ROCE_CACHE_DIR=/opt/sparknet/roce",
+                "MAX_JOBS=8",
+                "PIP_DISABLE_PIP_VERSION_CHECK=1"
+            ],
+            "WorkingDir": "/vllm-workspace",
+            "Labels": {
+                "ai.vllm.build.commit": "af1c01499b289be555c475669ba50a88e96d846e",
+                "ai.vllm.build.pipeline": "019d130e-464e-4ff7-b84b-492992c0c06b",
+                "ai.vllm.build.url": "https://buildkite.com/vllm/release-v2/builds/6692",
+                "ai.vllm.image.tag": "vllm/vllm-openai:nightly-af1c01499b289be555c475669ba50a88e96d846e",
+                "local.dsv41.engine": "spark-ds41f r6w",
+                "local.dsv41.exl3.base": "dsv41-1017-ds41f:r6w",
+                "local.dsv41.exl3.exllamav3": "909ad8564fcb9e070caca8a65d380c741681e79c",
+                "local.dsv41.exl3.moe-tilesize-k": "16",
+                "local.dsv41.exl3.shim": "dsv41_exl3_shim:register (quantization exl3_dsv41)",
+                "local.dsv41.exl3.vllm-exl3": "30e8b941376ce2d43bc8438439937c4809106635",
+                "local.dsv41.redist": "nvidia-cutlass-dsl 4.7.1 (and -libs-base/-core/-cu12/-cu13) removed; reinstall from PyPI with cutlass-dsl.lock",
+                "local.dsv41.spark-ds41f.revision": "2dc95329610188451a5c5f5af98e5c392144809c",
+                "local.dsv41.spark-ds41f.upstream": "https://github.com/christopherowen/spark-ds41f",
+                "local.dsv41.vllm.kv-persist.patch": "0008-v1-engine-persistent-prefix-kv-cache.patch",
+                "local.dsv41.vllm.linear-budget.overlay-revision": "53ef3558f4ca56f244cfb1566061199ad9a8975f",
+                "local.dsv41.vllm.linear-budget.patch": "0007-dspark-adaptive-verification-linear-row-cost-budget.patch",
+                "local.dsv41.vllm.linear-budget.revision": "03e8775c9f2c9a791bb49a2f4d97575020ec0f7b",
+                "local.dsv41.vllm.patch-head": "97a1e5068fada891c2016ce7e0e3193e872a909e",
+                "local.dsv41.vllm.patches": "0001-deepseek-v41-reasoning-effort-minimal-medium.patch 0002-model-loader-weight-snapshots.patch",
+                "local.dsv41.vllm.post-overlay-patches": "0003-spec-decode-block-residual-mass-lookahead-bound.patch 0004-spec-decode-block-verification-step-seeds.patch 0005-deepseek-v41-ced-skip-unread-nonfinal-chunks.patch 0006-deepseek-v41-dspark-no-mtp-hidden-buffer.patch",
+                "local.dsv41.vllm.profile-replays.overlay": "experiments/2026-10-18-dspark-profile-replays/overlay",
+                "local.dsv41.vllm.profile-replays.revision": "2ce3644fa361290b0024f0ee784b17b63c8b2882",
+                "local.dsv41.vllm.scale-codes.overlay": "experiments/2026-10-18-scale-codes/overlay",
+                "local.dsv41.vllm.scale-codes.revision": "a250ace70424475c04b0919fc9a46f23c19e51da",
+                "local.dsv41.vllm.tree": "675d178dfd069b22dcfbdb44e3e8da73854e1a43",
+                "local.spark3.b12x.patch-head": "69e5795e2141fbb5fa2b3af096d51e754939bb41",
+                "local.spark3.b12x.ref": "integration/karmic-kraken-beta",
+                "local.spark3.b12x.revision": "236ddff04a5f5064084b46464800b70b34ec7d8c",
+                "local.spark3.b12x.tree": "1a647a311ca55d45070ab83d60668d9c8fb8886c",
+                "local.spark3.b12x.upstream": "https://github.com/local-inference-lab/b12x",
+                "local.spark3.nccl.patch-head": "eeacf1c6343f0499e4e7ab20ec7eecfb6f62eda6",
+                "local.spark3.nccl.ref": "refs/tags/v2.30.7-1",
+                "local.spark3.nccl.revision": "73cf112295c33aee2b895f329f592f2a9b4b0f97",
+                "local.spark3.nccl.tree": "6af10aa730a64fcee8781d62340a9c9184e79469",
+                "local.spark3.nccl.upstream": "https://github.com/NVIDIA/nccl",
+                "local.spark3.sparknet.patch-head": "3bc8d10104a5012244a0424d7dfc1107a72eafab",
+                "local.spark3.sparknet.ref": "timeout-stop",
+                "local.spark3.sparknet.revision": "3bc8d10104a5012244a0424d7dfc1107a72eafab",
+                "local.spark3.sparknet.tree": "f72599fa212e894d67ee114553e628ab05daf2da",
+                "local.spark3.sparknet.upstream": "https://github.com/christopherowen/dgx-spark-networking",
+                "local.spark3.tile_kernels.patch-head": "edfa64d018bc64006fcb07c95c32fa196363c0ae",
+                "local.spark3.tile_kernels.ref": "main",
+                "local.spark3.tile_kernels.revision": "66258df6175d2f630ffecb04c5ab66bff8a2ae6a",
+                "local.spark3.tile_kernels.tree": "cb2fa41c8af290204c81c547ed678ebf957cca53",
+                "local.spark3.tile_kernels.upstream": "https://github.com/deepseek-ai/TileKernels",
+                "local.spark3.tilelang.patch-head": "a0e66d71fe7617216f2de5d86c3b088595367387",
+                "local.spark3.tilelang.ref": "main",
+                "local.spark3.tilelang.revision": "b95ee4ffb52ae26e15619cad38c6f41e7e0a2b46",
+                "local.spark3.tilelang.tree": "222b895d04ee6cd75179155d06e0c0d450636f51",
+                "local.spark3.tilelang.upstream": "https://github.com/tile-ai/tilelang",
+                "local.spark3.vllm.patch-head": "600fc0ebfa240c804d5f5e3e0116ce6b9207839c",
+                "local.spark3.vllm.ref": "integration/karmic-kraken-beta",
+                "local.spark3.vllm.revision": "19f2c20ed4d64ae22bd009ceacadd85e2a81e354",
+                "local.spark3.vllm.tree": "8564da0b9a0f19d70ff75decb15ff89101886279",
+                "local.spark3.vllm.upstream": "https://github.com/local-inference-lab/vllm",
+                "maintainer": "NVIDIA CORPORATION <cudatools@nvidia.com>",
+                "org.opencontainers.image.base.digest": "sha256:3cf14c52765a0f0c2f09035e05fa79e1e4b2f9788b64afa90fa41c1ff12d29cf",
+                "org.opencontainers.image.base.name": "docker.io/vllm/vllm-openai",
+                "org.opencontainers.image.description": "DeepSeek-V4.1-Flash-1017, TP4 on a four-DGX-Spark RoCE ring: spark-ds41f r6w plus the dsv41-1017 patches (reasoning-effort aliases, weight snapshots, vLLM #60945 and #61161 block verification fixes, CED decoder skip of unread prefill chunks, no DSpark MTP buffer, persistent prefix KV cache), spark-ds41f's MoE scale-codes overlay and its DSpark draft budget by a fixed linear step cost (r6x's vLLM 0184)",
+                "org.opencontainers.image.licenses": "Apache-2.0",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.revision": "2dc95329610188451a5c5f5af98e5c392144809c",
+                "org.opencontainers.image.source": "https://github.com/christopherowen/spark-ds41f",
+                "org.opencontainers.image.title": "dsv41-1017-ds41f",
+                "org.opencontainers.image.url": "https://buildkite.com/vllm/release-v2/builds/6692",
+                "org.opencontainers.image.version": "vllm/vllm-openai:nightly-af1c01499b289be555c475669ba50a88e96d846e"
+            }
+        },
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 9531389121,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:8d743923e09ad9d435255f9436b5aa1a42d2e88cced04d121b238f8a726990cc",
+                "sha256:1310bb761d10d23e3907a2e42b8b4a45e32da49f73a0d8423b33aa8c402b7e86",
+                "sha256:12260ab5de53b560d3281fea212e9bea0579f19bb58307c9d5e354661350966d",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:15f1a9df77f09fb3ad0b0505bf69ca0f53d0fb87160453930cee2a10d56d51bd",
+                "sha256:639840352435d4a786f1f4f524938d5d83f8acc9e1efc5e54293bd38969d76cf",
+                "sha256:aa7ae8f75a523361221bf2fd6cb19c99020e8b8d94043cb9f9c3d072b32009d5",
+                "sha256:3c4bc019d55594bfe2d39aa9399108e35d6e4ee65d05e859f6b6f9055ca11a42",
+                "sha256:b8761c042e6d56700e09e45785889031c119a3ff522942e5c9f4b8b77a698a79",
+                "sha256:5840efc41c8bf7856fff6e6dc64de3fb95b4ba1ed747cb6f31b66760feb2677f",
+                "sha256:d47ab0a19f67c0349017f7642784297c00769e8dfa61400fde7b1a4baea10b4f",
+                "sha256:1447161ae97ba69bb8033a8afa2b25297124930eca11ee80745405a1916bb124",
+                "sha256:1123ac91b9ed2d06d911e42af6b4b030820d1e0681b1500ed8937c9a60fc27a1"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-11-03T17:26:23.992465094Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:fbbf39f9b8ec2c0ab5964c8390ed6ed60390384aeae7d78ad7fa8c53b41367c1",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "i8p3bhe79enajd1tish6fvavg",
+                    "CreatedAt": "2026-11-03T17:26:24.155683226Z"
+                }
+            ]
+        }
+    }
+]

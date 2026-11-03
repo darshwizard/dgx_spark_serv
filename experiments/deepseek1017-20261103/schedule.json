@@ -1,0 +1,40 @@
+{
+  "start_utc": "2026-11-03T17:02:57.151779+00:00",
+  "start_local": "Immediate start authorized by owner",
+  "repo": "/home/d_wizard/local-ai/deepseek1017-20261103/repo",
+  "source_commit": "a2ab3b56c3c47de04bc305d0e43a58137373da75",
+  "models": [
+    "deepseek1017"
+  ],
+  "gpu_max_mhz": 1800,
+  "cpu_max_fraction": 0.6,
+  "quality_mode": "normal-only",
+  "stock_fans": true,
+  "images": {
+    "qwen-benchmarks:20261102": "sha256:accfefdbcc2891d76e4d25a70f73218358af41fcc798052838c034448f94eb5a",
+    "bolt-benchmarks:20261102": "sha256:0a40f298d1c54547bccb42863c92e81bec6f897b967f0a29ea5743e3f371df81",
+    "super-benchmarks:20261102": "sha256:b523c5e541c32fa5503afe4375d174460f0a96ca75347aad7836d5ab2007d49a",
+    "flash-benchmarks:20261102": "sha256:cbedcf30b3d09a910ca78c25afb2d82fe3850b5c6c71eca54332edd25fab0336"
+  },
+  "host_original_sha256": {
+    "/opt/compute-host/queue.py": "8b169b5a7b9b1b79665e0dddec0d8ab4d88599271ebe6ed69b377abfc67f44b1",
+    "/opt/compute-host/web.py": "617ed37907b416e1310ff1559038e5217a45a34575758614b317a5aeb72481b5",
+    "/opt/compute-host/AGENTS.md": "91130d021f835c04739c6519c4876ab36a0dc0cc54c9df53d00ed19a091820f6",
+    "/home/d_wizard/AGENTS.md": "130a971ef5802e64198817980ed2223f384c1167238ed47c88cb42353a92de80"
+  },
+  "controller_sha256": {
+    "entry.py": "cbfdd6750de9087fed1c69485b6cf203876fb48475388c8089b07625d20a4473",
+    "run.py": "2f43a969a6217d63dc091cfc3ea0e0f5755c71c8cea152eadd9a444881eb900f",
+    "recover.py": "51d9c0a51dc336551b256bcc9b4957ab303eae5735908ee4c41a4e47850100d5",
+    "switch-runtime.py": "083aeba0a852aaf31a014c1a063f17a57e87c78e1d66b7b4d55193cc667b9797"
+  },
+  "systemd_service": "spark-bench-deepseek1017-20261103.service",
+  "phase_mode": "paired",
+  "context": 262144,
+  "server_max_num_seqs": 1,
+  "thermal_stop_c": 90,
+  "wait_for_preparation": [
+    "prepare-status.json",
+    "stage-status.json"
+  ]
+}

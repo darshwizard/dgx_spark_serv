@@ -1,0 +1,25 @@
+{
+  "model": "DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw + DSpark5",
+  "complete": false,
+  "context_configured": 262144,
+  "actual_matrix_max_depth": 8192,
+  "server_max_num_seqs": 1,
+  "client_concurrency": [
+    1,
+    2,
+    4
+  ],
+  "job_id": "2786c9d4d06647d0b4aa3b63262fc74f",
+  "controller_error": null,
+  "outcome": null,
+  "abort": {
+    "reason": "available_below_6GiB_for_30s",
+    "returncode": 0,
+    "stdout": "{\n  \"ok\": true,\n  \"result\": {\n    \"state\": \"cancelled\"\n  }\n}\n",
+    "stderr": "",
+    "unix_s": 1793727007.4937997
+  },
+  "profiles": {},
+  "matrix": [],
+  "quality": null
+}
