@@ -5,7 +5,12 @@ memory), on a fresh installation. Latest completed tests: **November 3, 2026**.
 
 ## Headline quality — current 104-scenario tool suite
 
-| Exact checkpoint / serving setup | Normal score /100 (points) | Capped score /100 (points) | Normal median turn | Safety warnings normal / capped |
+**Normal quality** is measured at default clock limits. **Clock-capped quality**
+is the same quality benchmark rerun with CPU and GPU clock ceilings set to 80% of
+their reported hardware maxima. The scoring rules are unchanged; the cap applies
+to machine clocks. This setting does not guarantee 80% power or a 20% slowdown.
+
+| Exact checkpoint / serving setup | Normal quality /100 (points) | Clock-capped quality /100 (points) | Normal median turn | Safety warnings normal / clock-capped |
 |---|---:|---:|---:|---:|
 | **[Qwen3.8-Flash-Next-FP4-Local](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-FP4-Local)** + MTP4 | **89** (186/208) | **89** (185/208) | 1.9s | 6 / 5 |
 | **[Qwen3.8-27B-NVFP4](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4)** + [DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) | **88** (184/208) | — | 2.1s | 2 / — |
@@ -18,6 +23,12 @@ ranking**. “Safety warnings” is the harness's count, not a count of every fa
 scenario. These are text/tool tests, including mocked document tools; vision and
 full-window retrieval quality are not validated. A dash means not measured.
 
+**Why the missing clock-capped quality scores?** The earlier Qwen 27B and Bolt
+campaigns ran quality only at normal clocks, then measured throughput at both
+normal and capped clocks. The newer Super VL and Flash Next campaigns added a
+second quality run under the cap. We have not rerun capped quality for the older
+two models; their dashes are gaps in our measurements, not model limitations.
+
 **Which Qwen?** The baseline is a dense **27B** model. Flash Next has a **125B
 main model / 6B active per token**, plus **51B n-gram embedding parameters and a
 4B MTP head**; its checkpoint is about 96 GiB on disk. Its tables are disk-backed
@@ -26,6 +37,23 @@ and Q8_0 embedding/output weights. Draft heads assist generation; they are not
 separate quality-test candidates.
 
 ## Paired speed and energy — new models
+
+**Coverage:** this paired comparison covers **Super VL and Flash Next only**.
+The matched speed/energy protocol has **not yet been run for Bolt or Qwen 27B**.
+Their earlier normal/capped throughput tests used different random prompts and
+do not establish a paired energy-efficiency result.
+[Bolt's existing normal/capped throughput results](docs/BOLT-STANDARD-BENCHMARKS.txt)
+· [Qwen 27B's existing normal/capped throughput results](docs/QWEN-BOLT-COMPARISON-20261102.txt).
+
+**Reading the speed columns:** `c` means concurrency: simultaneous requests.
+
+- **c1 decode:** output tokens generated per second with **one active request**;
+  this describes single-request generation speed.
+- **c4 decode total:** combined output tokens per second across **four active
+  requests**. For example, 60 tok/s total is roughly 15 tok/s per request if the
+  work is evenly shared; it does not mean 60 tok/s for each request.
+- **c1 prefill:** input/prompt tokens processed per second for one request,
+  before generating the answer.
 
 | Model / setup | Clocks | c1 decode tok/s | c1 prefill tok/s | c4 decode total tok/s | Full matrix seconds | GPU-reported kJ / matrix |
 |---|---|---:|---:|---:|---:|---:|
