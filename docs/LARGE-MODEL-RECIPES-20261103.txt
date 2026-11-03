@@ -1,0 +1,137 @@
+Super VL and Flash Next: tested serving recipes
+Completed November 3, 2026. One DGX Spark, GB10, driver 580.178.04.
+
+Exact serving arguments and environment
+experiments/large-models-20261102/super/launch.json
+experiments/large-models-20261102/flash-next/launch.json
+These are the actual successful commands, not proposed configurations. Both
+served text/tool benchmarks at a configured 32768-token window and four active
+sequences. Neither run validates multimodal quality or full-window retrieval.
+
+Weights, pinned by Hugging Face revision
+  nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4
+    8a115b9d966adce8c059a7bcf47f49a1e57957d8
+  nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr
+    7c7221aeb4cb3139307aa457f7dce11a8fb6ceb2
+  nvidia/Qwen3.8-Flash-Next-FP4-Local
+    b9ce18a6887e18c089fdea8509a33e63429a3300
+downloads.json records source IDs, revisions, sizes and download completion.
+The Flash Next checkpoint is about 96 GiB on disk. Six billion active parameters
+per token does not make it a six-billion-parameter memory footprint: the main
+model has 125B parameters, plus 51B n-gram embeddings and a 4B MTP head.
+
+Super VL runtime
+Community reference:
+https://github.com/hasso5703/alzeo/blob/main/install-nemotron-super.sh
+https://github.com/hasso5703/alzeo/blob/main/docs/nemotron-super-lane.md
+Same runtime already validated for the forum Bolt experiment:
+  vllm/vllm-openai@sha256:1ee85ca80e0fc110017d79ea2081a0cbef9a208a05d7f22724801bcf6a956620
+  plus b12x 1.5.1; see experiments/bolt-20261102/Dockerfile.forum and
+  docs/BOLT-RESULTS.txt for the wheel source/hash and original build.
+Local base tag: bolt-forum:77154ca6-b12x1.5.1.
+Benchmark image: super-benchmarks:20261102, immutable ID in image-pins.json.
+Runtime identifies as vLLM 0.32.0rc1.dev100+g77154ca61.
+LiLiCorr DFlash7, FlashInfer Mamba, FP16 SSM state with stochastic rounding,
+shared-prefix checkpointing, GPU utilization 0.75. KV precision left at the
+recipe default; the runtime resolved it to fp8_e4m3 from the checkpoint.
+Adaptations: 32K window rather than 1M; four sequences; one image/no video;
+isolated loopback; offline weights; queued non-root serving.
+
+Flash Next runtime
+NVIDIA Spark playbook reference:
+https://github.com/NVIDIA/dgx-spark-playbooks/blob/main/nvidia/playbook-vllm/assets/sync-vllm-spark-128gb-qwen38-flash-next.sh
+Pinned base:
+  eugr/spark-vllm-b12x@sha256:03a956544e9f9b4b7ba91690469fbe7848bdbef29a7d2e0f5788368467bb3595
+This is nightly-20261015. Benchmark image: flash-benchmarks:20261102.
+MTP4; FP8 KV; GPU utilization 0.8; disk PLE via io_uring; b12x loading, linear,
+MoE and GDN backends. Keep the complete environment from launch.json: this
+checkpoint has losslessly compressed scales that the serving image must support.
+Adaptations: 32K instead of 256K and four instead of eight sequences; isolated
+offline non-root job. Retain the recipe's seccomp/AppArmor exceptions for
+io_uring while keeping cap-drop ALL, no-new-privileges and read-only root.
+
+Important Flash Next startup finding
+Two starts crossed our memory guards during post-load weight repacking. The
+previous model was unloaded first; the second start began with ~118.7 GiB
+available and reached ~1.7 GiB before cancellation completed. This was a RAM
+allocation spike, not a thermal stop or a cgroup-limit OOM.
+
+The community documents a temporary repacking dip and a 2 GiB hard / 6 GiB for
+30 seconds soft floor:
+https://github.com/devopsfortunato/Qwen3.8-Flash-Next-FP4-Local-DGX-Spark#what-startsh-and-scriptspreparesh-do
+We adopted those floors, retaining immediate thermal and missing-sensor stops.
+Our machine still crossed 2 GiB on the next attempt.
+
+A second community report identifies retained CUDA load-time allocations and
+uses this allocator mitigation:
+https://huggingface.co/diffbot/Qwen3.8-Flash-Next-FP4-Local-DGX-Spark#how-it-fits-in-one-spark
+  PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+Adding ONLY that variable to our previous serving configuration passed repacking
+and completed all benchmarks. No new weights, precision changes, vision removal,
+MTP changes, kernel patches or lower safety floors were needed. About 29 GiB
+remained as planning began; the full successful run's minimum was 17.49 GiB.
+This validates the mitigation on this image/driver/checkpoint pairing; other
+pairings need measurement. Save startup logs even when the eventual boot works.
+
+Build benchmark layers without changing serving dependencies
+The two Dockerfiles under experiments/large-models-20261102/build/ install only
+the benchmark wheels with pip --no-deps. Build those wheels outside the minimal
+image so Git-based version detection works:
+
+  git clone https://github.com/SeraphimSerapis/tool-eval-bench.git
+  git -C tool-eval-bench checkout 2ad584631702f042295862a363396ccbc6ac0fe9
+  git clone https://github.com/eugr/llama-benchy.git
+  git -C llama-benchy checkout e9be344578cec17745066b220798b80a0d2686d3
+  python3 -m pip wheel --no-deps --wheel-dir wheels ./tool-eval-bench ./llama-benchy
+
+Place wheels/ beside the Dockerfiles, build the forum base first for Super,
+then build the corresponding benchmark image. Both benchmark CLI help commands
+must work. Retain the resulting immutable image ID in the job specification.
+This adds harnesses; it does not upgrade Torch, vLLM or CUDA.
+
+Staging and running on this queue host
+Use an enrolled account and SSH/SFTP, following the live /agents guide. Stage
+weights under workspace/models/<checkpoint basename>, scripts under workspace/
+code, and persistent caches under workspace/cache. Inside the job these are
+/workspace/models, /workspace/code and /workspace/cache. For example:
+
+  hf download nvidia/Qwen3.8-Flash-Next-FP4-Local \
+    --revision b9ce18a6887e18c089fdea8509a33e63429a3300 \
+    --local-dir workspace/models/Qwen3.8-Flash-Next-FP4-Local
+
+Stage scripts/model_campaign_job.py and scripts/paired_model_bench.py. Actual
+spec.json files are preserved under each model's artifacts. Submit GPU work
+only through compute-job. Do not launch another GPU server beside the queue.
+The owner-run example controller and runtime-switch helper are in the artifact
+directory; their ROOT/REPO/SSH settings and backup paths are specific to this
+host and must be adapted for another installation. They switch runtimes only
+with an idle queue, launch host telemetry and an external watchdog, acknowledge
+clock-profile phases, download results, and restore the original runtime.
+
+To serve on a different installation, use its local compute policy and map
+the /workspace paths accordingly. launch.json contains the server-only command
+and its required environment, so the serving setup can be reproduced separately
+from our queue controller and benchmark handshakes.
+
+Controls
+Temporary job limits: 20 CPU quota, 118 GiB charged memory, 16 GiB shared memory,
+no anonymous job swap. CUDA allocations are not fully charged to this cgroup:
+actual host-available memory is the primary pressure signal. The root watchdog
+samples at ~100 ms; stop at <2 GiB available or hottest ACPI >=90 C. For the final
+Flash run, also stop after 30 continuous seconds below 6 GiB. Job admission for
+benchmark phases needs >=3 GiB. Fail closed on controller or sensor loss.
+No host swappiness, firmware, EC, or fan-curve changes. Host swap stays enabled.
+Original queue limits/runtime/reference files and clock ceilings were restored.
+
+Benchmark controls and analysis
+See LARGE-MODEL-PROTOCOL-20261102.txt. Cache resets require
+VLLM_SERVER_DEV_MODE=1 on these isolated loopback servers and success=true in the
+API response. No model reload between the four normal/capped/capped/normal
+phases. CPU-only orchestration regression:
+  python3 tests/smoke_paired_client.py
+Energy/host-activity regeneration after extracting raw-run.tar.gz:
+  python3 scripts/workload_energy.py --events RUN/result/bench/events.jsonl \
+    --sensors RUN/telemetry/sensors.jsonl --out workload-summary.json
+Power readings are integrated only over workload event boundaries. This is
+GPU-reported energy, not whole-machine energy; it does not fully account for
+CPU, NVMe, fan and power-supply costs. A wall meter is needed for that comparison.

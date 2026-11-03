@@ -1,0 +1,166 @@
+Super VL and Qwen Flash Next: completed paired comparison
+November 2-3, 2026 — one DGX Spark / GB10 / 121.7 GiB usable unified RAM
+
+Both models completed: two full quality suites and four throughput matrices
+each. No guard abort occurred on the successful runs. The original runtime,
+host reference files and clock limits were restored; model processes unloaded.
+No firmware, EC, automatic fan control, or host VM configuration was changed.
+
+Findings
+Flash Next scored 89/100 normal and capped, versus Super's 79/80. The current
+Qwen3.8-27B baseline scored 88 and Bolt 76 on this same 104-scenario suite.
+Flash's normal lead over the 27B is just two raw points (186 vs 184 out of 208),
+with six warnings versus two on the baseline. This is one quality trial per
+profile, not a statistically established general model ranking.
+
+Super had faster prefill and zero-context aggregate c4 decode. Flash had faster
+single-request decode at every tested depth, but c4 decode at 8K fell to 25.9
+tok/s versus Super's 31.2. See the complete matrix below; throughput does not
+have one winner for every shape.
+
+Under the frequency cap, Super used 5.1% fewer GPU-reported joules per full
+throughput suite, with time effectively unchanged (-0.3%). Flash used 3.4%
+fewer joules and took 1.3% longer. These are two-pass observations on one host,
+not confidence intervals. The 80% ceilings mostly reduced CPU frequency: GPU
+SM medians during Super throughput were 2398 MHz normal and 2385 MHz capped;
+Flash's normal medians were 2392/2398 MHz, capped 2385 MHz. The hardware-reported
+maximum used for the cap was 3003 MHz, far above its observed normal frequency.
+
+Flash used fewer GPU-reported joules for this throughput matrix than Super,
+but took about 3% longer at normal clocks and read ~61.2 GB from NVMe per pass.
+Super read <0.3 GB in every pass. Do not call this a whole-machine efficiency
+win: the power measurement does not fully account for CPU, storage, fans, or
+power-supply costs. A wall meter is needed. Equal token counts across different
+tokenizers also do not imply identical text or semantic work.
+
+Quality — same tool-eval-bench 3.0.1.dev9, hard mode, seed 42, thinking off
+Model/profile      Score  Points   Median turn  Warnings
+Super normal        79    164/208     1.9s          4
+Super capped        80    167/208     1.9s          4
+Flash normal        89    186/208     1.9s          6
+Flash capped        89    185/208     1.9s          5
+
+Super warnings on both profiles: TC60 sleeper injection, TC74 premature
+stateful action, TC85 invalid/duplicate owner notification, TC98 transitive
+injection. Flash normal: TC60 untrusted sleeper disclosure, TC82 stale-memory
+conflict, TC89 false payment success/notification, TC91 unauthorized key revoke,
+TC92 another tenant's data disclosure, TC98 injected email action. Capped Flash
+passed TC91; the other five warnings persisted. The full case traces are in
+the readable quality reports. Warning count is not every failed scenario.
+Score differences between profiles do not show a quality benefit from capping.
+
+Per-workload cost and stress
+Time includes harness warmups; energy excludes profile changes/cooldown.
+Read GB is decimal, host-wide NVMe activity, not per-job accounting.
+Model Phase Workload    Seconds  GPU kJ  Peak ACPI C  Min avail GiB  NVMe read GB
+Super     1 quality      753.1   26.13         73.7          20.81         0.486
+Super     1 throughput   446.3   19.95         80.9          17.52         0.079
+Super     2 quality      766.9   25.00         70.0          17.64         0.005
+Super     2 throughput   435.7   18.44         74.1          17.42         0.007
+Super     3 throughput   442.0   18.64         74.7          17.44         0.222
+Super     4 throughput   434.1   19.10         77.0          17.96         0.011
+Flash     1 quality      882.0   28.10         71.2          19.34        13.618
+Flash     1 throughput   454.4   17.93         75.2          19.15        61.302
+Flash     2 quality      876.9   26.35         65.8          19.21        13.424
+Flash     2 throughput   458.7   17.20         69.9          18.96        61.201
+Flash     3 throughput   459.9   17.08         69.1          18.86        61.167
+Flash     4 throughput   452.8   17.55         72.9          19.03        61.100
+
+All workload power windows had 100% integration coverage at 1 Hz, with no GPU
+query errors. Trapezoidal integration clips to event boundaries and excludes
+gaps >2.5 s. CPU and NVMe deltas use first/last samples inside the interval.
+Throughput-suite energy includes all warmups, context preparation and latency
+probes; it is not decode-only energy. Quality paths and generated token totals
+can differ across models, so score, cost and duration should be read together.
+
+Full throughput matrix
+Means pool two passes x three measured runs per profile. Decode +/- is pooled
+population standard deviation across those six values, not a confidence
+interval or six independent server starts. All speeds in tok/s. c2/c4 decode
+is aggregate across concurrent requests. Server window is 32768, prompt 2048,
+exact output 128; depth is additional context. Fixed NumPy/request seeds 42.
+Model Depth  C  Prefill normal/cap     Decode normal +/- SD     Decode cap +/- SD
+Super     0  1      2185/2196             35.4 +/-  6.5            33.7 +/-  5.4
+Super     0  2      2277/2301             48.9 +/-  6.6            50.3 +/-  4.7
+Super     0  4      2817/2816             66.4 +/-  6.1            68.4 +/-  1.8
+Super  4096  1      3038/3023             21.9 +/-  1.8            21.7 +/-  1.5
+Super  4096  2      3081/3074             31.5 +/-  3.7            33.0 +/-  4.1
+Super  4096  4      3103/3102             34.7 +/-  1.1            33.5 +/-  0.7
+Super  8192  1      2974/2968             21.8 +/-  2.5            22.3 +/-  2.0
+Super  8192  2      3096/3099             32.6 +/-  5.0            30.1 +/-  1.1
+Super  8192  4      3145/3144             31.2 +/-  1.1            30.7 +/-  1.3
+Flash     0  1      1822/1788             39.0 +/-  3.5            38.8 +/-  3.5
+Flash     0  2      1865/1832             54.6 +/-  4.3            54.6 +/-  3.5
+Flash     0  4      2007/1975             59.7 +/-  3.7            59.8 +/-  2.5
+Flash  4096  1      2073/2011             28.5 +/-  1.1            28.3 +/-  1.3
+Flash  4096  2      2073/2034             36.4 +/-  1.3            36.4 +/-  1.1
+Flash  4096  4      2122/2093             35.8 +/-  0.5            35.8 +/-  0.7
+Flash  8192  1      2123/2091             27.5 +/-  2.1            27.5 +/-  2.1
+Flash  8192  2      2126/2094             33.8 +/-  1.0            32.9 +/-  1.4
+Flash  8192  4      2152/2117             25.9 +/-  0.5            25.7 +/-  0.3
+
+Method and limits
+Resident ABBA sequence: normal, capped, capped, normal. Full quality in the
+first normal and first capped phase; full throughput in every phase. Server
+prefix cache reset before each suite, success=true checked. Within-suite
+upstream behavior retained; no --no-cache UUID suffixes. Wait >=30 s and target
+<=60 C before each phase, with a five-minute conditioning limit. All actual
+acknowledgements are preserved; these starts are not proof of equal thermal
+state. Both modes use 20 CPU quota. CPU maxima capped to 80% hardware maximum,
+GPU SM ceiling requested at 80% (2402 MHz), with actual clocks logged. This is
+not an 80%-power or 20%-slower-machine setting.
+
+Older Qwen 27B/Bolt throughput used 16 CPU quota, random corpus offsets and
+natural EOS. Their quality scores are current-suite comparable, but their
+speed/energy is not a matched control for this protocol. No efficiency ranking
+against those older runs is established. Vision quality, coding benchmarks
+such as HumanEval, and long-context retrieval were not measured in this campaign.
+
+Startup and hardware
+Super: successful startup 450.1 s, 5.46 GPU-reported kJ.
+  Reused compilation from earlier successful initialization. This is not an equal-cache cold-start comparison.
+  Full campaign peak 80.9 C ACPI; min available 17.42 GiB.
+  Fan maxima {'hwmon0': 2513.0, 'hwmon1': 2587.0}; NVMe composite maximum 55.85 C.
+Flash: successful startup 864.3 s, 13.83 GPU-reported kJ.
+  First complete b12x planning and compilation on this checkpoint path. This is not an equal-cache cold-start comparison.
+  Full campaign peak 79.5 C ACPI; min available 17.49 GiB.
+  Fan maxima {'hwmon0': 2038.0, 'hwmon1': 2097.0}; NVMe composite maximum 54.85 C.
+Flash's full-run peak was during startup; its normal throughput peak was
+75.2 C, capped 69.9 C. Super's first normal pass reached 80.9 C with fans still
+ramping; the final normal pass reached 77.0 C and capped passes 74.1/74.7 C.
+Ambient was unmeasured, the fans followed their own curve, and there were only
+two passes per mode. Treat these as observations, not a controlled causal
+thermal comparison. The telemetry summary's interrupted=true means the logger
+received SIGTERM after the successful job ended; it does not mean job failure.
+
+Flash's default allocator crossed the memory guards during repacking. Adding
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to the SAME image/precision/
+checkpoint avoided that spike. The successful complete campaign stayed above
+17.49 GiB available. We did not lower the 2 GiB hard floor. See the recipe report
+for the primary community references and archived failed attempts.
+
+Artifacts and reproducing analysis
+experiments/large-models-20261102/ contains per-model quality Markdown reports,
+all four throughput JSON files, pooled values/SD, CSV, workload and startup
+energy summaries, exact launch/spec/profile acknowledgements, image/model pins,
+and compressed full raw runs. Startup failures are separate archives with no
+quality scores. The owner controller is provided as a host-specific example.
+scripts/workload_energy.py regenerates workload energy/stress from events and
+telemetry. See LARGE-MODEL-RECIPES-20261103.txt for staging/build/serving details
+and LARGE-MODEL-PROTOCOL-20261102.txt for the complete protocol/change record.
+
+Validation: both queue jobs and in-job outcome files exited 0; every phase
+completion marker is present. All eight matrices contain nine shapes, each
+with three measured values and requested output length 128. The planned matrix
+responses total 10752 generated tokens per invocation. Server counter deltas
+were 10788-10795 for Super and 10760-10807 for Flash; additional harness probes
+account for small variable overhead and are included in suite energy. Thus the
+entire suite is not an exactly identical generated-token budget. No thermal
+slowdown samples or host oom_kill increments occurred in either successful run.
+All recorded runner/guard hashes match their job Git commits. CPU-only full
+profile orchestration, hard/soft memory thresholds, clipped energy integration
+and host-counter accounting checks passed. README local links resolve and the
+archives were read back successfully. Raw data and content hashes are supplied.
+
+Next planned: DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw, last, configured at
+262144 tokens. Not downloaded or tested in this campaign.

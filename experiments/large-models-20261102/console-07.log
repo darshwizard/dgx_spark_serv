@@ -1,0 +1,165 @@
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "Flash-Next NVIDIA recipe image", "image": "sha256:cbedcf30b3d09a910ca78c25afb2d82fe3850b5c6c71eca54332edd25fab0336", "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server
+{"utc": "2026-11-03T00:50:34.279532+00:00", "monotonic_s": 532742.388737598, "event": "submitted", "model": "flash", "job_id": "1d0a14cddc06486da6036384d6d71fb9", "label": "flash-paired-07"}
+{"utc": "2026-11-03T00:50:34.920646+00:00", "monotonic_s": 532743.029838434, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 41.8, "available_gib": 118.57471084594727}
+{"utc": "2026-11-03T00:51:07.583844+00:00", "monotonic_s": 532775.693037148, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 50.4, "available_gib": 100.3480453491211}
+{"utc": "2026-11-03T00:51:40.328807+00:00", "monotonic_s": 532808.437996816, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 43.7, "available_gib": 47.53527069091797}
+{"utc": "2026-11-03T00:52:12.899557+00:00", "monotonic_s": 532841.008746128, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 43.9, "available_gib": 46.23796844482422}
+{"utc": "2026-11-03T00:52:45.608242+00:00", "monotonic_s": 532873.717433582, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 45.5, "available_gib": 44.81760025024414}
+{"utc": "2026-11-03T00:53:18.172261+00:00", "monotonic_s": 532906.281450958, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 52.0, "available_gib": 41.13262176513672}
+{"utc": "2026-11-03T00:53:51.065919+00:00", "monotonic_s": 532939.175112192, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 58.3, "available_gib": 38.33744430541992}
+{"utc": "2026-11-03T00:54:23.908301+00:00", "monotonic_s": 532972.017490424, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 74.0, "available_gib": 19.700847625732422}
+{"utc": "2026-11-03T00:54:56.824860+00:00", "monotonic_s": 533004.934051898, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 63.0, "available_gib": 19.376495361328125}
+{"utc": "2026-11-03T00:55:29.534615+00:00", "monotonic_s": 533037.643806706, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 65.2, "available_gib": 19.01251983642578}
+{"utc": "2026-11-03T00:56:02.434217+00:00", "monotonic_s": 533070.543405135, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 65.6, "available_gib": 19.231117248535156}
+{"utc": "2026-11-03T00:56:35.310675+00:00", "monotonic_s": 533103.419866948, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 58.2, "available_gib": 37.11137771606445}
+{"utc": "2026-11-03T00:57:08.423623+00:00", "monotonic_s": 533136.532820369, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 56.2, "available_gib": 18.002208709716797}
+{"utc": "2026-11-03T00:57:41.136670+00:00", "monotonic_s": 533169.245862467, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 60.6, "available_gib": 17.793251037597656}
+{"utc": "2026-11-03T00:58:13.923711+00:00", "monotonic_s": 533202.032915947, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 73.4, "available_gib": 35.70989227294922}
+{"utc": "2026-11-03T00:58:46.778181+00:00", "monotonic_s": 533234.887370048, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 58.0, "available_gib": 37.981544494628906}
+{"utc": "2026-11-03T00:59:19.510606+00:00", "monotonic_s": 533267.619795292, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 66.1, "available_gib": 35.581363677978516}
+{"utc": "2026-11-03T00:59:52.291896+00:00", "monotonic_s": 533300.401087484, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 70.3, "available_gib": 34.32645797729492}
+{"utc": "2026-11-03T01:00:24.942974+00:00", "monotonic_s": 533333.05216532, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 63.0, "available_gib": 30.912128448486328}
+{"utc": "2026-11-03T01:00:57.771855+00:00", "monotonic_s": 533365.881047555, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 62.9, "available_gib": 29.232295989990234}
+{"utc": "2026-11-03T01:01:30.448725+00:00", "monotonic_s": 533398.557916291, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 64.0, "available_gib": 26.80145263671875}
+{"utc": "2026-11-03T01:02:03.071565+00:00", "monotonic_s": 533431.18075712, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 65.6, "available_gib": 26.073062896728516}
+{"utc": "2026-11-03T01:02:35.626567+00:00", "monotonic_s": 533463.735758964, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 66.0, "available_gib": 21.287113189697266}
+{"utc": "2026-11-03T01:03:08.652077+00:00", "monotonic_s": 533496.761269432, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 65.9, "available_gib": 20.633014678955078}
+{"utc": "2026-11-03T01:03:41.377609+00:00", "monotonic_s": 533529.486802284, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 67.6, "available_gib": 19.61182403564453}
+{"utc": "2026-11-03T01:04:14.288396+00:00", "monotonic_s": 533562.397588185, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 60.0, "available_gib": 18.944847106933594}
+{"utc": "2026-11-03T01:04:46.981751+00:00", "monotonic_s": 533595.090939506, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 56.6, "available_gib": 19.117515563964844}
+{"utc": "2026-11-03T01:05:01.697063+00:00", "monotonic_s": 533609.80625256, "event": "conditioning", "model": "flash", "seq": 1, "profile": "normal", "hottest_c": 49.8}
+{"utc": "2026-11-03T01:05:17.704989+00:00", "monotonic_s": 533625.814179195, "event": "cooldown", "model": "flash", "seq": 1, "hottest_c": 48.6}
+{"utc": "2026-11-03T01:05:32.362651+00:00", "monotonic_s": 533640.471842524, "event": "phase_released", "model": "flash", "seq": 1, "profile": "normal", "hottest_c": 47.8}
+{"utc": "2026-11-03T01:05:50.940545+00:00", "monotonic_s": 533659.049737007, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 57.7, "available_gib": 19.892478942871094}
+{"utc": "2026-11-03T01:06:20.949396+00:00", "monotonic_s": 533689.058590009, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 61.5, "available_gib": 19.869232177734375}
+{"utc": "2026-11-03T01:06:54.380662+00:00", "monotonic_s": 533722.489866372, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 63.7, "available_gib": 19.883831024169922}
+{"utc": "2026-11-03T01:07:24.418388+00:00", "monotonic_s": 533752.527577664, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 64.4, "available_gib": 19.850479125976562}
+{"utc": "2026-11-03T01:07:57.975737+00:00", "monotonic_s": 533786.08493812, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 65.4, "available_gib": 19.865806579589844}
+{"utc": "2026-11-03T01:08:28.022526+00:00", "monotonic_s": 533816.131722135, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 63.5, "available_gib": 19.855152130126953}
+{"utc": "2026-11-03T01:09:01.521498+00:00", "monotonic_s": 533849.630689659, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 67.0, "available_gib": 19.440296173095703}
+{"utc": "2026-11-03T01:09:31.576719+00:00", "monotonic_s": 533879.685912705, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 67.9, "available_gib": 19.422760009765625}
+{"utc": "2026-11-03T01:10:05.012274+00:00", "monotonic_s": 533913.121467037, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 66.6, "available_gib": 19.423931121826172}
+{"utc": "2026-11-03T01:10:38.668497+00:00", "monotonic_s": 533946.77769108, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 64.6, "available_gib": 19.402217864990234}
+{"utc": "2026-11-03T01:11:12.480587+00:00", "monotonic_s": 533980.589780436, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 65.8, "available_gib": 19.40549087524414}
+{"utc": "2026-11-03T01:11:45.924978+00:00", "monotonic_s": 534014.034175634, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 65.1, "available_gib": 19.40243148803711}
+{"utc": "2026-11-03T01:12:16.027264+00:00", "monotonic_s": 534044.136477101, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 64.6, "available_gib": 19.41177749633789}
+{"utc": "2026-11-03T01:12:49.649398+00:00", "monotonic_s": 534077.758599277, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 66.9, "available_gib": 19.440670013427734}
+{"utc": "2026-11-03T01:13:23.329818+00:00", "monotonic_s": 534111.439025615, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 66.5, "available_gib": 19.409561157226562}
+{"utc": "2026-11-03T01:13:56.822946+00:00", "monotonic_s": 534144.932143345, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 69.2, "available_gib": 19.404815673828125}
+{"utc": "2026-11-03T01:14:26.862467+00:00", "monotonic_s": 534174.971659801, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 66.2, "available_gib": 19.402679443359375}
+{"utc": "2026-11-03T01:15:00.287610+00:00", "monotonic_s": 534208.396802545, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 68.4, "available_gib": 19.388195037841797}
+{"utc": "2026-11-03T01:15:33.787179+00:00", "monotonic_s": 534241.896382338, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 68.5, "available_gib": 19.402740478515625}
+{"utc": "2026-11-03T01:16:07.263433+00:00", "monotonic_s": 534275.372631657, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 69.4, "available_gib": 19.397682189941406}
+{"utc": "2026-11-03T01:16:37.414270+00:00", "monotonic_s": 534305.523462445, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 69.9, "available_gib": 19.376209259033203}
+{"utc": "2026-11-03T01:17:11.099390+00:00", "monotonic_s": 534339.208584546, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 68.5, "available_gib": 19.388534545898438}
+{"utc": "2026-11-03T01:17:41.149939+00:00", "monotonic_s": 534369.259134783, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 69.6, "available_gib": 19.393760681152344}
+{"utc": "2026-11-03T01:18:14.656507+00:00", "monotonic_s": 534402.765700502, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 66.5, "available_gib": 19.384204864501953}
+{"utc": "2026-11-03T01:18:44.763455+00:00", "monotonic_s": 534432.8726571, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 69.4, "available_gib": 19.39264678955078}
+{"utc": "2026-11-03T01:19:18.287729+00:00", "monotonic_s": 534466.396925413, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 70.9, "available_gib": 19.381690979003906}
+{"utc": "2026-11-03T01:19:48.432934+00:00", "monotonic_s": 534496.542134985, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 71.2, "available_gib": 19.357391357421875}
+{"utc": "2026-11-03T01:20:21.890213+00:00", "monotonic_s": 534529.999410187, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 70.0, "available_gib": 19.215045928955078}
+{"utc": "2026-11-03T01:20:55.638522+00:00", "monotonic_s": 534563.747727045, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 68.5, "available_gib": 19.21082305908203}
+{"utc": "2026-11-03T01:21:29.179753+00:00", "monotonic_s": 534597.28894249, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 71.9, "available_gib": 19.207881927490234}
+{"utc": "2026-11-03T01:22:02.822246+00:00", "monotonic_s": 534630.931457149, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 68.5, "available_gib": 19.195953369140625}
+{"utc": "2026-11-03T01:22:36.434446+00:00", "monotonic_s": 534664.543642969, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 68.9, "available_gib": 19.176918029785156}
+{"utc": "2026-11-03T01:23:09.995204+00:00", "monotonic_s": 534698.104405876, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 69.9, "available_gib": 19.216720581054688}
+{"utc": "2026-11-03T01:23:43.649086+00:00", "monotonic_s": 534731.758284861, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 68.6, "available_gib": 19.164039611816406}
+{"utc": "2026-11-03T01:24:17.069358+00:00", "monotonic_s": 534765.178554361, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 72.0, "available_gib": 19.193984985351562}
+{"utc": "2026-11-03T01:24:47.319449+00:00", "monotonic_s": 534795.428639929, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 71.9, "available_gib": 19.215267181396484}
+{"utc": "2026-11-03T01:25:20.833522+00:00", "monotonic_s": 534828.942724685, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 73.4, "available_gib": 19.181888580322266}
+{"utc": "2026-11-03T01:25:54.531349+00:00", "monotonic_s": 534862.640540752, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 71.0, "available_gib": 19.155799865722656}
+{"utc": "2026-11-03T01:26:28.081825+00:00", "monotonic_s": 534896.191014661, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 69.8, "available_gib": 19.147563934326172}
+{"utc": "2026-11-03T01:27:01.700520+00:00", "monotonic_s": 534929.809720143, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 75.0, "available_gib": 19.168651580810547}
+{"utc": "2026-11-03T01:27:35.199403+00:00", "monotonic_s": 534963.308608108, "event": "heartbeat", "model": "flash", "state": "running", "phase": 1, "hottest_c": 71.3, "available_gib": 19.170745849609375}
+{"utc": "2026-11-03T01:27:50.339139+00:00", "monotonic_s": 534978.448331279, "event": "conditioning", "model": "flash", "seq": 2, "profile": "efficiency80", "hottest_c": 69.2}
+{"utc": "2026-11-03T01:28:05.349597+00:00", "monotonic_s": 534993.458791806, "event": "cooldown", "model": "flash", "seq": 2, "hottest_c": 60.5}
+{"utc": "2026-11-03T01:28:21.206481+00:00", "monotonic_s": 535009.315674531, "event": "phase_released", "model": "flash", "seq": 2, "profile": "efficiency80", "hottest_c": 57.0}
+{"utc": "2026-11-03T01:28:36.326845+00:00", "monotonic_s": 535024.436041785, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 61.3, "available_gib": 19.361602783203125}
+{"utc": "2026-11-03T01:29:06.849295+00:00", "monotonic_s": 535054.958489373, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.8, "available_gib": 19.358402252197266}
+{"utc": "2026-11-03T01:29:37.017360+00:00", "monotonic_s": 535085.126571667, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.8, "available_gib": 19.329452514648438}
+{"utc": "2026-11-03T01:30:07.476919+00:00", "monotonic_s": 535115.586122211, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.2, "available_gib": 19.32851791381836}
+{"utc": "2026-11-03T01:30:37.781458+00:00", "monotonic_s": 535145.890647708, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.0, "available_gib": 19.349945068359375}
+{"utc": "2026-11-03T01:31:08.290251+00:00", "monotonic_s": 535176.399445954, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.2, "available_gib": 19.34062957763672}
+{"utc": "2026-11-03T01:31:38.519688+00:00", "monotonic_s": 535206.62888742, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.0, "available_gib": 19.343673706054688}
+{"utc": "2026-11-03T01:32:08.958901+00:00", "monotonic_s": 535237.068111807, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.5, "available_gib": 19.32628631591797}
+{"utc": "2026-11-03T01:32:39.238110+00:00", "monotonic_s": 535267.347310123, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.5, "available_gib": 19.327537536621094}
+{"utc": "2026-11-03T01:33:09.732984+00:00", "monotonic_s": 535297.842174967, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.8, "available_gib": 19.284679412841797}
+{"utc": "2026-11-03T01:33:39.957694+00:00", "monotonic_s": 535328.066886016, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.9, "available_gib": 19.320636749267578}
+{"utc": "2026-11-03T01:34:10.548276+00:00", "monotonic_s": 535358.657472979, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.7, "available_gib": 19.342025756835938}
+{"utc": "2026-11-03T01:34:40.806114+00:00", "monotonic_s": 535388.915314117, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.0, "available_gib": 19.334800720214844}
+{"utc": "2026-11-03T01:35:11.282970+00:00", "monotonic_s": 535419.392175626, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.8, "available_gib": 19.26165008544922}
+{"utc": "2026-11-03T01:35:41.690305+00:00", "monotonic_s": 535449.799507942, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.9, "available_gib": 19.31563949584961}
+{"utc": "2026-11-03T01:36:12.133612+00:00", "monotonic_s": 535480.242805497, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.4, "available_gib": 19.324920654296875}
+{"utc": "2026-11-03T01:36:42.636202+00:00", "monotonic_s": 535510.74539707, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.6, "available_gib": 19.318241119384766}
+{"utc": "2026-11-03T01:37:13.112815+00:00", "monotonic_s": 535541.22201317, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.7, "available_gib": 19.287384033203125}
+{"utc": "2026-11-03T01:37:43.293551+00:00", "monotonic_s": 535571.402754688, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.7, "available_gib": 19.316207885742188}
+{"utc": "2026-11-03T01:38:13.790260+00:00", "monotonic_s": 535601.899461719, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.9, "available_gib": 19.31322479248047}
+{"utc": "2026-11-03T01:38:44.007114+00:00", "monotonic_s": 535632.116315092, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.8, "available_gib": 19.288532257080078}
+{"utc": "2026-11-03T01:39:14.546904+00:00", "monotonic_s": 535662.656110909, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.0, "available_gib": 19.306468963623047}
+{"utc": "2026-11-03T01:39:44.792216+00:00", "monotonic_s": 535692.901405422, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.3, "available_gib": 19.322826385498047}
+{"utc": "2026-11-03T01:40:15.280033+00:00", "monotonic_s": 535723.389245197, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.7, "available_gib": 19.298023223876953}
+{"utc": "2026-11-03T01:40:45.642538+00:00", "monotonic_s": 535753.751750585, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.0, "available_gib": 19.288742065429688}
+{"utc": "2026-11-03T01:41:16.222785+00:00", "monotonic_s": 535784.331993522, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.7, "available_gib": 19.303054809570312}
+{"utc": "2026-11-03T01:41:46.524795+00:00", "monotonic_s": 535814.634009207, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.6, "available_gib": 19.296276092529297}
+{"utc": "2026-11-03T01:42:17.054656+00:00", "monotonic_s": 535845.163845921, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.9, "available_gib": 19.299766540527344}
+{"utc": "2026-11-03T01:42:47.332535+00:00", "monotonic_s": 535875.441744695, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 62.7, "available_gib": 19.32540512084961}
+{"utc": "2026-11-03T01:43:17.810745+00:00", "monotonic_s": 535905.919939865, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.2, "available_gib": 19.10456085205078}
+{"utc": "2026-11-03T01:43:48.202369+00:00", "monotonic_s": 535936.311588657, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 64.2, "available_gib": 19.146934509277344}
+{"utc": "2026-11-03T01:44:18.615271+00:00", "monotonic_s": 535966.724484926, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 63.8, "available_gib": 19.116195678710938}
+{"utc": "2026-11-03T01:44:48.963502+00:00", "monotonic_s": 535997.07270574, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 65.4, "available_gib": 19.14608383178711}
+{"utc": "2026-11-03T01:45:19.331282+00:00", "monotonic_s": 536027.440478875, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 66.6, "available_gib": 19.14229965209961}
+{"utc": "2026-11-03T01:45:49.595846+00:00", "monotonic_s": 536057.705062108, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 64.7, "available_gib": 19.135135650634766}
+{"utc": "2026-11-03T01:46:20.045355+00:00", "monotonic_s": 536088.15456288, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 67.0, "available_gib": 19.133617401123047}
+{"utc": "2026-11-03T01:46:50.426752+00:00", "monotonic_s": 536118.535956691, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 66.7, "available_gib": 19.129261016845703}
+{"utc": "2026-11-03T01:47:20.871536+00:00", "monotonic_s": 536148.980735242, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 67.1, "available_gib": 19.135765075683594}
+{"utc": "2026-11-03T01:47:51.021652+00:00", "monotonic_s": 536179.130845099, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 67.4, "available_gib": 19.07125473022461}
+{"utc": "2026-11-03T01:48:21.450354+00:00", "monotonic_s": 536209.559548228, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 68.1, "available_gib": 19.116756439208984}
+{"utc": "2026-11-03T01:48:51.576154+00:00", "monotonic_s": 536239.685368619, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 68.8, "available_gib": 19.12685775756836}
+{"utc": "2026-11-03T01:49:22.141024+00:00", "monotonic_s": 536270.250218332, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 68.7, "available_gib": 19.124858856201172}
+{"utc": "2026-11-03T01:49:52.489919+00:00", "monotonic_s": 536300.599112335, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 69.1, "available_gib": 19.104923248291016}
+{"utc": "2026-11-03T01:50:23.082400+00:00", "monotonic_s": 536331.191592508, "event": "heartbeat", "model": "flash", "state": "running", "phase": 2, "hottest_c": 69.4, "available_gib": 19.11620330810547}
+{"utc": "2026-11-03T01:50:38.182421+00:00", "monotonic_s": 536346.291613974, "event": "conditioning", "model": "flash", "seq": 3, "profile": "efficiency80", "hottest_c": 64.1}
+{"utc": "2026-11-03T01:50:53.187829+00:00", "monotonic_s": 536361.297022597, "event": "cooldown", "model": "flash", "seq": 3, "hottest_c": 57.9}
+{"utc": "2026-11-03T01:51:09.089228+00:00", "monotonic_s": 536377.198421623, "event": "phase_released", "model": "flash", "seq": 3, "profile": "efficiency80", "hottest_c": 55.1}
+{"utc": "2026-11-03T01:51:24.260295+00:00", "monotonic_s": 536392.369504722, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 60.1, "available_gib": 19.035892486572266}
+{"utc": "2026-11-03T01:51:54.678205+00:00", "monotonic_s": 536422.787401019, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 62.7, "available_gib": 19.110660552978516}
+{"utc": "2026-11-03T01:52:25.127736+00:00", "monotonic_s": 536453.236928299, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 65.4, "available_gib": 19.069835662841797}
+{"utc": "2026-11-03T01:52:55.509408+00:00", "monotonic_s": 536483.618604705, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 64.3, "available_gib": 18.978748321533203}
+{"utc": "2026-11-03T01:53:26.030402+00:00", "monotonic_s": 536514.139604711, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 64.8, "available_gib": 18.87646484375}
+{"utc": "2026-11-03T01:53:56.346494+00:00", "monotonic_s": 536544.45568359, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 65.3, "available_gib": 19.09844207763672}
+{"utc": "2026-11-03T01:54:26.923162+00:00", "monotonic_s": 536575.032352223, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 66.9, "available_gib": 19.110702514648438}
+{"utc": "2026-11-03T01:54:57.176383+00:00", "monotonic_s": 536605.285575172, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 64.7, "available_gib": 19.087718963623047}
+{"utc": "2026-11-03T01:55:27.654174+00:00", "monotonic_s": 536635.763366771, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 65.4, "available_gib": 19.074417114257812}
+{"utc": "2026-11-03T01:55:57.934649+00:00", "monotonic_s": 536666.043847828, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 64.3, "available_gib": 19.093505859375}
+{"utc": "2026-11-03T01:56:28.506537+00:00", "monotonic_s": 536696.615735735, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 64.8, "available_gib": 19.10263442993164}
+{"utc": "2026-11-03T01:56:58.858144+00:00", "monotonic_s": 536726.967353777, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 64.8, "available_gib": 19.093273162841797}
+{"utc": "2026-11-03T01:57:29.244473+00:00", "monotonic_s": 536757.353662513, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 66.7, "available_gib": 19.070667266845703}
+{"utc": "2026-11-03T01:57:59.509499+00:00", "monotonic_s": 536787.618689249, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 68.7, "available_gib": 19.09195327758789}
+{"utc": "2026-11-03T01:58:29.988565+00:00", "monotonic_s": 536818.097762982, "event": "heartbeat", "model": "flash", "state": "running", "phase": 3, "hottest_c": 66.9, "available_gib": 19.06729507446289}
+{"utc": "2026-11-03T01:58:52.895048+00:00", "monotonic_s": 536841.004241246, "event": "conditioning", "model": "flash", "seq": 4, "profile": "normal", "hottest_c": 61.0}
+{"utc": "2026-11-03T01:59:00.900775+00:00", "monotonic_s": 536849.009968174, "event": "cooldown", "model": "flash", "seq": 4, "hottest_c": 58.0}
+{"utc": "2026-11-03T01:59:23.568466+00:00", "monotonic_s": 536871.677659856, "event": "phase_released", "model": "flash", "seq": 4, "profile": "normal", "hottest_c": 53.8}
+{"utc": "2026-11-03T01:59:31.023389+00:00", "monotonic_s": 536879.132602318, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 58.3, "available_gib": 19.096088409423828}
+{"utc": "2026-11-03T02:00:04.696317+00:00", "monotonic_s": 536912.805533935, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 63.3, "available_gib": 19.084209442138672}
+{"utc": "2026-11-03T02:00:34.801933+00:00", "monotonic_s": 536942.911130174, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 65.0, "available_gib": 19.062381744384766}
+{"utc": "2026-11-03T02:01:08.446958+00:00", "monotonic_s": 536976.556150335, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 67.5, "available_gib": 19.09355926513672}
+{"utc": "2026-11-03T02:01:38.515372+00:00", "monotonic_s": 537006.624567064, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 65.4, "available_gib": 19.091339111328125}
+{"utc": "2026-11-03T02:02:12.081809+00:00", "monotonic_s": 537040.191015767, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 66.1, "available_gib": 19.082324981689453}
+{"utc": "2026-11-03T02:02:42.249689+00:00", "monotonic_s": 537070.358880467, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 70.4, "available_gib": 19.097675323486328}
+{"utc": "2026-11-03T02:03:15.730267+00:00", "monotonic_s": 537103.839458369, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 68.7, "available_gib": 19.06824493408203}
+{"utc": "2026-11-03T02:03:45.814197+00:00", "monotonic_s": 537133.923388426, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 70.6, "available_gib": 19.086978912353516}
+{"utc": "2026-11-03T02:04:19.390965+00:00", "monotonic_s": 537167.500158677, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 68.3, "available_gib": 19.087825775146484}
+{"utc": "2026-11-03T02:04:49.532029+00:00", "monotonic_s": 537197.641222072, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 69.3, "available_gib": 19.09707260131836}
+{"utc": "2026-11-03T02:05:23.063267+00:00", "monotonic_s": 537231.172470075, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 71.1, "available_gib": 19.08428192138672}
+{"utc": "2026-11-03T02:05:53.185724+00:00", "monotonic_s": 537261.294921805, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 71.1, "available_gib": 19.094463348388672}
+{"utc": "2026-11-03T02:06:26.678000+00:00", "monotonic_s": 537294.787188479, "event": "heartbeat", "model": "flash", "state": "running", "phase": 4, "hottest_c": 72.5, "available_gib": 19.080368041992188}
+{"utc": "2026-11-03T02:06:59.962039+00:00", "monotonic_s": 537328.071228399, "event": "job_finished", "model": "flash", "state": "completed", "exit_code": 0}
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "original NGC image", "image": null, "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server

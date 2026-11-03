@@ -1,0 +1,6 @@
+{
+  "startup_s": 864.2509857770056,
+  "gpu_reported_energy_j": 13828.266186526896,
+  "power_coverage_s": 864.2512870869832,
+  "cache_note": "First complete b12x planning and compilation on this checkpoint path"
+}

@@ -1,0 +1,18 @@
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "Flash-Next NVIDIA recipe image", "image": "sha256:cbedcf30b3d09a910ca78c25afb2d82fe3850b5c6c71eca54332edd25fab0336", "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server
+{"utc": "2026-11-03T00:46:08.876512+00:00", "monotonic_s": 532476.985733784, "event": "submitted", "model": "flash", "job_id": "7a9c7e55061943ab87570e480b5dcb87", "label": "flash-paired-06"}
+{"utc": "2026-11-03T00:46:09.541945+00:00", "monotonic_s": 532477.651135942, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 40.7, "available_gib": 118.70115280151367}
+{"utc": "2026-11-03T00:46:42.281188+00:00", "monotonic_s": 532510.390380306, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 51.0, "available_gib": 114.80762100219727}
+{"utc": "2026-11-03T00:47:15.224365+00:00", "monotonic_s": 532543.333554749, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 43.7, "available_gib": 47.19706726074219}
+{"utc": "2026-11-03T00:47:47.833376+00:00", "monotonic_s": 532575.942566381, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 43.7, "available_gib": 46.135406494140625}
+{"utc": "2026-11-03T00:48:20.597840+00:00", "monotonic_s": 532608.707032151, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 43.7, "available_gib": 44.895835876464844}
+{"utc": "2026-11-03T00:48:53.233667+00:00", "monotonic_s": 532641.342859767, "event": "heartbeat", "model": "flash", "state": "running", "phase": 0, "hottest_c": 48.9, "available_gib": 40.23942565917969}
+{"utc": "2026-11-03T00:49:22.382250+00:00", "monotonic_s": 532670.491444002, "event": "job_finished", "model": "flash", "state": "cancelled", "exit_code": null}
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "original NGC image", "image": null, "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server

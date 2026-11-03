@@ -1,0 +1,9 @@
+{
+  "id": "4c590548696146e393f36986d8ac9c6b",
+  "uid": 1002,
+  "command": "[\"python3\", \"/workspace/code/model_campaign_job.py\", \"--model\", \"super\", \"--run-id\", \"super-paired-05\"]",
+  "metadata": "{\"commit\": \"69fb013bc137947d104ad5384a40a6b785d779b7\", \"dataset\": \"tool-eval-104-and-seeded-llama-benchy-v2\", \"parameters\": {\"model\": \"super\", \"campaign\": \"large-models-20261102\", \"profiles\": [\"normal\", \"efficiency80\", \"efficiency80\", \"normal\"], \"exact_output_tokens\": 128, \"numpy_seed\": 42, \"request_seed\": 42, \"context\": 32768, \"cpus\": 20, \"memory_ceiling_gib\": 118, \"source_hashes\": {\"model_campaign_job.py\": \"773ac3d352ec8a27ef51128137c884ad5760548ef6db4410ceef122b4f5bd30b\", \"paired_model_bench.py\": \"589edc27040eec1743355db6c059b3143a82d31347e6b6561468751da8597653\", \"campaign_guard.py\": \"3a0d92342afdb70e93c677a938dcd6bcb043234032dda1b29a9fb9e3a2c28cb7\", \"clock_profile.py\": \"cf90cd9516c51e18851a80a2a8e449a17779f092096aad8f12573e39896601b7\"}}}",
+  "state": "completed",
+  "exit_code": 0,
+  "created": 1793662342.9279044
+}

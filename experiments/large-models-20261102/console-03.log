@@ -1,0 +1,35 @@
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "Super VL forum image", "image": "sha256:b523c5e541c32fa5503afe4375d174460f0a96ca75347aad7836d5ab2007d49a", "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server
+{"utc": "2026-11-02T23:10:55.556694+00:00", "monotonic_s": 526763.665898985, "event": "submitted", "model": "super", "job_id": "30097567d3e5485a98b8a32b3312b14d", "label": "super-paired-03"}
+{"utc": "2026-11-02T23:10:56.193293+00:00", "monotonic_s": 526764.302481982, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 42.9, "available_gib": 118.2161636352539}
+{"utc": "2026-11-02T23:11:28.971410+00:00", "monotonic_s": 526797.080598432, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 47.3, "available_gib": 41.87312316894531}
+{"utc": "2026-11-02T23:12:01.898416+00:00", "monotonic_s": 526830.007609162, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 52.1, "available_gib": 41.627471923828125}
+{"utc": "2026-11-02T23:12:34.747631+00:00", "monotonic_s": 526862.85681997, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 52.0, "available_gib": 42.32876205444336}
+{"utc": "2026-11-02T23:13:07.825579+00:00", "monotonic_s": 526895.934773676, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 51.0, "available_gib": 42.740386962890625}
+{"utc": "2026-11-02T23:13:40.863106+00:00", "monotonic_s": 526928.97229809, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 52.0, "available_gib": 42.312591552734375}
+{"utc": "2026-11-02T23:14:13.646606+00:00", "monotonic_s": 526961.755794125, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 51.7, "available_gib": 41.25690460205078}
+{"utc": "2026-11-02T23:14:46.466153+00:00", "monotonic_s": 526994.575344196, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 52.3, "available_gib": 42.54435729980469}
+{"utc": "2026-11-02T23:15:19.301740+00:00", "monotonic_s": 527027.410931327, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 51.5, "available_gib": 41.8942756652832}
+{"utc": "2026-11-02T23:15:52.506776+00:00", "monotonic_s": 527060.615967018, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 51.2, "available_gib": 42.430747985839844}
+{"utc": "2026-11-02T23:16:25.434556+00:00", "monotonic_s": 527093.543745362, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 49.5, "available_gib": 43.15348434448242}
+{"utc": "2026-11-02T23:16:58.649397+00:00", "monotonic_s": 527126.758779833, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 50.5, "available_gib": 42.123958587646484}
+{"utc": "2026-11-02T23:17:31.465466+00:00", "monotonic_s": 527159.574656841, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 53.1, "available_gib": 42.848960876464844}
+{"utc": "2026-11-02T23:18:04.471796+00:00", "monotonic_s": 527192.580987549, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 55.4, "available_gib": 41.536502838134766}
+{"utc": "2026-11-02T23:18:37.194444+00:00", "monotonic_s": 527225.303635718, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 55.2, "available_gib": 40.43166732788086}
+{"utc": "2026-11-02T23:19:10.636715+00:00", "monotonic_s": 527258.745903748, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 55.2, "available_gib": 38.417911529541016}
+{"utc": "2026-11-02T23:19:43.379382+00:00", "monotonic_s": 527291.488570904, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 50.5, "available_gib": 38.2868766784668}
+{"utc": "2026-11-02T23:20:13.482489+00:00", "monotonic_s": 527321.591690782, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 64.1, "available_gib": 22.187946319580078}
+{"utc": "2026-11-02T23:20:46.770327+00:00", "monotonic_s": 527354.879525289, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 68.3, "available_gib": 17.28131103515625}
+{"utc": "2026-11-02T23:21:20.261152+00:00", "monotonic_s": 527388.370343462, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 68.3, "available_gib": 25.090721130371094}
+{"utc": "2026-11-02T23:21:23.920764+00:00", "monotonic_s": 527392.029956194, "event": "conditioning", "model": "super", "seq": 1, "profile": "normal", "hottest_c": 56.8}
+{"utc": "2026-11-02T23:21:50.950020+00:00", "monotonic_s": 527419.059213517, "event": "cooldown", "model": "super", "seq": 1, "hottest_c": 51.8}
+{"utc": "2026-11-02T23:21:54.901182+00:00", "monotonic_s": 527423.01037342, "event": "phase_released", "model": "super", "seq": 1, "profile": "normal", "hottest_c": 51.5}
+{"utc": "2026-11-02T23:21:58.246642+00:00", "monotonic_s": 527426.355830823, "event": "job_finished", "model": "super", "state": "failed", "exit_code": 1}
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "original NGC image", "image": null, "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server

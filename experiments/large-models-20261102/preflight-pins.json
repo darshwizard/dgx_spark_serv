@@ -1,0 +1,13 @@
+{
+  "recipes": {
+    "super-service.reference": {
+      "sha256": "0115c707cc4c5a9773ed9983dc29398db82cf813d634c800c6dc86193494b734"
+    },
+    "flash-playbook.reference": {
+      "sha256": "390aa83a3c66a085ff8c52b086633ee89ce992fb99247e318a6f925cb5003385"
+    }
+  },
+  "images": {
+    "super": "sha256:b523c5e541c32fa5503afe4375d174460f0a96ca75347aad7836d5ab2007d49a"
+  }
+}

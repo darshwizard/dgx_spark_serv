@@ -39,3 +39,19 @@ Owner preference: keep firmware and EC settings unchanged.
 Sources:
 https://forums.developer.nvidia.com/t/dgx-spark-fan-control-kernel-module-running-on-dual-sparks-since-mid-august/382536
 https://forums.developer.nvidia.com/t/new-dgx-spark-fans-barely-speed-up-at-high-temps-and-cant-be-adjusted-critical-please-open-fan-control/386805/21
+
+2026-11-03: Super VL and Flash Next paired campaign (stock automatic fans)
+Super: full-campaign hottest ACPI 80.9 C; fan maxima {'hwmon0': 2513.0, 'hwmon1': 2587.0} RPM;
+NVMe composite maximum 55.85 C.
+Flash: full-campaign hottest ACPI 79.5 C; fan maxima {'hwmon0': 2038.0, 'hwmon1': 2097.0} RPM;
+NVMe composite maximum 54.85 C.
+Super throughput peaks: normal 80.9/77.0 C; capped 74.1/74.7 C.
+Flash throughput peaks: normal 75.2/72.9 C; capped 69.9/69.1 C. Its full-run
+79.5 C peak occurred during startup.
+Super's first normal pass included fan ramp-up; later passes were near
+2500/2560 RPM. Flash fans never exceeded about 2040/2100 RPM during its campaign.
+Ambient was unmeasured and no curve was controlled: this is not a causal thermal
+comparison. Firmware, EC and fan control were unchanged. Both jobs completed
+without the 90 C stop. Models unloaded and clock ceilings restored.
+Raw data: ../experiments/large-models-20261102/
+Report: ../docs/LARGE-MODEL-RESULTS-20261103.txt

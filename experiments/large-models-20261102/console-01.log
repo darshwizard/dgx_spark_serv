@@ -1,0 +1,15 @@
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "Super VL forum image", "image": "sha256:b523c5e541c32fa5503afe4375d174460f0a96ca75347aad7836d5ab2007d49a", "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server
+{"utc": "2026-11-02T23:06:24.950715+00:00", "monotonic_s": 526493.059920059, "event": "submitted", "model": "super", "job_id": "bc223a1081e147f381eee68866945b2d", "label": "super-paired-01"}
+{"utc": "2026-11-02T23:06:26.014052+00:00", "monotonic_s": 526494.12324186, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 43.7, "available_gib": 117.7377700805664}
+{"utc": "2026-11-02T23:06:59.040901+00:00", "monotonic_s": 526527.15009382, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 51.8, "available_gib": 44.64051818847656}
+{"utc": "2026-11-02T23:07:31.890114+00:00", "monotonic_s": 526559.999303897, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 52.1, "available_gib": 41.884891510009766}
+{"utc": "2026-11-02T23:07:42.637537+00:00", "monotonic_s": 526570.746726276, "event": "job_finished", "model": "super", "state": "cancelled", "exit_code": null}
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "original NGC image", "image": null, "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server

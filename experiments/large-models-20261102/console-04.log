@@ -1,0 +1,29 @@
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "Super VL forum image", "image": "sha256:b523c5e541c32fa5503afe4375d174460f0a96ca75347aad7836d5ab2007d49a", "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server
+{"utc": "2026-11-02T23:23:21.752391+00:00", "monotonic_s": 527509.861626422, "event": "submitted", "model": "super", "job_id": "f75e4186ff234754b5fd1b99aeea6bad", "label": "super-paired-04"}
+{"utc": "2026-11-02T23:23:22.406391+00:00", "monotonic_s": 527510.515583616, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 44.7, "available_gib": 118.61272048950195}
+{"utc": "2026-11-02T23:23:55.120815+00:00", "monotonic_s": 527543.23001832, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 50.3, "available_gib": 41.92194366455078}
+{"utc": "2026-11-02T23:24:28.023876+00:00", "monotonic_s": 527576.133067588, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 51.2, "available_gib": 41.336326599121094}
+{"utc": "2026-11-02T23:25:00.733938+00:00", "monotonic_s": 527608.843126015, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 53.6, "available_gib": 41.18041229248047}
+{"utc": "2026-11-02T23:25:33.744576+00:00", "monotonic_s": 527641.853767385, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 53.0, "available_gib": 39.907039642333984}
+{"utc": "2026-11-02T23:26:06.570562+00:00", "monotonic_s": 527674.679752808, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 54.0, "available_gib": 42.2827262878418}
+{"utc": "2026-11-02T23:26:39.585850+00:00", "monotonic_s": 527707.695042183, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 52.8, "available_gib": 42.303592681884766}
+{"utc": "2026-11-02T23:27:12.458696+00:00", "monotonic_s": 527740.567886044, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 50.9, "available_gib": 42.86064910888672}
+{"utc": "2026-11-02T23:27:45.674839+00:00", "monotonic_s": 527773.784030699, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 50.1, "available_gib": 42.79530334472656}
+{"utc": "2026-11-02T23:28:18.485548+00:00", "monotonic_s": 527806.594740081, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 50.7, "available_gib": 42.960655212402344}
+{"utc": "2026-11-02T23:28:51.698866+00:00", "monotonic_s": 527839.808227742, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 53.7, "available_gib": 41.88713836669922}
+{"utc": "2026-11-02T23:29:24.567404+00:00", "monotonic_s": 527872.676594904, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 50.4, "available_gib": 42.574668884277344}
+{"utc": "2026-11-02T23:29:57.900391+00:00", "monotonic_s": 527906.009581077, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 52.8, "available_gib": 39.7635383605957}
+{"utc": "2026-11-02T23:30:31.512600+00:00", "monotonic_s": 527939.62179112, "event": "heartbeat", "model": "super", "state": "running", "phase": 0, "hottest_c": 58.5, "available_gib": 23.501529693603516}
+{"utc": "2026-11-02T23:30:35.147789+00:00", "monotonic_s": 527943.256981461, "event": "conditioning", "model": "super", "seq": 1, "profile": "normal", "hottest_c": 50.9}
+{"utc": "2026-11-02T23:31:02.179409+00:00", "monotonic_s": 527970.288601828, "event": "cooldown", "model": "super", "seq": 1, "hottest_c": 47.8}
+{"utc": "2026-11-02T23:31:06.010107+00:00", "monotonic_s": 527974.119296796, "event": "phase_released", "model": "super", "seq": 1, "profile": "normal", "hottest_c": 47.8}
+{"utc": "2026-11-02T23:31:13.029880+00:00", "monotonic_s": 527981.139073329, "event": "job_finished", "model": "super", "state": "failed", "exit_code": 1}
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-reference.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Warning: The unit file, source configuration file or drop-ins of compute-queue.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+{"runtime": "original NGC image", "image": null, "queue": "started"}
+curl: (7) Failed to connect to 192.168.1.240 port 8080 after 0 ms: Couldn't connect to server

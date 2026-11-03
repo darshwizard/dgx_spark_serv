@@ -1,6 +1,6 @@
 Large-model comparison protocol — 2026-11-02
 
-Status: Super completed; Flash Next retry pending. See subsequent run artifacts.
+Status: both models completed successfully; results in LARGE-MODEL-RESULTS-20261103.txt.
 
 Approved order
 1. NVIDIA Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr (7 draft tokens).
@@ -25,7 +25,8 @@ Super: https://github.com/hasso5703/alzeo/blob/main/install-nemotron-super.sh
   and docs/nemotron-super-lane.md in that repository. Same pinned community
   runtime previously validated for Bolt, plus our benchmark wheels installed
   without dependency upgrades. FlashInfer Mamba backend and FP16 SSM state with
-  stochastic rounding; retain its default KV precision. Adaptations: 32K context, four active sequences, one image
+  stochastic rounding; default KV resolves to FP8. Adaptations: 32K context,
+  four active sequences, one image
   and no video, job-local loopback, offline staged weights, queue isolation.
 Flash: https://github.com/NVIDIA/dgx-spark-playbooks/blob/main/nvidia/playbook-vllm/assets/sync-vllm-spark-128gb-qwen38-flash-next.sh
   eugr/spark-vllm-b12x:nightly-20261015, pinned locally by immutable image ID.
@@ -63,8 +64,10 @@ Temporary job backstop: 118 GiB charged-memory limit, no anonymous job swap,
 16 GiB shared memory. GPU allocations on this shared-memory platform are not
 fully represented in the cgroup charge, so host memory pressure is primary.
 Root watchdog outside the job cgroup samples every 100 ms and cancels only our
-job at hottest ACPI >=90 C, host available memory <2 GiB, host swap growth
->64 MiB together with <4 GiB available, required sensor loss, or controller loss. Phase admission needs >=3 GiB
+job at hottest ACPI >=90 C, host available memory <2 GiB, required sensor loss,
+or controller loss. Final Flash policy also stops after 30 s continuously below
+6 GiB. Super used the earlier extra stop at <4 GiB with >64 MiB host swap growth;
+its completed measurements stayed above 17 GiB. Phase admission needs >=3 GiB
 available. An in-job guard backs it up. Restore original runtime, limits, public
 reference pages and clock ceilings after the experiment, including failures.
 Firmware, EC, automatic fan control and host swap configuration stay unchanged.
@@ -74,7 +77,7 @@ Report quality scores/failures, prefill/decode and aggregate concurrency speed,
 wall duration, temperature, both fan RPMs, memory minima, actual clocks and
 approximate GPU-reported joules per completed workload. Integrate only intervals
 covered by power samples; report gaps. Exclude profile transitions and cooldowns
-from workload energy; report startup separately. These are GPU rail estimates,
+from workload energy; report startup separately. These are GPU-reported estimates,
 not wall/system energy. No whole-machine efficiency winner without a wall meter.
 
 Earlier Qwen 27B/Bolt quality scores use the same current 104-scenario harness.
@@ -82,6 +85,8 @@ Their throughput used random corpus offsets, natural EOS and a 16 CPU quota.
 Keep those speed results labeled as an earlier protocol; they are not matched
 controls for the new exact-length, seeded, 20 CPU comparison. Token rates across
 different tokenizers also do not guarantee equal semantic work.
+
+Historical startup controls and failures (not current-policy instructions)
 
 Startup guard revision: the first two Super attempts stopped before inference
 because an unconditional 64 MiB cumulative host-swap rule fired with ~40-42 GiB
@@ -121,3 +126,8 @@ that allocator setting to the same pinned NVIDIA recipe runtime and checkpoint.
 Keep MTP4, vision configuration, precision, GPU utilization 0.8, 32K context,
 all benchmark settings, and memory/thermal floors unchanged. This tests the
 allocator mitigation; it does not adopt the recipe's other kernel patches.
+
+Final outcome: Super 05 and Flash 07 completed both quality suites and all four
+throughput matrices. Flash 07 used the allocator mitigation described below.
+No safety threshold was crossed on either successful campaign. Both models were
+unloaded and the original runtime, references and clock limits restored.

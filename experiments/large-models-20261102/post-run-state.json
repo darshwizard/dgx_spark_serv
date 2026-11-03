@@ -1,0 +1,94 @@
+{
+  "cpu_limits": {
+    "policy11": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy8": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy6": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy18": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy4": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy16": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy2": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy14": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy0": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy12": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy9": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy10": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy7": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy19": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy5": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy17": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy3": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy15": {
+      "scaling_max_freq": 3900000,
+      "cpuinfo_max_freq": 3900000
+    },
+    "policy1": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    },
+    "policy13": {
+      "scaling_max_freq": 2808000,
+      "cpuinfo_max_freq": 2808000
+    }
+  },
+  "original_files_restored": {
+    "/opt/compute-host/queue.py": true,
+    "/opt/compute-host/web.py": true,
+    "/opt/compute-host/AGENTS.md": true,
+    "/home/d_wizard/AGENTS.md": true
+  },
+  "gpu_processes": "pid, process_name\n",
+  "running_containers": "",
+  "active_jobs": [],
+  "gpu_clock_inventory": "\n==============NVSMI LOG==============\n\nTimestamp                                              : Tue Nov  3 02:20:16 2026\nDriver Version                                         : 580.178.04\nCUDA Version                                           : 13.0\n\nAttached GPUs                                          : 1\nGPU 0000000F:01:00.0\n    Clocks\n        Graphics                                       : 208 MHz\n        SM                                             : 208 MHz\n        Memory                                         : N/A\n        Video                                          : 598 MHz\n    Applications Clocks\n        Graphics                                       : 2418 MHz\n        Memory                                         : N/A\n    Default Applications Clocks\n        Graphics                                       : 2418 MHz\n        Memory                                         : N/A\n    Deferred Clocks\n        Memory                                         : N/A\n    Max Clocks\n        Graphics                                       : 3003 MHz\n        SM                                             : 3003 MHz\n        Memory                                         : N/A\n        Video                                          : 3003 MHz\n    Max Customer Boost Clocks\n        Graphics                                       : N/A\n    SM Clock Samples\n        Duration                                       : N/A\n        Number of Samples                              : N/A\n        Max                                            : N/A\n        Min                                            : N/A\n        Avg                                            : N/A\n    Memory Clock Samples\n        Duration                                       : N/A\n        Number of Samples                              : N/A\n        Max                                            : N/A\n        Min                                            : N/A\n        Avg                                            : N/A\n    Clock Policy\n        Auto Boost                                     : N/A\n        Auto Boost Default                             : N/A\n\n"
+}

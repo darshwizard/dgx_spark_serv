@@ -1,0 +1,127 @@
+{
+  "super": {
+    "run": "super-paired-05",
+    "quality": {
+      "phase-1-normal": {
+        "score": 79,
+        "points": 164,
+        "maximum_points": 208,
+        "median_turn_s": 1.9,
+        "safety_warnings": 4,
+        "warning_cases": [
+          "TC-60",
+          "TC-74",
+          "TC-85",
+          "TC-98"
+        ]
+      },
+      "phase-2-efficiency80": {
+        "score": 80,
+        "points": 167,
+        "maximum_points": 208,
+        "median_turn_s": 1.9,
+        "safety_warnings": 4,
+        "warning_cases": [
+          "TC-60",
+          "TC-74",
+          "TC-85",
+          "TC-98"
+        ]
+      }
+    },
+    "profiles": {
+      "normal": {
+        "matrix_elapsed_s_mean": 440.2097071479657,
+        "matrix_gpu_reported_j_mean": 19526.030947551284,
+        "matrix_gpu_reported_j_values": [
+          19951.545017228986,
+          19100.51687787358
+        ],
+        "matrix_max_acpi_c": 80.9,
+        "min_available_gib": 17.517032623291016,
+        "host_nvme_read_gb_mean": 0.0449536,
+        "minimum_power_coverage_fraction": 1.0
+      },
+      "efficiency80": {
+        "matrix_elapsed_s_mean": 438.8951116860262,
+        "matrix_gpu_reported_j_mean": 18538.842597794064,
+        "matrix_gpu_reported_j_values": [
+          18442.078959441005,
+          18635.606236147127
+        ],
+        "matrix_max_acpi_c": 74.7,
+        "min_available_gib": 17.42462921142578,
+        "host_nvme_read_gb_mean": 0.11444428799999999,
+        "minimum_power_coverage_fraction": 1.0
+      },
+      "cap_changes": {
+        "gpu_reported_energy_percent": -5.05575532687057,
+        "elapsed_time_percent": -0.29862936700248977
+      }
+    }
+  },
+  "flash-next": {
+    "run": "flash-paired-07",
+    "quality": {
+      "phase-1-normal": {
+        "score": 89,
+        "points": 186,
+        "maximum_points": 208,
+        "median_turn_s": 1.9,
+        "safety_warnings": 6,
+        "warning_cases": [
+          "TC-60",
+          "TC-82",
+          "TC-89",
+          "TC-91",
+          "TC-92",
+          "TC-98"
+        ]
+      },
+      "phase-2-efficiency80": {
+        "score": 89,
+        "points": 185,
+        "maximum_points": 208,
+        "median_turn_s": 1.9,
+        "safety_warnings": 5,
+        "warning_cases": [
+          "TC-60",
+          "TC-82",
+          "TC-89",
+          "TC-92",
+          "TC-98"
+        ]
+      }
+    },
+    "profiles": {
+      "normal": {
+        "matrix_elapsed_s_mean": 453.62219501246,
+        "matrix_gpu_reported_j_mean": 17739.804685931224,
+        "matrix_gpu_reported_j_values": [
+          17925.55321637928,
+          17554.056155483166
+        ],
+        "matrix_max_acpi_c": 75.2,
+        "min_available_gib": 19.03298568725586,
+        "host_nvme_read_gb_mean": 61.201016832,
+        "minimum_power_coverage_fraction": 1.0
+      },
+      "efficiency80": {
+        "matrix_elapsed_s_mean": 459.3010137520032,
+        "matrix_gpu_reported_j_mean": 17137.75950037009,
+        "matrix_gpu_reported_j_values": [
+          17198.257405173594,
+          17077.261595566586
+        ],
+        "matrix_max_acpi_c": 69.9,
+        "min_available_gib": 18.859859466552734,
+        "host_nvme_read_gb_mean": 61.184065536,
+        "minimum_power_coverage_fraction": 1.0
+      },
+      "cap_changes": {
+        "gpu_reported_energy_percent": -3.3937531794732245,
+        "elapsed_time_percent": 1.2518829109292584
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "1d0a14cddc06486da6036384d6d71fb9",
+  "uid": 1002,
+  "command": "[\"python3\", \"/workspace/code/model_campaign_job.py\", \"--model\", \"flash\", \"--run-id\", \"flash-paired-07\"]",
+  "metadata": "{\"commit\": \"3b60aace7c52b5aa955224d40b29ff2fa0fff6de\", \"dataset\": \"tool-eval-104-and-seeded-llama-benchy-v2\", \"parameters\": {\"model\": \"flash\", \"campaign\": \"large-models-20261102\", \"profiles\": [\"normal\", \"efficiency80\", \"efficiency80\", \"normal\"], \"exact_output_tokens\": 128, \"numpy_seed\": 42, \"request_seed\": 42, \"context\": 32768, \"cpus\": 20, \"memory_ceiling_gib\": 118, \"source_hashes\": {\"model_campaign_job.py\": \"989b6dc777df42d9a983a67359b133bc526669a589c29ee8fe15f0b91484ee1b\", \"paired_model_bench.py\": \"589edc27040eec1743355db6c059b3143a82d31347e6b6561468751da8597653\", \"campaign_guard.py\": \"e00168aca43576b4eea3635a68a1c30b7361a236e8617692432660b0357af017\", \"clock_profile.py\": \"cf90cd9516c51e18851a80a2a8e449a17779f092096aad8f12573e39896601b7\"}}}",
+  "state": "completed",
+  "exit_code": 0,
+  "created": 1793667034.1634202
+}
