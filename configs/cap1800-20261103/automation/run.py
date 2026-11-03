@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Owner controller: queue only GPU work; profile handshake and fail-closed guard."""
-import argparse,datetime as dt,hashlib,json,os,signal,subprocess,time
+import argparse,datetime as dt,hashlib,json,os,re,signal,subprocess,time
 from pathlib import Path
 ROOT=Path('/home/d_wizard/local-ai/cap1800-20261103');REPO=Path('/home/d_wizard/local-ai/dgx_spark_serv')
 KEY='/home/d_wizard/.ssh/id_ed25519_compute_bench';HOST='agent-bench@192.168.1.240'
@@ -23,9 +23,15 @@ def switch(image,label=None):
  if label:cmd.append(label)
  run(cmd)
  run(['curl','-fsS','--retry','5','--retry-connrefused','--retry-delay','1','http://192.168.1.240:8080/agents'],stdout=subprocess.DEVNULL)
+def run_label(model,attempt,limited_only=False):
+ if model not in ['qwen27','bolt','super','flash'] or not re.fullmatch('[0-9]+',attempt):raise ValueError('Invalid model or attempt')
+ return f'{model}-gpu1800{"limited" if limited_only else ""}-{attempt}'
 def model_run(model,attempt,limited_only=False):
  phases=['gpu1800_cpu60']*2 if limited_only else ['normal','gpu1800_cpu60','gpu1800_cpu60','normal']
- label=f'{model}-gpu1800-{attempt}';local=ROOT/label;local.mkdir(exist_ok=False)
+ label=run_label(model,attempt,limited_only)
+ # Refuse stale remote output before changing clocks/runtime or submitting work.
+ if remote(f'test -e ~/workspace/results/{label} && echo exists || true').strip():raise RuntimeError('Remote run output already exists: '+label)
+ local=ROOT/label;local.mkdir(exist_ok=False)
  jid=None;logger=None;watch=None;active_cap=None;current_profile='normal';handled=0;start=time.monotonic();last_beat=0
  image={'qwen27':'qwen-benchmarks:20261102','bolt':'bolt-benchmarks:20261102','super':'super-benchmarks:20261102','flash':'flash-benchmarks:20261102'}[model]
  switch(image,{'qwen27':'Qwen 27B NVIDIA image','bolt':'Bolt NVIDIA playbook image','super':'Super VL forum image','flash':'Flash-Next NVIDIA recipe image'}[model])

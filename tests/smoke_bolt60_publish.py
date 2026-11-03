@@ -12,7 +12,7 @@ with tempfile.TemporaryDirectory() as tmp:
  (repo/'scripts/workload_energy.py').write_bytes((source/'scripts/workload_energy.py').read_bytes())
  (repo/'README.md').write_text('Bolt normal run stopped at90C.\n## Findings from this campaign\nExisting findings\n')
  for name in ['followup.py','schedule.json','run.py','recover.py','switch-runtime.py']:(root/name).write_text('{}')
- src=root/'bolt-gpu1800-01';bench=src/'result/bench';bench.mkdir(parents=True);(src/'telemetry').mkdir()
+ src=root/'bolt-gpu1800limited-01';bench=src/'result/bench';bench.mkdir(parents=True);(src/'telemetry').mkdir()
  for name in ['spec.json','status.json','nvme-smart-before.json','nvme-smart-after.json']:(src/name).write_text('{}')
  (src/'job-id').write_text('0'*32);(src/'result/outcome.json').write_text('{"exit_code":0}');(bench/'completed.json').write_text('{}')
  events=[]

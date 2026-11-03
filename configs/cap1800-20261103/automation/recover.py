@@ -9,7 +9,7 @@ def cleanup():
  ssh=['ssh','-i','/home/d_wizard/.ssh/id_ed25519_compute_bench','-o','IdentitiesOnly=yes','-o','BatchMode=yes','agent-bench@192.168.1.240']
  rows=json.loads(subprocess.check_output(ssh+['compute-job status'],text=True))['result']
  own=[]
- for p in ROOT.glob('*-gpu1800-01/job-id'):
+ for p in ROOT.glob('*/job-id'):
   jid=p.read_text().strip()
   if not re.fullmatch('[a-f0-9]{32}',jid):raise RuntimeError('Malformed recorded job ID')
   own.append(jid)
@@ -18,7 +18,7 @@ def cleanup():
  check="import json,sqlite3; d=sqlite3.connect('file:/var/lib/compute-queue/jobs.db?mode=ro',uri=True); print(json.dumps(d.execute(\"select id from jobs where state in ('running','queued')\").fetchall()))"
  active=json.loads(subprocess.check_output(['sudo','-n','python3','-c',check],text=True))
  if active:raise RuntimeError('Queue has other active jobs; refusing global clock/runtime restoration')
- for p in ROOT.glob('*-gpu1800-01/phase-*-clocks.json'):
+ for p in ROOT.glob('*/phase-*-clocks.json'):
   subprocess.run(['sudo','-n','python3',str(repo/'scripts/clock_profile.py'),'restore','--state',str(p)],check=True,stdout=subprocess.DEVNULL)
  subprocess.run(['sudo','-n','python3',str(ROOT/'switch-runtime.py'),'restore'],check=True)
  (ROOT/'restored.json').write_text(json.dumps({'restored':True,'jobs':own})+'\n')

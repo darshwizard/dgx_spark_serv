@@ -10,7 +10,7 @@ def state(name,**kw):
  p=ROOT/'status.tmp';p.write_text(json.dumps({'state':name,'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),**kw},indent=2)+'\n');p.replace(ROOT/'status.json')
 def publish(repo):
  import runpy,sys
- src=ROOT/'bolt-gpu1800-01';bench=src/'result/bench'
+ src=ROOT/'bolt-gpu1800limited-01';bench=src/'result/bench'
  assert json.loads((src/'result/outcome.json').read_text())['exit_code']==0
  assert (bench/'completed.json').exists()
  argv=sys.argv;sys.argv=['workload_energy.py','--events',str(bench/'events.jsonl'),'--sensors',str(src/'telemetry/sensors.jsonl'),'--out',str(src/'workload-summary.json')]
