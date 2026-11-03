@@ -29,6 +29,11 @@ Record GPU-reported watts/clocks/temperature, seven ACPI zones, both fan RPMs,
 CPU activity, host memory/swap pressure and NVMe activity. GPU-reported joules
 are not whole-system energy; no wall meter or ambient sensor is available.
 Two passes per profile describe this host; they are not confidence intervals.
+CPU ceilings are driver requests: scaling_cur_freq can also reflect the request.
+The root watchdog additionally records cpuinfo_cur_freq and auto_select alongside
+requested/reported limits, for under-load enforcement checks. No autonomous-mode
+or governor change is part of this campaign. Hardware feedback must be validated
+before interpreting the CPU80% setting as a measured physical frequency bound.
 
 Use the queue and already validated pinned per-model images/commands. Temporary
 runtime: 118 GiB charged memory, 20 CPUs, 16 GiB shared memory, no job swap.

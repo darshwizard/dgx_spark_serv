@@ -1,0 +1,99 @@
+Community CPU/GPU clock limits versus performance — reviewed Nov 3, 2026
+
+These are other users' measurements, not our reproductions or an NVIDIA clock
+recommendation. Model/runtime, single versus dual Spark, cooling and measurement
+method differ. Deliberate frequency ceilings are distinct from reactive thermal
+throttling; a stable lower ceiling can sometimes improve a heat-soaked run.
+
+GPU evidence
+1. Single-Spark Qwen3.6-35B-A3B NVFP4 coding test: stock ~2400-2470 MHz versus
+2000 MHz, both ~113 tok/s, GPU-reported draw 43 versus 25 W (~42% lower).
+The author's broader tool-eval/llama-benchy follow-up lost up to about 5%.
+https://forums.developer.nvidia.com/t/cooler-gb10-temps-almost-no-performance-lost/372662
+
+2. Two-Spark TP2 DeepSeek V4 Flash 0731 FP8: 2400 MHz gave 51.34 tok/s and
+330 W at the wall for BOTH units; 1700 gave 49.80 tok/s and 242 W. Calculated
+from those raw figures: 3.0% lower throughput, 26.7% less power, 24.4% less
+energy/token. At 1400: 47.74 tok/s and234 W (7.0% less throughput). At800:
+34.90 tok/s and211 W; slower execution erodes the energy advantage.
+The original table's baseline Wh/1M is inconsistent with its raw watts/tok/s;
+do not reuse that entry. No single-Spark inference guarantee follows.
+https://forums.developer.nvidia.com/t/it-makes-no-sense-to-me-anymore-to-run-my-sparks-above-a-1400-1700-mhz-gpu-clock/379389
+
+3. DeepSeek long-context prefill table: pp1000 at100K depth 1933->1765 tok/s,
+at500K depth1375->1239 (8.7% and9.9% lower). The author flags noisy decode.
+Different workload example: 2000 MHz image generation305->313 seconds (+2.6%),
+image-to-video1286->1382 (+7.5%). These are separate contributors/settings.
+https://forums.developer.nvidia.com/t/cooler-gb10-temps-almost-no-performance-lost/372662?page=2
+
+4. Reproducible cuBLAS TF32 sweep: natural2320.6MHz/40.005TFLOP/s; requested
+2000 gave1995MHz/38.213 (-4.5% throughput),1800 gave1794MHz/36.406 (-9.0%).
+Reported zero sampled thermal-throttle flags. Small L2-fitting matrices lost
+throughput roughly in proportion to frequency. Source + raw CSV are available:
+https://gist.github.com/g667300/d418cdb3026ce060d4379f342d202ed0
+
+CPU evidence
+5. Two-Spark vLLM, GPU fixed near2000: P-core2600 versus3600 MHz produced
+prefill2917 versus2952tok/s (only1.2% difference); engine steps18.39 versus18.48/s.
+Reported zone0 plateaus57.4 versus80.5C. One run/condition, one client; raw output
+tok/s varied with MTP acceptance. This is useful evidence for a P-core-only
+sweep, not proof that all models or concurrency levels tolerate this change.
+https://forums.developer.nvidia.com/t/7-0-0-1019-nvidia-cpu-overheating/383939/2
+
+6. Independent two-ASUS vLLM write-up: P-core3.9->2.8GHz cut temperature with
+little interactive loss, but about5% lower throughput at8 concurrent requests.
+Its shared-memory reader spin patch applies to TP>=2 multiprocessing; the
+author explicitly corrected the original claim to exclude default TP1/uni.
+https://artifacts.nacyot.com/vllm-spin-wait-gb10-en/
+
+7. Efficiency-core affinity is a different intervention. TensorFold two-ASUS
+report: peak94->72C with similar decode, atGPU1400. Counterexample in same
+thread: whole-process affinity made TEB662->946seconds (+42.9% elapsed). EngineCore
+only affinity reportedly had less cost. Do not blanket-pin our serving stack.
+https://forums.developer.nvidia.com/t/my-spark-kept-shutting-down-from-heat-no-logs-95-97-c-on-acpitz-turned-out-to-be-cpu-threads-not-the-gpu-one-taskset-line-fixed-it/386117
+
+8. Polling patch evidence conflicts: one TP2 reproduction lost~1-3% decode with
+~12C head-zone improvement; another still found most yields outside that knob
+and no repeatable thermal improvement. Do not modify our pinned engine on this
+basis. Measure per-core/thread activity and inspect the actual executor first.
+https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark/issues/79
+
+Official guidance and measurement traps
+Linux scaling_cur_freq often reports a requested P-state rather than hardware
+frequency; cpuinfo_cur_freq is hardware-derived when the driver supports it.
+https://docs.kernel.org/admin-guide/pm/cpufreq.html
+Community reports firmware autonomous mode can complicate CPU limit enforcement:
+https://forums.developer.nvidia.com/t/how-to-fix-cpu-frequency-in-dgx-spark/367604
+Our archived P-core scaling_cur_freq switched exactly3900->3120MHz under the
+old profile. That confirms driver-reported setting, not independent physical
+clock enforcement. Current read-only check shows cppc_cpufreq, performance
+governor, auto_select=1; cpuinfo_cur_freq differs from scaling_cur_freq even at
+idle. Hardware feedback also needs under-load interpretation/validation.
+The scheduled root watchdog now records both frequency fields and auto_select
+once per health entry; no governor/autonomous-mode setting has been changed.
+
+NVIDIA documents scheduler changes in DGX OS7.4+/kernel6.17+ that may affect CPU
+throughput versus latency. Keep kernel/scheduler/governor fixed in comparisons.
+https://nvidia.custhelp.com/app/answers/detail/a_id/5834
+
+Implications for our experiments (proposed follow-up, not newly scheduled jobs)
+Keep tonight's authorized four-model Normal vsGPU1800/CPU80 experiment. GPU1800
+is60% of advertised3003MHz but about75% of observed~2400MHz normal operation.
+Report driver CPU ceilings as requested settings until feedback is validated.
+The combined experiment measures practical savings, not each component's cause.
+
+Next isolate four arms on representative models: normal, GPU1800 only, P-core
+2600 only with efficiency cores unchanged, and both. The latter is a NEW profile,
+not tonight's CPU80% condition. If worthwhile, sweep GPU1500/1800/2000/2100 and
+CPU P-core2600/3120/3900, changing one axis at a time. Preserve default fan curves
+and the90C guard. No firmware/EC/fan changes or polling patches are required.
+
+Use matched prompts/seeds, prefix-cache controls and repeated steady-state
+passes. Measure prefill/TTFT, c1 andc4 decode, fixed-task time, GPU joules,
+all ACPI zones, both fans, CPU per-core activity and hardware frequency feedback.
+Inspect speculative acceptance when interpreting throughput; engine steps/s is
+diagnostic, not a substitute for useful output tokens/s. Include loading/JIT
+separately, where CPU sensitivity can differ. A wall meter is needed to rank
+whole-machine energy efficiency; especially important for Flash's NVMe reads.
+Compare joules/fixed workload or Wh/useful tokens subject to acceptable latency
+and temperature, not a temperature ratio or an advertised clock percentage.

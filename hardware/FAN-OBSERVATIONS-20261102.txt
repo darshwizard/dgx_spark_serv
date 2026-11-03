@@ -78,3 +78,7 @@ pinning has mixed throughput results and is not part of our scheduled profile.
 Our combined GPU1800/CPU80 measurements cannot attribute savings to one component.
 https://forums.developer.nvidia.com/t/cooler-gb10-temps-almost-no-performance-lost/372662
 https://forums.developer.nvidia.com/t/my-spark-kept-shutting-down-from-heat-no-logs-95-97-c-on-acpitz-turned-out-to-be-cpu-threads-not-the-gpu-one-taskset-line-fixed-it/386117
+
+Community clock/performance review: ../docs/COMMUNITY-CLOCK-RESEARCH-20261103.txt.
+Includes measured GPU/decode and prefill tradeoffs, CPU-only frequency sweeps,
+affinity counterexamples, TP2 polling scope and CPU hardware-feedback caveats.

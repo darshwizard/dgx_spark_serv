@@ -10,6 +10,19 @@ def decision(available_bytes,temperatures,low_seconds=0):
  if available_bytes<6*1024**3 and low_seconds>=30:return 'available_below_6GiB_for_30s'
  return None
 
+def cpu_feedback():
+ # scaling_cur_freq may be a driver request, not measured hardware frequency.
+ # Keep independent feedback and autonomous-mode state; never infer enforcement
+ # from one frequency field. Unsupported/failed reads remain explicit nulls.
+ result={}
+ for path in sorted(Path('/sys/devices/system/cpu/cpufreq').glob('policy*')):
+  values={}
+  for name in ['cpuinfo_max_freq','scaling_max_freq','scaling_cur_freq','cpuinfo_cur_freq','auto_select']:
+   try:values[name]=int((path/name).read_text())
+   except (OSError,ValueError):values[name]=None
+  result[path.name]=values
+ return result
+
 def main():
  p=argparse.ArgumentParser();p.add_argument('--job',required=True);p.add_argument('--parent',type=int,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
  if os.geteuid()!=0:raise SystemExit('Owner/root required')
@@ -48,7 +61,7 @@ def main():
     low_seconds=now-low_since if low_since is not None else 0
     reason=decision(mem.get('MemAvailable'),temps,low_seconds)
     if tick%10==0 or reason:
-     f.write(json.dumps({'unix_s':time.time(),'monotonic_s':time.monotonic(),'mem_available_bytes':mem.get('MemAvailable'),'hottest_c':max(temps,default=None),'swap_used_bytes':mem['SwapTotal']-mem['SwapFree'],'swap_growth_bytes':swap_growth,'below_6GiB_s':low_seconds,'reason':reason})+'\n')
+     f.write(json.dumps({'unix_s':time.time(),'monotonic_s':time.monotonic(),'mem_available_bytes':mem.get('MemAvailable'),'hottest_c':max(temps,default=None),'swap_used_bytes':mem['SwapTotal']-mem['SwapFree'],'swap_growth_bytes':swap_growth,'below_6GiB_s':low_seconds,'cpu_frequency_feedback_khz':cpu_feedback(),'reason':reason})+'\n')
     if reason:cancel(reason);return
     tick+=1;time.sleep(.1)
  except BaseException:
