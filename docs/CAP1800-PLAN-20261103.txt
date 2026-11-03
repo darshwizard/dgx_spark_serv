@@ -1,4 +1,4 @@
-Scheduled comparison: 2026-11-03 02:00 EST / 07:00 UTC
+Immediate comparison: 2026-11-03; owner requested start now (supersedes 02:00 EST timer)
 
 Models, in order:
 1. Qwen3.8-27B NVFP4 + DFlash2
@@ -9,14 +9,14 @@ DeepSeek V4.1 Flash 1017 at 256K remains a separate later experiment.
 
 Normal means default CPU/GPU frequency limits. The limited mode is explicitly
 GPU ceiling 1800 MHz (approximately 60% of reported 3003 MHz hardware maximum),
-with CPU ceilings 80% of hardware maxima and unchanged CPU affinity. This is
+with CPU ceilings 60% of hardware maxima and unchanged CPU affinity. This is
 neither a 60% watt limit nor a GPU-only test. We cannot isolate CPU versus GPU
 effects from a combined profile. Stock automatic fan control remains enabled.
 Default CPU ceilings: ten Cortex-X925 performance cores3900MHz; ten Cortex-A725
-efficiency cores2808MHz. CPU80% requests3120MHz and2246.4MHz respectively, a20%
-reduction (780/561.6MHz). A future P-core2600MHz-only profile would be33.3% below
+efficiency cores2808MHz. CPU60% requests2340MHz and1684.8MHz respectively, a40%
+reduction (1560/1123.2MHz). A future P-core2600MHz-only profile would be33.3% below
 the3900MHz default and leave efficiency cores unchanged; it is not tonight's
-CPU80% profile. Default maxima are ceilings, not guaranteed sustained clocks.
+CPU60% profile. Default maxima are ceilings, not guaranteed sustained clocks.
 
 Run one normal-clock quality trial/model: tool-eval-bench 3.0.1.dev9, hard mode,
 104 scenarios, seed 42, thinking off. Report quality separately from efficiency.
@@ -38,7 +38,7 @@ CPU ceilings are driver requests: scaling_cur_freq can also reflect the request.
 The root watchdog additionally records cpuinfo_cur_freq and auto_select alongside
 requested/reported limits, for under-load enforcement checks. No autonomous-mode
 or governor change is part of this campaign. Hardware feedback must be validated
-before interpreting the CPU80% setting as a measured physical frequency bound.
+before interpreting the CPU60% setting as a measured physical frequency bound.
 
 Use the queue and already validated pinned per-model images/commands. Temporary
 runtime: 118 GiB charged memory, 20 CPUs, 16 GiB shared memory, no job swap.
@@ -48,12 +48,13 @@ clock readback mismatch also stops the campaign. No firmware/EC/fan changes.
 Restore clocks, unload models and restore original queue/reference files before
 publishing. Refuse runtime switches if other queue jobs are active.
 
-One-shot system timer spark-bench-1800-20261103 starts the owner controller as
+The old spark-bench-1800-20261103 timer is disabled. A one-shot system service
+spark-bench-1800-cpu60-20261103 starts the owner controller immediately as
 d_wizard. Working directory: /home/d_wizard/local-ai/cap1800-20261103.
 Local status.json and service.log provide progress. Source lives under
 configs/cap1800-20261103/automation; Qwen/Bolt JSON plans preserve previously
 successful serving commands. Prepared Git commit and image IDs are checked at
-start. The timer survives logout; it is not a reboot-persistent installation.
+start. The service survives logout; it is not a reboot-persistent installation.
 
 Publish only after all four runs, measurement validation and cleanup succeed.
 Replace README headline tables with new results, archive raw runs and retain
@@ -62,3 +63,5 @@ Push results from an isolated checkout, without a force push.
 
 Preparation validation uses a mocked clock-controller test, mock HTTP benchmark
 client and synthetic four-model publication test; none launches GPU inference.
+
+Per-model NVMe SMART snapshots before/after complement per-matrix host read/write counters.

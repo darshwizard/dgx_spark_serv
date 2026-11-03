@@ -10,6 +10,9 @@ def run(cmd,**kw):return subprocess.run(cmd,check=True,text=True,**kw)
 def remote(cmd):return subprocess.check_output(SSH+[cmd],text=True)
 def stamp():return {'utc':dt.datetime.now(dt.timezone.utc).isoformat(),'monotonic_s':time.monotonic()}
 def event(name,**kw):print(json.dumps({**stamp(),'event':name,**kw}),flush=True)
+def smart_snapshot(folder,name):
+ data=subprocess.check_output(['sudo','-n','/usr/sbin/nvme','smart-log','/dev/nvme0','-o','json'],text=True,timeout=10)
+ (folder/name).write_text(json.dumps({'utc':stamp()['utc'],'device':'/dev/nvme0','smart':json.loads(data)},indent=2)+'\n')
 def meminfo():return {x.split(':')[0]:int(x.split()[1])*1024 for x in Path('/proc/meminfo').read_text().splitlines()}
 def hottest():return max(float(p.read_text())/1000 for p in Path('/sys/class/thermal').glob('thermal_zone*/temp'))
 def jobstate(jid):return next(x for x in json.loads(remote('compute-job status'))['result'] if x['id']==jid)
@@ -28,9 +31,10 @@ def model_run(model,attempt):
  try:
   limits=cpu()
   if any(v['scaling_max_freq']!=v['cpuinfo_max_freq'] for v in limits.values()):raise RuntimeError('Unexpected pre-existing CPU cap; refusing to overwrite')
-  spec={'command':['python3','/workspace/code/model_campaign_job.py','--model',model,'--run-id',label,'--limited-profile','gpu1800_cpu80','--quality-mode','normal-only'],
-   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'campaign':'cap1800-20261103','profiles':['normal','gpu1800_cpu80','gpu1800_cpu80','normal'],'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':1800,'cpu_ceiling_fraction':0.8,'quality_mode':'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
+  spec={'command':['python3','/workspace/code/model_campaign_job.py','--model',model,'--run-id',label,'--limited-profile','gpu1800_cpu60','--quality-mode','normal-only'],
+   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'campaign':'cap1800-20261103','profiles':['normal','gpu1800_cpu60','gpu1800_cpu60','normal'],'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':1800,'cpu_ceiling_fraction':0.6,'quality_mode':'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
   (local/'spec.json').write_text(json.dumps(spec,indent=2));run(SCP+[str(local/'spec.json'),HOST+':workspace/campaign-spec.json'])
+  smart_snapshot(local,'nvme-smart-before.json')
   logger=subprocess.Popen(['python3',str(REPO/'scripts/telemetry.py'),'--out',str(local/'telemetry'),'--duration','21600','--label',label],stdout=subprocess.DEVNULL,stderr=open(local/'telemetry.log','w'))
   jid=json.loads(remote('compute-job submit ~/workspace/campaign-spec.json'))['result']['id'];(local/'job-id').write_text(jid)
   watch=subprocess.Popen(['sudo','-n','python3',str(REPO/'scripts/campaign_guard.py'),'--job',jid,'--parent',str(os.getpid()),'--out',str(local/'watchdog')],stdout=open(local/'watchdog-console.log','w'),stderr=subprocess.STDOUT)
@@ -55,11 +59,11 @@ def model_run(model,attempt):
    if request:
     req=json.loads(request);seq=req['seq'];profile=req['profile']
     if seq>handled:
-     if seq!=handled+1 or profile!=['normal','gpu1800_cpu80','gpu1800_cpu80','normal'][seq-1]:raise RuntimeError('Invalid profile sequence')
+     if seq!=handled+1 or profile!=['normal','gpu1800_cpu60','gpu1800_cpu60','normal'][seq-1]:raise RuntimeError('Invalid profile sequence')
      if profile!=current_profile:
-      if profile=='gpu1800_cpu80':
+      if profile=='gpu1800_cpu60':
        active_cap=local/f'phase-{seq}-clocks.json'
-       with (local/f'phase-{seq}-clock-apply.log').open('w') as f:run(['sudo','-n','python3',str(REPO/'scripts/clock_profile.py'),'apply','--state',str(active_cap),'--gpu-default-baseline','--gpu-max-mhz','1800'],stdout=f,stderr=subprocess.STDOUT)
+       with (local/f'phase-{seq}-clock-apply.log').open('w') as f:run(['sudo','-n','python3',str(REPO/'scripts/clock_profile.py'),'apply','--state',str(active_cap),'--gpu-default-baseline','--gpu-max-mhz','1800','--cpu-max-fraction','0.6'],stdout=f,stderr=subprocess.STDOUT)
       else:
        with (local/f'phase-{seq}-clock-restore.log').open('w') as f:run(['sudo','-n','python3',str(REPO/'scripts/clock_profile.py'),'restore','--state',str(active_cap)],stdout=f,stderr=subprocess.STDOUT)
        active_cap=None
@@ -75,9 +79,9 @@ def model_run(model,attempt):
      limits=cpu()
      for v in limits.values():
       if profile=='normal' and v['scaling_max_freq']!=v['cpuinfo_max_freq']:raise RuntimeError('Normal CPU readback mismatch')
-      if profile=='gpu1800_cpu80' and v['scaling_max_freq']>v['cpuinfo_max_freq']*.8:raise RuntimeError('Capped CPU readback mismatch')
-     if profile=='gpu1800_cpu80' and int(gpu().split(' MHz')[0])>1800:raise RuntimeError('GPU ceiling did not settle before phase release')
-     ack={'gpu_ceiling_mhz':1800 if profile=='gpu1800_cpu80' else None,'cpu_ceiling_fraction':0.8 if profile=='gpu1800_cpu80' else 1.0,'seq':seq,'profile':profile,'ready':True,**stamp(),'hottest_c':hottest(),'available_gib':avail/1024**3,'cooldown_s':time.monotonic()-coolstart,'temperature_target_met':hottest()<=60,'cpu':limits,'gpu_snapshot':gpu()}
+      if profile=='gpu1800_cpu60' and v['scaling_max_freq']>v['cpuinfo_max_freq']*.6:raise RuntimeError('Capped CPU readback mismatch')
+     if profile=='gpu1800_cpu60' and int(gpu().split(' MHz')[0])>1800:raise RuntimeError('GPU ceiling did not settle before phase release')
+     ack={'gpu_ceiling_mhz':1800 if profile=='gpu1800_cpu60' else None,'cpu_ceiling_fraction':0.6 if profile=='gpu1800_cpu60' else 1.0,'seq':seq,'profile':profile,'ready':True,**stamp(),'hottest_c':hottest(),'available_gib':avail/1024**3,'cooldown_s':time.monotonic()-coolstart,'temperature_target_met':hottest()<=60,'cpu':limits,'gpu_snapshot':gpu()}
      ackfile=local/f'phase-{seq}-ack.json';ackfile.write_text(json.dumps(ack,indent=2))
      run(SCP+[str(ackfile),HOST+f':workspace/results/{label}/bench/phase-{seq}-ack.tmp'])
      remote(f'mv ~/workspace/results/{label}/bench/phase-{seq}-ack.tmp ~/workspace/results/{label}/bench/phase-{seq}-ack.json')
@@ -98,6 +102,7 @@ def model_run(model,attempt):
    except subprocess.TimeoutExpired:
     run(['sudo','-n','kill','-TERM',str(watch.pid)]);watch.wait(timeout=25)
   if logger:logger.terminate();logger.wait(timeout=20)
+  smart_snapshot(local,'nvme-smart-after.json')
   if jid:
    (local/'queue.log').write_text(remote('compute-job logs '+jid))
    if remote(f'test -d ~/workspace/results/{label} && echo yes || true').strip()=='yes':run(SCP+['-r',HOST+':workspace/results/'+label,str(local/'result')])

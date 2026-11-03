@@ -1,9 +1,9 @@
 Next experiments — owner agreed Nov 3, 2026
 
 1. Complete the scheduled four-model comparison first
-The existing timer starts Nov 3 02:00 EST / 07:00 UTC. Order: Qwen3.8-27B NVFP4
+Owner requested immediate start Nov 3, superseding the old 02:00 EST timer. Order: Qwen3.8-27B NVFP4
 +DFlash2, Nemotron3.5Bolt74B-A9B24GB+LiLiCorr, SuperVL120B-A12BNVFP4+LiLiCorr,
-Qwen3.8FlashNextFP4Local+MTP4. Normal versus GPU1800MHz and requested CPU80%
+Qwen3.8FlashNextFP4Local+MTP4. Normal versus GPU1800MHz and requested CPU60%
 ceilings; two throughput matrices/profile, resident server, one normal quality
 trial/model. Archive results and replace headline data only after all complete
 and original settings are restored. See CAP1800-PLAN-20261103.txt.
@@ -56,3 +56,10 @@ Only stage1 has an actual timer. Stages2-4 are the agreed research sequence,
 to implement after stage1 data is validated; no additional jobs have been
 submitted or silently appended to the overnight timer. Use the compute queue
 for execution and keep the same cleanup, telemetry and source-pin discipline.
+
+Latest owner scope (supersedes conflicting proposals above): no alternative
+Qwen27 recipe or cold/warm multi-agent-session comparison. Long-context real
+workloads remain a priority. KV precision and speculative decoding are considered
+per model only, not a mandatory sweep. Focus additional science on correctness,
+mixed-load responsiveness, sustained heat/cooldown, startup cost and energy per
+successful task. CPU60 requests P2340MHz/E1684.8MHz; GPU1800 unchanged.

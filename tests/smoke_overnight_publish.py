@@ -12,11 +12,11 @@ with tempfile.TemporaryDirectory() as tmp:
  for name in ['schedule.json','run.py','switch-runtime.py','publish.py','entry.py','recover.py']:(root/name).write_text('{}\n')
  for model in ns['MODELS']:
   run=root/(model+'-gpu1800-01');bench=run/'result/bench';bench.mkdir(parents=True);telemetry=run/'telemetry';telemetry.mkdir()
-  for p in ['spec.json','status.json','result/launch.json']: (run/p).write_text('{}')
+  for p in ['spec.json','status.json','result/launch.json','nvme-smart-before.json','nvme-smart-after.json']: (run/p).write_text('{}')
   (run/'job-id').write_text('0'*32);(run/'result/outcome.json').write_text('{"exit_code":0}');(bench/'completed.json').write_text('{}');(telemetry/'summary.json').write_text('{}')
   events=[]
-  for seq,prof in enumerate(['normal','gpu1800_cpu80','gpu1800_cpu80','normal'],1):
-   phase=bench/f'phase-{seq}-{prof}';phase.mkdir();(phase/'profile-ack.json').write_text(json.dumps({'profile':prof}))
+  for seq,prof in enumerate(['normal','gpu1800_cpu60','gpu1800_cpu60','normal'],1):
+   phase=bench/f'phase-{seq}-{prof}';phase.mkdir();(phase/'profile-ack.json').write_text(json.dumps({'profile':prof,'gpu_ceiling_mhz':1800 if prof!='normal' else None,'cpu_ceiling_fraction':0.6 if prof!='normal' else 1.0}))
    data={'benchmarks':[{'context_size':d,'concurrency':c,'response_size':128,'pp_throughput':{'values':[100,100,100]},'tg_throughput':{'values':[20,20,20]}} for d in [0,4096,8192] for c in [1,2,4]]};(phase/'throughput.json').write_text(json.dumps(data))
    events.append({'event':'profile_ready','seq':seq,'profile':prof})
    windows=[('quality',1,9),('throughput',11,19)] if seq==1 else [('throughput',10*seq+1,10*seq+9)]
@@ -30,7 +30,7 @@ with tempfile.TemporaryDirectory() as tmp:
  with patch('subprocess.run',lambda cmd,**kw:calls.append(cmd)):
   summary=ns['publish'](root,repo)
  assert len(summary)==4 and (repo/'experiments/cap1800-20261103/manifest.json').exists()
- text=(repo/'README.md').read_text();assert '1,800 MHz' in text and 'Historical material' in text and 'CPU 80%' in text
+ text=(repo/'README.md').read_text();assert '1,800 MHz' in text and 'Historical material' in text and 'CPU 60%' in text
  assert any(c[-2:]==['origin','HEAD:main'] for c in calls)
  assert not any('force' in str(c) for c in calls)
  print('PASS: all four synthetic runs collected, 1800 MHz validation, tables/archives/manifest generated; Git/network mocked')

@@ -1,24 +1,24 @@
 # DGX Spark (GB10) — serving & benchmark findings
 
-Measurements and recipes from one NVIDIA DGX Spark (GB10, 121.7 GiB usable unified
-memory), on a fresh installation. Latest completed tests: **November 3, 2026**.
+One NVIDIA DGX Spark, GB10, 121.7 GiB usable unified RAM.
 
-**Scheduled rerun: November 3, 02:00 EST (07:00 UTC).** All four models will use
-fresh normal-clock controls versus **60% GPU clock limit — 1,800 MHz, CPU ceiling
-80%**. The completed numbers below still use the earlier 2,402 MHz GPU ceiling.
-New headline results will replace them after all reruns complete; raw history stays.
+**November 3, 2026: new experiments starting now.** Qwen 27B, Nemotron Bolt,
+Nemotron Super VL and Qwen Flash Next will be compared at normal settings and
+**GPU ceiling 1,800 MHz + CPU 60%**. New measurements are pending; the completed
+normal-clock quality results below are retained until replacement results pass
+validation. Earlier limited-profile findings are preserved in the deeper reports.
 
-**CPU speeds behind the profile labels** (requested frequency ceilings):
+| Requested CPU frequency ceiling | Normal / default | CPU 60% |
+|---|---:|---:|
+| 10 Cortex-X925 performance cores | 3,900 MHz | 2,340 MHz |
+| 10 Cortex-A725 efficiency cores | 2,808 MHz | 1,684.8 MHz |
 
-| CPU cores | Normal / default | CPU 80% profile | CPU 60% profile |
-|---|---:|---:|---:|
-| 10 Cortex-X925 performance cores | 3,900 MHz | 3,120 MHz | 2,340 MHz |
-| 10 Cortex-A725 efficiency cores | 2,808 MHz | 2,246.4 MHz | 1,684.8 MHz |
-
-Default means unrestricted up to these reported hardware maxima, not a fixed
-clock at all times. Hardware feedback is being logged to check enforcement.
-The CPU 60% column defines the new profile; no measurements for it are published
-yet. Completed limited-profile results below used CPU 80%.
+Normal permits default hardware-managed clocks, not fixed sustained speeds.
+The GPU limit is about 60% of the reported 3,003 MHz maximum, and about 75% of
+our previously observed ~2,400 MHz normal clock. This is a combined frequency
+profile, not a 60% watt limit. CPU settings are requested ceilings; hardware
+feedback is logged to check enforcement. CPU affinity and automatic fans stay
+unchanged. The models remain loaded across normal/limited profile transitions.
 
 ## Headline quality — current 104-scenario tool suite
 
@@ -45,100 +45,36 @@ in this recipe. Bolt's 24GB checkpoint mixes IQ2_XXS experts, NVFP4 Mamba layers
 and Q8_0 embedding/output weights. Draft heads assist generation; they are not
 separate quality-test candidates.
 
-## Paired speed and energy — completed 80% GPU-limit runs
+## Current experiment and evidence
 
-**Coverage:** this paired comparison covers **Super VL and Flash Next only**.
-The matched speed/energy protocol has **not yet been run for Bolt or Qwen 27B**.
-Their earlier normal/capped throughput tests used different random prompts and
-do not establish a paired energy-efficiency result.
-[Bolt's existing normal/capped throughput results](docs/BOLT-STANDARD-BENCHMARKS.txt)
-· [Qwen 27B's existing normal/capped throughput results](docs/QWEN-BOLT-COMPARISON-20261102.txt).
+Each model gets one normal-clock 104-scenario quality trial and four resident,
+seeded, exact-length throughput matrices: normal, limited, limited, normal.
+Record GPU-reported energy, CPU/GPU temperatures, both fan speeds, memory,
+NVMe activity and before/after SSD SMART counters. Stop at the hottest ACPI
+zone reaching 90 C or the established memory-pressure thresholds.
 
-**Reading the speed columns:** `c` means concurrency: simultaneous requests.
+**Disk-backed n-gram/PLE tables:** Flash Next continues reading NVMe during
+inference. Earlier measurements averaged **61.2 GB host reads and 0.54 GB writes
+per ~7.6-minute matrix**, not per answer. These are whole-host counters, not
+file-specific attribution; reads do not consume the SSD write-endurance allowance
+byte-for-byte. Record storage activity alongside latency, temperature and energy.
 
-- **c1 decode:** output tokens generated per second with **one active request**;
-  this describes single-request generation speed.
-- **c4 decode total:** combined output tokens per second across **four active
-  requests**. For example, 60 tok/s total is roughly 15 tok/s per request if the
-  work is evenly shared; it does not mean 60 tok/s for each request.
-- **c1 prefill:** input/prompt tokens processed per second for one request,
-  before generating the answer.
+New speed/energy headline tables will appear only after all four comparisons
+and cleanup validate. No new results are claimed yet. GPU-reported energy is
+not whole-machine energy. Quality warnings remain model-behavior findings in
+full reports, separate from the frequency comparison.
 
-| Model / setup | Clocks | c1 decode tok/s | c1 prefill tok/s | c4 decode total tok/s | Full matrix seconds | GPU-reported kJ / matrix |
-|---|---|---:|---:|---:|---:|---:|
-| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | Normal — default clocks | 35.4 | 2,185 | 66.4 | 440.2 | 19.53 |
-| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | 80% GPU limit — 2,402 MHz; CPU 80% | 33.7 | 2,196 | 68.4 | 438.9 | 18.54 |
-| Qwen3.8-Flash-Next FP4-Local + MTP4 | Normal — default clocks | 39.0 | 1,822 | 59.7 | 453.6 | 17.74 |
-| Qwen3.8-Flash-Next FP4-Local + MTP4 | 80% GPU limit — 2,402 MHz; CPU 80% | 38.8 | 1,788 | 59.8 | 459.3 | 17.14 |
+[Current protocol](docs/CAP1800-PLAN-20261103.txt) ·
+[Earlier Super/Flash report](docs/LARGE-MODEL-RESULTS-20261103.txt) ·
+[Earlier Qwen/Bolt report](docs/QWEN-BOLT-COMPARISON-20261102.txt) ·
+[Serving recipes](docs/LARGE-MODEL-RECIPES-20261103.txt) ·
+[Fan and temperature notes](hardware/FAN-OBSERVATIONS-20261102.txt).
 
-Speed columns: depth 0, pp2048, **exactly 128 output tokens**, two passes per
-profile × three measured runs. Full matrix: depths **0 / 4K / 8K**, concurrency
-**1 / 2 / 4**, with warmups. Energy/time include that whole matrix, its warmups,
-and context preparation; they are **not decode-only**. Profiles alternate
-**normal → 80% GPU limit → 80% GPU limit → normal**, keeping one server loaded. Both use 20
-CPU quota and 32K configured server context. [All shapes and dispersion](experiments/large-models-20261102/throughput-matrix.csv).
-
-**Existing limited profile:** GPU ceiling 2,402 MHz (80% of 3,003 MHz reported maximum),
-CPU clock ceilings 80% of hardware maxima. This is a clock limit, not a watt limit.
-Observed GPU clocks were already near the ceiling (~2.4 GHz); most of the
-frequency reduction was on the CPU. GPU-reported joules are **not whole-machine
-energy**; CPU, NVMe, fans and power-supply costs are not fully accounted for.
-Different tokenizers also mean equal token counts need not represent equal text.
-
-## What we found
-
-- **Flash Next led this tool suite, narrowly ahead of our 27B baseline.** It
-  also had more safety warnings, including cross-tenant disclosure, an injected
-  email action and an incorrect payment-success claim. Super improved on Bolt's
-  score but did not approach either Qwen. Read the case traces alongside scores.
-- **Neither new model won every speed shape.** Flash Next had faster depth-0
-  single-request decode; Super had faster prefill and depth-0 aggregate c4 decode.
-  At 8K, c4 decode was **31.2 tok/s Super versus 25.9 Flash Next** at normal clocks.
-- **Caps modestly reduced measured energy with little change in total time.**
-  Super: **5.1% fewer GPU-reported joules**, matrix time essentially unchanged
-  (−0.3%). Flash Next: **3.4% fewer joules**, **1.3% longer**. Only two passes per
-  profile, on one machine; these are observations, not confidence intervals.
-- **Flash Next moves work onto NVMe.** Its matrix averaged **61.2 GB of host
-  NVMe reads per pass**, against **<0.3 GB in every Super pass**. Flash used fewer
-  GPU-reported joules, but that does not establish a whole-machine efficiency win.
-- **A community allocator setting resolved a startup memory spike here.** Stock
-  Flash Next initialization crossed our 2 GiB available-RAM stop. Adding
-  `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` to the same pinned recipe
-  avoided the failure; the successful campaign's sampled minimum was **17.49 GiB available**.
-  We kept the 2 GiB hard floor and 90°C thermal stop. [Evidence and recipes](docs/LARGE-MODEL-RECIPES-20261103.txt).
-- **Thermals and fans are recorded.** Full successful-campaign peaks were
-  **80.9°C Super / 79.5°C Flash Next**; Flash's peak occurred during startup.
-  Capped throughput peaks were **74.7°C / 69.9°C**. Fans remained automatic;
-  ambient was unmeasured and Super's first normal pass included fan ramp-up, so
-  these are not controlled cooling comparisons. [Fan observations](hardware/FAN-OBSERVATIONS-20261102.txt).
-  These peaks refer to the hottest ACPI zone. CPU-labelled zones and the GPU
-  can peak at different times; Flash startup showed a 24.3°C CPU-zone lead.
-  [Temperature timelines and sensor definitions](docs/THERMAL-HISTORY-20261103.txt).
-
-**Reports and reproducibility:** [Complete new-model report](docs/LARGE-MODEL-RESULTS-20261103.txt)
-· [Recipes and startup fixes](docs/LARGE-MODEL-RECIPES-20261103.txt)
-· [Protocol](docs/LARGE-MODEL-PROTOCOL-20261102.txt)
-· [Readable summaries and raw archives](experiments/large-models-20261102/).
-Both jobs completed; model processes were unloaded and the original queue runtime,
-reference files and clock limits restored. Firmware and EC settings were unchanged.
-
-**Next planned:** DeepSeek V4.1 Flash 1017, SAGE EXL3 1.62 bpw, tested last with
-**256K (262,144-token) configured context**. It has not been downloaded or tested.
-
-## Earlier speed measurements — Qwen 27B and Bolt
-
-| Checkpoint / setup | Normal c1 decode tok/s | Normal c1 prefill tok/s | Normal c4 decode total tok/s |
-|---|---:|---:|---:|
-| Qwen3.8-27B NVFP4 + DFlash2 | 33.0 | 2,331 | 72.2 |
-| Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr | 38.4 | 1,837 | 82.2 |
-
-These used the same current harness family but **random corpus passages, natural
-EOS, 16 CPU quota, and one normal-then-capped pass**. They are not matched speed
-or efficiency controls for the seeded, fixed-length 20 CPU comparison above.
-Their quality scores use the same current 104-scenario suite.
-[Qwen versus Bolt report](docs/QWEN-BOLT-COMPARISON-20261102.txt) ·
-[Bolt current-suite report](docs/BOLT-STANDARD-BENCHMARKS.txt) ·
-[Forum versus NVIDIA runtime pilot](docs/BOLT-RESULTS.txt).
+**Following this comparison:** long-context usability on real documents/code;
+response latency under mixed prefill/decode load; sustained thermals and useful
+work per joule. Speculation and KV precision are model-specific investigations,
+not standard suite sweeps. No alternative Qwen recipe or cold/warm multi-agent
+session study. DeepSeek V4.1 Flash 1017 at 256K context remains last, untested.
 
 ---
 

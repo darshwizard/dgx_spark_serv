@@ -54,9 +54,12 @@ def main():
     p.add_argument('--state',type=Path,required=True)
     p.add_argument('--gpu-default-baseline',action='store_true')
     p.add_argument('--gpu-max-mhz',type=int,help='Explicit GPU ceiling in MHz; omitted preserves the historical 80%% profile')
+    p.add_argument('--cpu-max-fraction',type=float,default=0.8,help='CPU ceiling as fraction of hardware maximum (default: 0.8)')
     args=p.parse_args()
     if args.gpu_max_mhz is not None and args.gpu_max_mhz<=0:
         p.error('GPU ceiling must be positive')
+    if not 0<args.cpu_max_fraction<=1:
+        p.error('CPU ceiling fraction must be greater than zero and at most one')
     if os.geteuid()!=0: p.error('Owner/root privileges required')
     if args.action=='restore':
         state=json.loads(args.state.read_text())
@@ -79,7 +82,7 @@ def main():
         target=args.gpu_max_mhz if args.gpu_max_mhz is not None else int(maximum*0.8)
         if target>maximum:raise RuntimeError('Requested GPU ceiling exceeds reported hardware maximum')
         for path,values in state['cpu'].items():
-            cap=int(values['cpuinfo_max_freq']*0.8)
+            cap=int(values['cpuinfo_max_freq']*args.cpu_max_fraction)
             # Never increase an existing lower cap.
             cap=min(cap,values['scaling_max_freq'])
             q=Path(path)
@@ -89,9 +92,9 @@ def main():
         applied=gpu('-lgc',f'0,{target}')
         after=cpu()
         for path,values in after.items():
-            if values['scaling_max_freq']>int(values['cpuinfo_max_freq']*0.8):
+            if values['scaling_max_freq']>int(values['cpuinfo_max_freq']*args.cpu_max_fraction):
                 raise RuntimeError('CPU frequency cap readback above requested limit')
-        print(json.dumps({'gpu_requested_max_mhz':target,'gpu_response':applied,
+        print(json.dumps({'gpu_requested_max_mhz':target,'cpu_requested_fraction':args.cpu_max_fraction,'gpu_response':applied,
                           'cpu_after':after,'note':'Validate observed GPU clocks under load.'}))
     except BaseException:
         restore(state)

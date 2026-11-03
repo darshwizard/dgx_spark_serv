@@ -2,7 +2,7 @@
 """Publish only a complete, validated four-model campaign. Preserve older runs."""
 import csv,hashlib,json,re,shutil,statistics,subprocess,tarfile
 from pathlib import Path
-LIMIT='gpu1800_cpu80'
+LIMIT='gpu1800_cpu60'
 MODELS={'qwen27':('Qwen3.8-27B NVFP4 + DFlash2','nvidia/Qwen3.8-27B-NVFP4'),'bolt':('Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr','nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB'),'super':('Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr','nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4'),'flash':('Qwen3.8-Flash-Next FP4-Local + MTP4','nvidia/Qwen3.8-Flash-Next-FP4-Local')}
 def render(summary,matrix):
  text='''# DGX Spark (GB10) — serving & benchmark findings
@@ -31,21 +31,21 @@ to the clock limit.
 
 **Normal:** default CPU/GPU clock limits. **60% GPU clock limit:** GPU ceiling
 **1,800 MHz** (about 60% of the reported 3,003 MHz maximum), with CPU frequency
-ceilings **80%** of their hardware maxima. CPU affinity stays unchanged. This is
+ceilings **60%** of their hardware maxima. CPU affinity stays unchanged. This is
 a combined CPU/GPU clock profile, not a 60%-power setting or a GPU-only causal test.
 
 **CPU speeds behind the profile labels** (requested frequency ceilings):
 
-| CPU cores | Normal / default | CPU 80% profile | CPU 60% profile |
-|---|---:|---:|---:|
-| 10 Cortex-X925 performance cores | 3,900 MHz | 3,120 MHz | 2,340 MHz |
-| 10 Cortex-A725 efficiency cores | 2,808 MHz | 2,246.4 MHz | 1,684.8 MHz |
+| CPU cores | Normal / default | CPU 60% profile |
+|---|---:|---:|
+| 10 Cortex-X925 performance cores | 3,900 MHz | 2,340 MHz |
+| 10 Cortex-A725 efficiency cores | 2,808 MHz | 1,684.8 MHz |
 
 Default permits operation up to these reported hardware maxima; it does not
 mean a fixed clock at all times. Driver requests are distinct from independently
 verified hardware clocks; the watchdog records hardware feedback for inspection.
-CPU 60% defines an additional profile; the results on this page identify which
-profile was actually measured.
+The CPU 60% ceilings are 2,340 MHz for performance cores and 1,684.8 MHz for
+efficiency cores. Older limited-profile results remain in the archived reports.
 
 `c` means concurrent requests. **c1 decode** is output tokens/second for one
 active request. **c4 decode total** is the combined rate for four simultaneous
@@ -56,7 +56,7 @@ tokens before answer generation. The speed columns below use depth 0.
 |---|---|---:|---:|---:|---:|---:|---:|
 '''
  for model,(label,_) in MODELS.items():
-  for prof,pname in [('normal','Normal'),(LIMIT,'60% GPU limit — 1,800 MHz; CPU 80%')]:
+  for prof,pname in [('normal','Normal'),(LIMIT,'60% GPU limit — 1,800 MHz; CPU 60%')]:
    a=next(r for r in matrix if r['model']==model and r['profile']==prof and r['depth']==0 and r['concurrency']==1);b=next(r for r in matrix if r['model']==model and r['profile']==prof and r['depth']==0 and r['concurrency']==4);s=summary[model]['profiles'][prof]
    text+=f"| {label} | {pname} | {a['decode_mean']:.1f} | {a['prefill_mean']:,.0f} | {b['decode_mean']:.1f} | {s['seconds_mean']:.1f} | {s['gpu_j_mean']/1000:.2f} | {s['peak_acpi_c']:.1f} |\n"
  text+='''
@@ -75,10 +75,16 @@ equal token counts. No wall meter or ambient-temperature sensor was available.
 
 ## Findings from this campaign
 
+**Disk-backed n-gram/PLE tables:** Flash Next can continue reading NVMe during
+inference. The earlier campaign averaged 61.2 GB host reads and 0.54 GB writes
+per ~7.6-minute matrix, not per answer. These are whole-host counters; reads
+do not consume the SSD write-endurance allowance byte-for-byte. New per-profile
+I/O and SMART snapshots are in this campaign’s raw records.
+
 '''
  for model,(label,_) in MODELS.items():
   n=summary[model]['profiles']['normal'];c=summary[model]['profiles'][LIMIT]
-  text+=f"- **{label}:** GPU-reported matrix energy changed **{100*(c['gpu_j_mean']/n['gpu_j_mean']-1):+.1f}%**, and elapsed time **{100*(c['seconds_mean']/n['seconds_mean']-1):+.1f}%**, under the 60% GPU limit / CPU 80% profile.\n"
+  text+=f"- **{label}:** GPU-reported matrix energy changed **{100*(c['gpu_j_mean']/n['gpu_j_mean']-1):+.1f}%**, and elapsed time **{100*(c['seconds_mean']/n['seconds_mean']-1):+.1f}%**, under the 60% GPU limit / CPU 60% profile.\n"
  text+='''
 Only two passes per profile on one host: these are measured observations, not
 confidence intervals. Fans remained automatic; starting temperatures, fan speeds
@@ -129,6 +135,7 @@ def publish(root,repo):
    if not phase.is_dir():continue
    prof='normal' if phase.name.endswith('-normal') else LIMIT
    ack=json.loads((phase/'profile-ack.json').read_text());assert ack['profile']==prof
+   if prof==LIMIT:assert ack['gpu_ceiling_mhz']==1800 and ack['cpu_ceiling_fraction']==0.6
    data=json.loads((phase/'throughput.json').read_text());assert len(data['benchmarks'])==9
    for r in data['benchmarks']:
     assert r['response_size']==128 and len(r['tg_throughput']['values'])==3
@@ -142,7 +149,7 @@ def publish(root,repo):
    if prof==LIMIT:assert all(x['gpu_sample_stats']['clocks.sm']['max']<=1800 for x in w)
    profiles[prof]={'seconds_mean':statistics.mean(x['elapsed_s'] for x in w),'gpu_j_mean':statistics.mean(x['gpu_reported_energy_j'] for x in w),'peak_acpi_c':max(x['max_acpi_c'] for x in w),'nvme_read_gb_mean':statistics.mean(sum(v['read_bytes'] for v in x['host_nvme_activity'].values())/1e9 for x in w)}
   summary[model]={'quality':q,'profiles':profiles,'job_id':(src/'job-id').read_text()}
-  for name in ['spec.json','status.json','job-id','workload-summary.json']:shutil.copy2(src/name,out/name)
+  for name in ['spec.json','status.json','job-id','workload-summary.json','nvme-smart-before.json','nvme-smart-after.json']:shutil.copy2(src/name,out/name)
   shutil.copy2(result/'launch.json',out/'launch.json');shutil.copy2(next((result/'bench/phase-1-normal/quality').rglob('*.md')),out/'quality.md')
   shutil.copy2(src/'telemetry/summary.json',out/'telemetry-summary.json')
   with tarfile.open(out/'raw-run.tar.gz','w:gz') as tf:tf.add(src,arcname=src.name)
@@ -150,7 +157,7 @@ def publish(root,repo):
  (dest/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
  for name in ['schedule.json','run.py','switch-runtime.py','publish.py','entry.py','recover.py']:shutil.copy2(root/name,dest/name)
  old=(repo/'README.md').read_text();history=old[old.index('\n---\n'):];(repo/'README.md').write_text(render(summary,matrix)+history)
- report='Completed four-model campaign: normal vs GPU 1800 MHz (about 60% hardware maximum), CPU ceilings80%.\nOne normal-clock quality trial per model; quality warnings are behavioral findings in each quality report, not power effects.\nFull model/profile means and measurements:\n'+json.dumps(summary,indent=2)+'\nRaw data, per-pass JSON, quality Markdown and exact configs: ../experiments/cap1800-20261103/\n20CPU quota,118GiB charged RAM,16GiB shm;90C hottest-zone stop;2GiB hard/6GiB30s soft memory floors. No fan/firmware/EC change. GPU-reported energy is not wall/system energy. Two matrices/profile; descriptive results on one host. All models unloaded/settings restored before publication.\n'
+ report='Completed four-model campaign: normal vs GPU 1800 MHz (about 60% hardware maximum), CPU ceilings60%.\nOne normal-clock quality trial per model; quality warnings are behavioral findings in each quality report, not power effects.\nFull model/profile means and measurements:\n'+json.dumps(summary,indent=2)+'\nRaw data, per-pass JSON, quality Markdown and exact configs: ../experiments/cap1800-20261103/\n20CPU quota,118GiB charged RAM,16GiB shm;90C hottest-zone stop;2GiB hard/6GiB30s soft memory floors. No fan/firmware/EC change. GPU-reported energy is not wall/system energy. Two matrices/profile; descriptive results on one host. All models unloaded/settings restored before publication.\n'
  (repo/'docs/CAP1800-RESULTS-20261103.txt').write_text(report)
  files={str(p.relative_to(dest)):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in dest.rglob('*') if p.is_file()};(dest/'manifest.json').write_text(json.dumps(files,indent=2)+'\n')
  subprocess.run(['git','diff','--check'],cwd=repo,check=True)

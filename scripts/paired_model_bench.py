@@ -22,7 +22,7 @@ def reset_cache():
   time.sleep(1)
  raise RuntimeError('Prefix cache remained busy after five reset attempts')
 def main():
- p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--tokenizer',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
+ p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);p.add_argument('--tokenizer',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80','gpu1800_cpu60'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args();a.out.mkdir(parents=True,exist_ok=False)
  with (a.out/'events.jsonl').open('w',buffering=1) as ledger:
   def event(name,**kw):
    row={**stamp(),'event':name,**kw};ledger.write(json.dumps(row)+'\n');print(json.dumps(row),flush=True)

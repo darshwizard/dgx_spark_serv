@@ -16,7 +16,7 @@ def process(cmd,**kw):calls.append(cmd);return 0
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),API)
 threading.Thread(target=server.serve_forever,daemon=True).start()
 try:
- for limited,quality_mode,quality_count in [('efficiency80','both',2),('gpu1800_cpu80','normal-only',1)]:
+ for limited,quality_mode,quality_count in [('efficiency80','both',2),('gpu1800_cpu80','normal-only',1),('gpu1800_cpu60','normal-only',1)]:
   calls.clear();API.resets=0
   with tempfile.TemporaryDirectory() as tmp:
    out=Path(tmp)/'bench';stop=threading.Event()
