@@ -1,0 +1,64 @@
+Bolt power/temperature investigation — requested after the broader testing
+
+First complete the queued GPU1800/CPU60-only throughput follow-up. It retains
+the same weights, LiLiCorr7 recipe and seeded matrix. No unrestricted retry.
+Current batch is separate and must finish, unload and publish first. This
+follow-up has two limited-only passes, no repeated quality suite, and no claim
+of paired savings against the thermally stopped normal run.
+
+After the other planned experiments, return to Bolt for deeper diagnostics.
+Question: does its sustained power buy useful output, or reflect unnecessary
+drafting, dequantization, polling, synchronization or memory traffic?
+
+Use one fixed safe clock profile for Bolt, Qwen27 and Super reference requests.
+Match input depth, output length, concurrency and starting temperature. Earlier
+69W Bolt average covered a partial matrix, while54W Qwen/45W Super covered full
+matrices; those alone do not isolate architecture efficiency. Keep the90C stop,
+actual-host-memory guard, default fans and unchanged firmware/EC throughout.
+
+Collect and align with request/stage timestamps:
+- CPU per-core/per-thread utilization, frequency requests and hardware feedback,
+  cycles/instructions where available, context switches, waits and page faults.
+- GPU utilization, clocks, reported power and thermal/limit reasons.
+- Actual loaded backend/kernel names; distinguish target forward/verification,
+  drafter, MoE/GEMM/dequantization, Mamba state work and attention.
+- GPU kernel duration, CPU-GPU synchronization and idle gaps using short Nsight
+  Systems captures, if supported by the pinned queue image and permissions.
+  Use Nsight Compute on selected kernels for compute/memory indicators if
+  counters are available; do not change host permissions/services to force it.
+- Per-position draft acceptance, proposed/accepted tokens and target steps;
+  correlate discarded drafting work with output speed and joules.
+- Host/driver memory, faults, swap, NVMe I/O, all ACPI zones and both fan RPMs.
+
+Per-model controlled comparisons, not mandatory suite sweeps:
+1. Same Bolt target with the existing LiLiCorr setting versus shorter drafting
+   and no draft. Record speed, latency and energy, not acceptance alone.
+2. Separate prefill from decode; c1 andc4. Determine which stage sustains power.
+3. If supported, compare one backend choice at a time after identifying the
+   actual kernels and confirming a fallback/inefficiency in the current recipe.
+4. CPU-only/GPU-only frequency reductions only after the fixed-profile reference.
+   Do not assume TP2 polling reports describe our TP1 executor.
+
+Inspect available tooling first. Host nsys,ncu,perf,pidstat,iostat were found;
+container availability/CUPTI and counter permissions are not yet validated.
+Mark profiler runs separately: replay, synchronization and sampling overhead
+can change speed and power. Never mix their timings into headline benchmarks.
+NVML power is GPU-reported, not independent CPU/DRAM/whole-machine rail power;
+profiling cannot assign exact watts to each kernel without further measurement.
+Use causal ablations to identify contributions, and a wall meter if available.
+
+Expected deliverable: an evidence-backed explanation of where Bolt spends time
+and power, whether it is useful work, and which recipe changes improve useful
+work per joule within the thermal limit. No root cause is established yet.
+
+Forum review Nov3: no controlled Bolt-only thermal-vs-clock trace found in
+threads385978/386093. ALLSmartLLM operations page reports GPU48/53/82C min/mean/
+max yesterday on a Spark serving BOTHBoltandQwen27; no model-specific attribution,
+ACPI hotspot series, versions or minute-level workload data. SuperVL thread385991
+reports GPU81-85C with hottest ACPI93-96C and shutdowns; relevant to sensor choice,
+not proof Bolt shares a particular bug. Do not conflate inference sampling
+temperature with hardware temperature in search results.
+https://forums.developer.nvidia.com/t/nemotron-3-5-bolt-and-super-vl-on-one-spark-with-one-command/386093
+https://forums.developer.nvidia.com/t/nvidia-nemotron-3-5-bolt-74b-a9b-24gb-and-nemotron-3-5-super-vl-120b-a12b-published-nvidias-new-general-purpose-models-especially-for-gb10/385978
+https://allsmartllm.com/en/operations/
+https://forums.developer.nvidia.com/t/nemotron-3-5-super-vl-120b-a12b-nvfp4-on-a-single-dgx-spark-34-49-tok-s-decode-with-lilicorr-16k-thermal-shutdowns-at-32k/385991

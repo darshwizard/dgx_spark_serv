@@ -24,7 +24,7 @@ def guard(out):
    except Exception as e:reason='health_read_error: '+str(e)
    if reason:failures.append(reason);event('guard_abort',reason=reason);terminate();stop.set()
 def main():
- p=argparse.ArgumentParser();p.add_argument('--model',choices=['qwen27','bolt','super','flash'],required=True);p.add_argument('--run-id',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80','gpu1800_cpu60'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--phase-mode',choices=['paired','limited-only'],default='paired');p.add_argument('--model',choices=['qwen27','bolt','super','flash'],required=True);p.add_argument('--run-id',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80','gpu1800_cpu60'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args()
  if not a.run_id or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-_' for c in a.run_id):p.error('Invalid run ID')
  out=ROOT/'results'/a.run_id;out.mkdir(parents=True,exist_ok=False)
  target=ROOT/'models'/dict(qwen27='Qwen3.8-27B-NVFP4',bolt='NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB',super='NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4',flash='Qwen3.8-Flash-Next-FP4-Local')[a.model]
@@ -62,7 +62,7 @@ def main():
     stop.wait(2)
    if ready and not stop.is_set():
     event('server_ready',startup_s=time.monotonic()-start)
-    bench=subprocess.Popen([sys.executable,'/workspace/code/paired_model_bench.py','--out',str(out/'bench'),'--tokenizer',str(target),'--limited-profile',a.limited_profile,'--quality-mode',a.quality_mode],env=env,start_new_session=True);children.append(bench);rc=bench.wait()
+    bench=subprocess.Popen([sys.executable,'/workspace/code/paired_model_bench.py','--out',str(out/'bench'),'--tokenizer',str(target),'--limited-profile',a.limited_profile,'--quality-mode',a.quality_mode,'--phase-mode',a.phase_mode],env=env,start_new_session=True);children.append(bench);rc=bench.wait()
    else:failures.append('server_not_ready')
  finally:
   stop.set();terminate()

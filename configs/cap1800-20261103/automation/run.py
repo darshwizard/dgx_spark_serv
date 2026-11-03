@@ -23,7 +23,8 @@ def switch(image,label=None):
  if label:cmd.append(label)
  run(cmd)
  run(['curl','-fsS','--retry','5','--retry-connrefused','--retry-delay','1','http://192.168.1.240:8080/agents'],stdout=subprocess.DEVNULL)
-def model_run(model,attempt):
+def model_run(model,attempt,limited_only=False):
+ phases=['gpu1800_cpu60']*2 if limited_only else ['normal','gpu1800_cpu60','gpu1800_cpu60','normal']
  label=f'{model}-gpu1800-{attempt}';local=ROOT/label;local.mkdir(exist_ok=False)
  jid=None;logger=None;watch=None;active_cap=None;current_profile='normal';handled=0;start=time.monotonic();last_beat=0
  image={'qwen27':'qwen-benchmarks:20261102','bolt':'bolt-benchmarks:20261102','super':'super-benchmarks:20261102','flash':'flash-benchmarks:20261102'}[model]
@@ -31,8 +32,8 @@ def model_run(model,attempt):
  try:
   limits=cpu()
   if any(v['scaling_max_freq']!=v['cpuinfo_max_freq'] for v in limits.values()):raise RuntimeError('Unexpected pre-existing CPU cap; refusing to overwrite')
-  spec={'command':['python3','/workspace/code/model_campaign_job.py','--model',model,'--run-id',label,'--limited-profile','gpu1800_cpu60','--quality-mode','normal-only'],
-   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'campaign':'cap1800-20261103','profiles':['normal','gpu1800_cpu60','gpu1800_cpu60','normal'],'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':1800,'cpu_ceiling_fraction':0.6,'quality_mode':'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
+  spec={'command':['python3','/workspace/code/model_campaign_job.py','--model',model,'--run-id',label,'--limited-profile','gpu1800_cpu60','--quality-mode','normal-only','--phase-mode','limited-only' if limited_only else 'paired'],
+   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'campaign':ROOT.name,'profiles':phases,'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':1800,'cpu_ceiling_fraction':0.6,'quality_mode':'none' if limited_only else 'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
   (local/'spec.json').write_text(json.dumps(spec,indent=2));run(SCP+[str(local/'spec.json'),HOST+':workspace/campaign-spec.json'])
   smart_snapshot(local,'nvme-smart-before.json')
   logger=subprocess.Popen(['python3',str(REPO/'scripts/telemetry.py'),'--out',str(local/'telemetry'),'--duration','21600','--label',label],stdout=subprocess.DEVNULL,stderr=open(local/'telemetry.log','w'))
@@ -59,7 +60,7 @@ def model_run(model,attempt):
    if request:
     req=json.loads(request);seq=req['seq'];profile=req['profile']
     if seq>handled:
-     if seq!=handled+1 or profile!=['normal','gpu1800_cpu60','gpu1800_cpu60','normal'][seq-1]:raise RuntimeError('Invalid profile sequence')
+     if seq!=handled+1 or profile!=phases[seq-1]:raise RuntimeError('Invalid profile sequence')
      if profile!=current_profile:
       if profile=='gpu1800_cpu60':
        active_cap=local/f'phase-{seq}-clocks.json'
@@ -86,7 +87,7 @@ def model_run(model,attempt):
      run(SCP+[str(ackfile),HOST+f':workspace/results/{label}/bench/phase-{seq}-ack.tmp'])
      remote(f'mv ~/workspace/results/{label}/bench/phase-{seq}-ack.tmp ~/workspace/results/{label}/bench/phase-{seq}-ack.json')
      event('phase_released',model=model,seq=seq,profile=profile,hottest_c=ack['hottest_c']);handled=seq
-   if handled in [2,3] and int(gpu().split(' MHz')[0])>1800:raise RuntimeError('Observed GPU clock above 1800 MHz ceiling')
+   if current_profile=='gpu1800_cpu60' and int(gpu().split(' MHz')[0])>1800:raise RuntimeError('Observed GPU clock above 1800 MHz ceiling')
    if time.monotonic()-last_beat>30:
     event('heartbeat',model=model,state=state,phase=handled,hottest_c=hottest(),available_gib=meminfo()['MemAvailable']/1024**3);last_beat=time.monotonic()
    time.sleep(3)

@@ -18,7 +18,7 @@ def cleanup():
  check="import json,sqlite3; d=sqlite3.connect('file:/var/lib/compute-queue/jobs.db?mode=ro',uri=True); print(json.dumps(d.execute(\"select id from jobs where state in ('running','queued')\").fetchall()))"
  active=json.loads(subprocess.check_output(['sudo','-n','python3','-c',check],text=True))
  if active:raise RuntimeError('Queue has other active jobs; refusing global clock/runtime restoration')
- for p in ROOT.glob('*-gpu1800-01/phase-2-clocks.json'):
+ for p in ROOT.glob('*-gpu1800-01/phase-*-clocks.json'):
   subprocess.run(['sudo','-n','python3',str(repo/'scripts/clock_profile.py'),'restore','--state',str(p)],check=True,stdout=subprocess.DEVNULL)
  subprocess.run(['sudo','-n','python3',str(ROOT/'switch-runtime.py'),'restore'],check=True)
  (ROOT/'restored.json').write_text(json.dumps({'restored':True,'jobs':own})+'\n')
