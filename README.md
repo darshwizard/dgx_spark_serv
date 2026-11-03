@@ -3,8 +3,6 @@
 One NVIDIA DGX Spark, GB10, 121.7 GiB usable unified RAM. Latest campaign update:
 **November 3, 2026 — normal versus 60% GPU clock limit / CPU 60%.**
 
-**Thermal-stopped comparison — Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr:** the normal-clock run reached the 90 C safety stop (guard peak 90.1 C). Its quality trial completed, but no paired speed/energy result is available. The incomplete run and guard logs are archived; the temperature limit was not raised.
-
 ## Model quality — measured at normal clocks
 
 Quality measures task behavior, separately from the clock/energy comparison.
@@ -23,7 +21,7 @@ Quality differences in a single trial are not an established universal ranking.
 Model safety findings are in the full quality reports; they are not attributed
 to the clock limit.
 
-## Paired speed, energy and heat — completed comparisons
+## Speed, energy and heat — completed tests
 
 **Normal:** default CPU/GPU clock limits. **60% GPU clock limit:** GPU ceiling
 **1,800 MHz** (about 60% of the reported 3,003 MHz maximum), with CPU frequency
@@ -52,16 +50,27 @@ tokens before answer generation. The speed columns below use depth 0.
 |---|---|---:|---:|---:|---:|---:|---:|
 | Qwen3.8-27B NVFP4 + DFlash2 | Normal | 26.7 | 2,333 | 71.2 | 417.6 | 22.47 | 84.5 |
 | Qwen3.8-27B NVFP4 + DFlash2 | 60% GPU limit — 1,800 MHz; CPU 60% | 25.9 | 2,104 | 72.0 | 446.4 | 12.65 | 63.6 |
+| Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr | Normal† | 50.7 | 1,843 | 90.2 | 422.0 | 29.77 | 91.0 |
+| Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr | 60% GPU limit — 1,800 MHz; CPU 60%† | 46.1 | 1,570 | 84.7 | 470.9 | 16.15 | 66.4 |
 | Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | Normal | 32.0 | 2,201 | 72.6 | 436.6 | 19.53 | 81.0 |
 | Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | 60% GPU limit — 1,800 MHz; CPU 60% | 30.9 | 2,037 | 71.5 | 460.6 | 10.88 | 62.6 |
 | Qwen3.8-Flash-Next FP4-Local + MTP4 | Normal | 38.8 | 1,806 | 59.7 | 459.2 | 18.11 | 78.2 |
 | Qwen3.8-Flash-Next FP4-Local + MTP4 | 60% GPU limit — 1,800 MHz; CPU 60% | 36.7 | 1,654 | 55.9 | 491.0 | 10.18 | 61.9 |
 
+† **Bolt used separate two-pass runs**, rather than the resident paired protocol.
+The normal run used a **95°C stop** and completed; its matrix peak was **91.0°C**
+(**91.2°C** across the entire run). The limited run retained the **90°C stop**.
+A DeepSeek download/checksum verification overlapped the normal run’s first
+matrix. These rows are observations, not a controlled paired energy-saving
+estimate. [Normal results and fan telemetry](docs/BOLT95-REPEAT-20261103.txt) ·
+[Limited results](docs/BOLT60-ONLY-RESULTS-20261103.txt).
+
 Seeded llama-benchy 0.4.1.dev1: pp2048, exactly 128 generated tokens in matrix
 requests, depth 0/4096/8192, concurrency 1/2/4, three measured runs plus warmup
-per shape. Two passes per profile, **Normal → 60% GPU limit → 60% GPU limit →
-Normal**, keeping one server loaded. All use 20 CPU quota and 32K configured
-context. Prefix cache resets verified before suites; cache/prompt details,
+per shape. Qwen 27B, Super VL and Flash Next use two passes per profile,
+**Normal → 60% GPU limit → 60% GPU limit → Normal**, keeping one server loaded.
+All use 20 CPU quota and 32K configured context. Prefix cache resets verified
+before suites; cache/prompt details,
 per-pass values and descriptive SD are in the report and raw data.
 
 Energy/time cover the full matrix including warmups and harness probes, whose
@@ -69,28 +78,6 @@ small generation overhead can vary. They exclude clock transitions/cooldown.
 GPU-reported energy is not whole-machine energy; CPU, NVMe, fans and PSU losses
 are not fully accounted for. Different tokenizers also imply different text at
 equal token counts. No wall meter or ambient-temperature sensor was available.
-
-## Bolt default clocks with a 95°C stop
-
-The Nov 3 repeat completed both throughput matrices (sampled guard peak **91.2°C**). Stock automatic fans and safety guards were retained. A simultaneous low-priority DeepSeek weight download makes this an observational thermal repeat, **not a paired energy comparison**. [Report and telemetry](docs/BOLT95-REPEAT-20261103.txt) · [Raw evidence](experiments/bolt95-repeat-20261103/).
-
-## Bolt default-clock repeat
-
-The Nov 3 repeat stopped again at the **90°C guard** (sampled peak **90.0°C**). Stock automatic fans and safety guards were retained. A simultaneous low-priority DeepSeek weight download makes this an observational thermal repeat, **not a paired energy comparison**. [Report and telemetry](docs/BOLT-NORMAL-REPEAT-20261103.txt) · [Raw evidence](experiments/bolt-normal-repeat-20261103/).
-
-## Bolt at 60% — efficiency-only follow-up
-
-The unrestricted comparison stopped at the 90°C guard. A separate two-pass test
-used GPU **1,800 MHz** and CPU **60%** (performance cores **2,340 MHz**, efficiency
-cores **1,684.8 MHz**). No unrestricted retry or repeat quality trial was run.
-
-| c1 decode tok/s | c1 prefill tok/s | c4 decode total tok/s | Matrix seconds | GPU-reported kJ | Peak ACPI °C |
-|---:|---:|---:|---:|---:|---:|
-| 46.1 | 1,570 | 84.7 | 470.9 | 16.15 | 66.4 |
-
-These are **unpaired limited-only results**; no normal-versus-efficiency energy
-percentage can be calculated. [Report](docs/BOLT60-ONLY-RESULTS-20261103.txt) ·
-[Raw evidence](experiments/bolt60-only-20261103/).
 
 ## Findings from this campaign
 
@@ -124,6 +111,9 @@ restored before publication. DeepSeek V4.1 Flash 1017 SAGE EXL3 1.62 bpw at
 **256K configured context** remains a separate planned test, not measured here.
 
 ## Earlier results retained for reference
+
+[Bolt runs stopped at the original 90°C guard](docs/BOLT-NORMAL-REPEAT-20261103.txt)
+· [Initial Bolt thermal-stop evidence](experiments/cap1800-20261103/bolt/).
 
 [Earlier Super / Flash 2,402 MHz-limit campaign](docs/LARGE-MODEL-RESULTS-20261103.txt)
 · [Earlier Qwen 27B / Bolt comparison](docs/QWEN-BOLT-COMPARISON-20261102.txt).
