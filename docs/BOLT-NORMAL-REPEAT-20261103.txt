@@ -1,0 +1,24 @@
+Bolt normal/default-clock repeat — Nov3,2026
+Same validated Bolt+LiLiCorr7 recipe,32K configured context,20CPU quota,automatic stock fans. Two seeded throughput matrices requested, no repeat quality suite. GPU clock limit reset to defaults before startup; CPU ceilings at hardware maximum. Existing90C and memory guards unchanged. No relaxation of thermal threshold.
+Concurrent DeepSeek1017 download was authorized; host-wide CPU/NVMe activity may confound heat, speed and energy. This is a thermal repeat, not a paired comparison against prior limited-only results.
+{
+  "completed": false,
+  "thermal_stop": true,
+  "job_id": "c5dabe5efef444029790b6bbd38645f8",
+  "peak_acpi_c": 90.0,
+  "normal_clocks": true,
+  "paired_comparison": false,
+  "background_download": "DeepSeek1017 download started concurrently, low CPU/disk priority; actual overlap recorded in host telemetry",
+  "controller_error": null,
+  "abort": {
+    "reason": "thermal_limit_90C",
+    "returncode": 0,
+    "stdout": "{\n  \"ok\": true,\n  \"result\": {\n    \"state\": \"cancelled\"\n  }\n}\n",
+    "stderr": "",
+    "unix_s": 1793719399.3573294
+  },
+  "outcome": null,
+  "completed_matrices": 0,
+  "workload_summaries": []
+}
+Defaults/runtime restored and model unloaded before publication. GPU-reported joules are not whole-system energy. Interrupted matrix does not establish efficiency.

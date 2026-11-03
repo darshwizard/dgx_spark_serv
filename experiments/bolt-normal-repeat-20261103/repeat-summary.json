@@ -1,0 +1,20 @@
+{
+  "completed": false,
+  "thermal_stop": true,
+  "job_id": "c5dabe5efef444029790b6bbd38645f8",
+  "peak_acpi_c": 90.0,
+  "normal_clocks": true,
+  "paired_comparison": false,
+  "background_download": "DeepSeek1017 download started concurrently, low CPU/disk priority; actual overlap recorded in host telemetry",
+  "controller_error": null,
+  "abort": {
+    "reason": "thermal_limit_90C",
+    "returncode": 0,
+    "stdout": "{\n  \"ok\": true,\n  \"result\": {\n    \"state\": \"cancelled\"\n  }\n}\n",
+    "stderr": "",
+    "unix_s": 1793719399.3573294
+  },
+  "outcome": null,
+  "completed_matrices": 0,
+  "workload_summaries": []
+}

@@ -1,0 +1,7 @@
+{
+  "note": "GPU-reported energy only, not wall/system energy. Trapezoidal interpolation, excluding gaps >2.5s. Throughput energy includes harness warmups and context prefill. Partial workloads are not efficiency comparisons. CPU/NVMe/VM activity is host-wide and uses first/last samples inside workload, excluding boundary fractions; it is not per-job accounting. Swap counters count kernel pages.",
+  "completed_workloads": [],
+  "unfinished_workloads": [
+    "throughput"
+  ]
+}
