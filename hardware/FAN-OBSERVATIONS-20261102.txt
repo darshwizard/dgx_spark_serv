@@ -55,3 +55,21 @@ comparison. Firmware, EC and fan control were unchanged. Both jobs completed
 without the 90 C stop. Models unloaded and clock ceilings restored.
 Raw data: ../experiments/large-models-20261102/
 Report: ../docs/LARGE-MODEL-RESULTS-20261103.txt
+
+Physical cooling layout (teardown evidence, not an inspection of our unit)
+ChargerLAB's NVIDIA 4TB teardown shows front upper/lower intake openings and
+rear exhaust fins. Two fans screw into standoffs on a shared cooling assembly
+above the board. GB10 occupies the central package, with memory on either side;
+the close-up identifies an upper CPU/SoC region and lower GPU region in that
+photo's orientation. The common heat spreader/vapor chamber couples their
+cooling. A fan number should not be interpreted as a dedicated CPU or GPU fan.
+Separate sensor temperatures can still differ; exact firmware sensor-to-fan
+control relationships have not been established here.
+https://www.chargerlab.com/teardown-of-nvidia-dgx-spark-4tb/
+
+CPU/GPU clock interpretation: community reports find useful GPU reductions near
+1700-2000 MHz, but CPU-heavy work can still drive a hot zone. CPU efficiency-core
+pinning has mixed throughput results and is not part of our scheduled profile.
+Our combined GPU1800/CPU80 measurements cannot attribute savings to one component.
+https://forums.developer.nvidia.com/t/cooler-gb10-temps-almost-no-performance-lost/372662
+https://forums.developer.nvidia.com/t/my-spark-kept-shutting-down-from-heat-no-logs-95-97-c-on-acpitz-turned-out-to-be-cpu-threads-not-the-gpu-one-taskset-line-fixed-it/386117

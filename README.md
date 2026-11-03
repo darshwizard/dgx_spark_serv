@@ -3,31 +3,28 @@
 Measurements and recipes from one NVIDIA DGX Spark (GB10, 121.7 GiB usable unified
 memory), on a fresh installation. Latest completed tests: **November 3, 2026**.
 
+**Scheduled rerun: November 3, 02:00 EST (07:00 UTC).** All four models will use
+fresh normal-clock controls versus **60% GPU clock limit — 1,800 MHz, CPU ceiling
+80%**. The completed numbers below still use the earlier 2,402 MHz GPU ceiling.
+New headline results will replace them after all reruns complete; raw history stays.
+
 ## Headline quality — current 104-scenario tool suite
 
-**Normal quality** is measured at default clock limits. **Clock-capped quality**
-is the same quality benchmark rerun with CPU and GPU clock ceilings set to 80% of
-their reported hardware maxima. The scoring rules are unchanged; the cap applies
-to machine clocks. This setting does not guarantee 80% power or a 20% slowdown.
+Quality measures model behavior on the tool suite, using default clock limits.
+Power-profile comparisons are presented separately below; differences between
+individual quality trials do not establish an effect caused by clock limits.
 
-| Exact checkpoint / serving setup | Normal quality /100 (points) | Clock-capped quality /100 (points) | Normal median turn | Safety warnings normal / clock-capped |
-|---|---:|---:|---:|---:|
-| **[Qwen3.8-Flash-Next-FP4-Local](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-FP4-Local)** + MTP4 | **89** (186/208) | **89** (185/208) | 1.9s | 6 / 5 |
-| **[Qwen3.8-27B-NVFP4](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4)** + [DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) | **88** (184/208) | — | 2.1s | 2 / — |
-| **[NVIDIA Nemotron 3.5 Super VL 120B-A12B NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4)** + [LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr) | 79 (164/208) | 80 (167/208) | 1.9s | 4 / 4 |
-| **[NVIDIA Nemotron 3.5 Bolt 74B-A9B 24GB](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB)** + [LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-LiLiCorr) | 76 (159/208) | — | **1.6s** | 8 / — |
+| Exact checkpoint / serving setup | Quality /100 (points) | Median turn |
+|---|---:|---:|
+| **[Qwen3.8-Flash-Next-FP4-Local](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-FP4-Local)** + MTP4 | **89** (186/208) | 1.9s |
+| **[Qwen3.8-27B-NVFP4](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4)** + [DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) | **88** (184/208) | 2.1s |
+| **[NVIDIA Nemotron 3.5 Super VL 120B-A12B NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4)** + [LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr) | 79 (164/208) | 1.9s |
+| **[NVIDIA Nemotron 3.5 Bolt 74B-A9B 24GB](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB)** + [LiLiCorr](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB-LiLiCorr) | 76 (159/208) | **1.6s** |
 
-Same tool-eval-bench **3.0.1.dev9**, hard mode, seed 42, thinking off. One quality
-trial per tested profile; **a one-point lead is not a statistically established
-ranking**. “Safety warnings” is the harness's count, not a count of every failed
-scenario. These are text/tool tests, including mocked document tools; vision and
-full-window retrieval quality are not validated. A dash means not measured.
-
-**Why the missing clock-capped quality scores?** The earlier Qwen 27B and Bolt
-campaigns ran quality only at normal clocks, then measured throughput at both
-normal and capped clocks. The newer Super VL and Flash Next campaigns added a
-second quality run under the cap. We have not rerun capped quality for the older
-two models; their dashes are gaps in our measurements, not model limitations.
+Same tool-eval-bench **3.0.1.dev9**, hard mode, seed 42, thinking off. One normal-clock
+quality trial per model; a one-point lead is not an established ranking. Safety
+findings belong to the model reports, alongside task failures. These are text/tool
+tests with mocked document tools; vision and full-window retrieval are unvalidated.
 
 **Which Qwen?** The baseline is a dense **27B** model. Flash Next has a **125B
 main model / 6B active per token**, plus **51B n-gram embedding parameters and a
@@ -36,7 +33,7 @@ in this recipe. Bolt's 24GB checkpoint mixes IQ2_XXS experts, NVFP4 Mamba layers
 and Q8_0 embedding/output weights. Draft heads assist generation; they are not
 separate quality-test candidates.
 
-## Paired speed and energy — new models
+## Paired speed and energy — completed 80% GPU-limit runs
 
 **Coverage:** this paired comparison covers **Super VL and Flash Next only**.
 The matched speed/energy protocol has **not yet been run for Bolt or Qwen 27B**.
@@ -57,19 +54,20 @@ do not establish a paired energy-efficiency result.
 
 | Model / setup | Clocks | c1 decode tok/s | c1 prefill tok/s | c4 decode total tok/s | Full matrix seconds | GPU-reported kJ / matrix |
 |---|---|---:|---:|---:|---:|---:|
-| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | Normal | 35.4 | 2,185 | 66.4 | 440.2 | 19.53 |
-| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | Capped | 33.7 | 2,196 | 68.4 | 438.9 | 18.54 |
-| Qwen3.8-Flash-Next FP4-Local + MTP4 | Normal | 39.0 | 1,822 | 59.7 | 453.6 | 17.74 |
-| Qwen3.8-Flash-Next FP4-Local + MTP4 | Capped | 38.8 | 1,788 | 59.8 | 459.3 | 17.14 |
+| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | Normal — default clocks | 35.4 | 2,185 | 66.4 | 440.2 | 19.53 |
+| Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr | 80% GPU limit — 2,402 MHz; CPU 80% | 33.7 | 2,196 | 68.4 | 438.9 | 18.54 |
+| Qwen3.8-Flash-Next FP4-Local + MTP4 | Normal — default clocks | 39.0 | 1,822 | 59.7 | 453.6 | 17.74 |
+| Qwen3.8-Flash-Next FP4-Local + MTP4 | 80% GPU limit — 2,402 MHz; CPU 80% | 38.8 | 1,788 | 59.8 | 459.3 | 17.14 |
 
 Speed columns: depth 0, pp2048, **exactly 128 output tokens**, two passes per
 profile × three measured runs. Full matrix: depths **0 / 4K / 8K**, concurrency
 **1 / 2 / 4**, with warmups. Energy/time include that whole matrix, its warmups,
 and context preparation; they are **not decode-only**. Profiles alternate
-**normal → capped → capped → normal**, keeping one server loaded. Both use 20
+**normal → 80% GPU limit → 80% GPU limit → normal**, keeping one server loaded. Both use 20
 CPU quota and 32K configured server context. [All shapes and dispersion](experiments/large-models-20261102/throughput-matrix.csv).
 
-**Capped** means 80% hardware-maximum CPU and GPU clock ceilings, not 80% power.
+**Existing limited profile:** GPU ceiling 2,402 MHz (80% of 3,003 MHz reported maximum),
+CPU clock ceilings 80% of hardware maxima. This is a clock limit, not a watt limit.
 Observed GPU clocks were already near the ceiling (~2.4 GHz); most of the
 frequency reduction was on the CPU. GPU-reported joules are **not whole-machine
 energy**; CPU, NVMe, fans and power-supply costs are not fully accounted for.

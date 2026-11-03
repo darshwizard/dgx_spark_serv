@@ -53,7 +53,10 @@ def main():
     p.add_argument('action',choices=['apply','restore'])
     p.add_argument('--state',type=Path,required=True)
     p.add_argument('--gpu-default-baseline',action='store_true')
+    p.add_argument('--gpu-max-mhz',type=int,help='Explicit GPU ceiling in MHz; omitted preserves the historical 80%% profile')
     args=p.parse_args()
+    if args.gpu_max_mhz is not None and args.gpu_max_mhz<=0:
+        p.error('GPU ceiling must be positive')
     if os.geteuid()!=0: p.error('Owner/root privileges required')
     if args.action=='restore':
         state=json.loads(args.state.read_text())
@@ -73,7 +76,8 @@ def main():
     args.state.chmod(0o644)
     try:
         maximum=int(gpu('--query-gpu=clocks.max.sm','--format=csv,noheader,nounits'))
-        target=int(maximum*0.8)
+        target=args.gpu_max_mhz if args.gpu_max_mhz is not None else int(maximum*0.8)
+        if target>maximum:raise RuntimeError('Requested GPU ceiling exceeds reported hardware maximum')
         for path,values in state['cpu'].items():
             cap=int(values['cpuinfo_max_freq']*0.8)
             # Never increase an existing lower cap.

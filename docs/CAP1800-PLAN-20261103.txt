@@ -1,0 +1,54 @@
+Scheduled comparison: 2026-11-03 02:00 EST / 07:00 UTC
+
+Models, in order:
+1. Qwen3.8-27B NVFP4 + DFlash2
+2. NVIDIA Nemotron 3.5 Bolt 74B-A9B 24GB + LiLiCorr
+3. NVIDIA Nemotron 3.5 Super VL 120B-A12B NVFP4 + LiLiCorr
+4. Qwen3.8-Flash-Next FP4-Local + MTP4
+DeepSeek V4.1 Flash 1017 at 256K remains a separate later experiment.
+
+Normal means default CPU/GPU frequency limits. The limited mode is explicitly
+GPU ceiling 1800 MHz (approximately 60% of reported 3003 MHz hardware maximum),
+with CPU ceilings 80% of hardware maxima and unchanged CPU affinity. This is
+neither a 60% watt limit nor a GPU-only test. We cannot isolate CPU versus GPU
+effects from a combined profile. Stock automatic fan control remains enabled.
+
+Run one normal-clock quality trial/model: tool-eval-bench 3.0.1.dev9, hard mode,
+104 scenarios, seed 42, thinking off. Report quality separately from efficiency.
+Behavioral warnings remain in full model reports, not per-power headline rows.
+
+Run four throughput matrices/model: normal, limited, limited, normal. Keep one
+server resident across transitions. Seeded llama-benchy 0.4.1.dev1, pp2048,
+exactly 128 generated tokens, depths 0/4096/8192, concurrency 1/2/4, warmup plus
+three measurements per shape. All four use 20 CPU quota and 32K context. Reset
+prefix caches before suites; record profile handshakes and clock readbacks.
+Condition each phase for at least 30 seconds, up to 300 seconds if hottest-zone
+temperature remains above 60 C. Record whether the temperature target was met.
+
+Record GPU-reported watts/clocks/temperature, seven ACPI zones, both fan RPMs,
+CPU activity, host memory/swap pressure and NVMe activity. GPU-reported joules
+are not whole-system energy; no wall meter or ambient sensor is available.
+Two passes per profile describe this host; they are not confidence intervals.
+
+Use the queue and already validated pinned per-model images/commands. Temporary
+runtime: 118 GiB charged memory, 20 CPUs, 16 GiB shared memory, no job swap.
+Guard actual host memory independently: stop below 2 GiB available, below 6 GiB
+for 30 seconds, or at 90 C on the hottest ACPI zone. Missing guard heartbeat or
+clock readback mismatch also stops the campaign. No firmware/EC/fan changes.
+Restore clocks, unload models and restore original queue/reference files before
+publishing. Refuse runtime switches if other queue jobs are active.
+
+One-shot system timer spark-bench-1800-20261103 starts the owner controller as
+d_wizard. Working directory: /home/d_wizard/local-ai/cap1800-20261103.
+Local status.json and service.log provide progress. Source lives under
+configs/cap1800-20261103/automation; Qwen/Bolt JSON plans preserve previously
+successful serving commands. Prepared Git commit and image IDs are checked at
+start. The timer survives logout; it is not a reboot-persistent installation.
+
+Publish only after all four runs, measurement validation and cleanup succeed.
+Replace README headline tables with new results, archive raw runs and retain
+older campaign data. On failure, retain prior headline results and local logs.
+Push results from an isolated checkout, without a force push.
+
+Preparation validation uses a mocked clock-controller test, mock HTTP benchmark
+client and synthetic four-model publication test; none launches GPU inference.
