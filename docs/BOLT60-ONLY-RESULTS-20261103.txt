@@ -1,0 +1,16 @@
+Bolt efficiency-only follow-up, Nov 3, 2026
+GPU1800MHz; CPU requested ceilings60% (P2340MHz/E1684.8MHz).
+Two resident seeded throughput matrices, no repeat quality trial. No unrestricted retry.
+The normal run in the earlier campaign stopped at90C; these are limited-only results, not a paired energy-saving estimate.
+{
+  "profile": "gpu1800_cpu60",
+  "paired_normal_comparison": false,
+  "matrix_seconds_mean": 470.92898896703264,
+  "gpu_kj_mean": 16.147175043094155,
+  "peak_acpi_c": 66.4,
+  "c1_decode": 46.0981522662251,
+  "c1_prefill": 1569.5217723775172,
+  "c4_decode_total": 84.68548586717269,
+  "job_id": "a7fea4351f6947b1b032af83a39d0623"
+}
+GPU-reported energy is not wall energy. Stock automatic fans,90C guard and memory guards unchanged; original runtime/clocks restored before publishing.

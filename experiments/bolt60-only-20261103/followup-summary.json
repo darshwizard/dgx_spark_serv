@@ -1,0 +1,11 @@
+{
+  "profile": "gpu1800_cpu60",
+  "paired_normal_comparison": false,
+  "matrix_seconds_mean": 470.92898896703264,
+  "gpu_kj_mean": 16.147175043094155,
+  "peak_acpi_c": 66.4,
+  "c1_decode": 46.0981522662251,
+  "c1_prefill": 1569.5217723775172,
+  "c4_decode_total": 84.68548586717269,
+  "job_id": "a7fea4351f6947b1b032af83a39d0623"
+}

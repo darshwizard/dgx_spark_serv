@@ -1,0 +1,9 @@
+{
+  "id": "a7fea4351f6947b1b032af83a39d0623",
+  "uid": 1002,
+  "command": "[\"python3\", \"/workspace/code/model_campaign_job.py\", \"--model\", \"bolt\", \"--run-id\", \"bolt-gpu1800limited-01\", \"--limited-profile\", \"gpu1800_cpu60\", \"--quality-mode\", \"normal-only\", \"--phase-mode\", \"limited-only\"]",
+  "metadata": "{\"commit\": \"bfcc0819ca748d8ca186b4aa7f977f639832d49e\", \"dataset\": \"tool-eval-104-and-seeded-llama-benchy-v2\", \"parameters\": {\"model\": \"bolt\", \"campaign\": \"bolt60-only-20261103\", \"profiles\": [\"gpu1800_cpu60\", \"gpu1800_cpu60\"], \"exact_output_tokens\": 128, \"numpy_seed\": 42, \"request_seed\": 42, \"context\": 32768, \"cpus\": 20, \"memory_ceiling_gib\": 118, \"gpu_ceiling_mhz\": 1800, \"cpu_ceiling_fraction\": 0.6, \"quality_mode\": \"none\", \"source_hashes\": {\"model_campaign_job.py\": \"f6c96269b11bd0e522bbee7335a8079e0fdd90314b03b3f75f236e7f2fd872b8\", \"paired_model_bench.py\": \"5d6e48d7627c7ff0385ce4d0d9cf323609831e3cba94d2493241aa1a999b3e55\", \"campaign_guard.py\": \"f9c85f9c553cc18072842bdb95c5a62f76d0304a785094d421f1eddf16ff7edf\", \"clock_profile.py\": \"92fd3f900cae6f0e85dd1fc1a90157eb960f92f87e88146f556b3af2d28421ce\"}}}",
+  "state": "completed",
+  "exit_code": 0,
+  "created": 1793714440.8562202
+}

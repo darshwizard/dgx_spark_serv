@@ -70,6 +70,20 @@ GPU-reported energy is not whole-machine energy; CPU, NVMe, fans and PSU losses
 are not fully accounted for. Different tokenizers also imply different text at
 equal token counts. No wall meter or ambient-temperature sensor was available.
 
+## Bolt at 60% — efficiency-only follow-up
+
+The unrestricted comparison stopped at the 90°C guard. A separate two-pass test
+used GPU **1,800 MHz** and CPU **60%** (performance cores **2,340 MHz**, efficiency
+cores **1,684.8 MHz**). No unrestricted retry or repeat quality trial was run.
+
+| c1 decode tok/s | c1 prefill tok/s | c4 decode total tok/s | Matrix seconds | GPU-reported kJ | Peak ACPI °C |
+|---:|---:|---:|---:|---:|---:|
+| 46.1 | 1,570 | 84.7 | 470.9 | 16.15 | 66.4 |
+
+These are **unpaired limited-only results**; no normal-versus-efficiency energy
+percentage can be calculated. [Report](docs/BOLT60-ONLY-RESULTS-20261103.txt) ·
+[Raw evidence](experiments/bolt60-only-20261103/).
+
 ## Findings from this campaign
 
 **Disk-backed n-gram/PLE tables:** Flash Next can continue reading NVMe during
