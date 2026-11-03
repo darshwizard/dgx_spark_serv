@@ -25,7 +25,7 @@ def switch(image,label=None,thermal_stop_c=90):
  run(['curl','-fsS','--retry','5','--retry-connrefused','--retry-delay','1','http://192.168.1.240:8080/agents'],stdout=subprocess.DEVNULL)
 def run_label(model,attempt,limited_only=False,normal_only=False):
  if limited_only and normal_only:raise ValueError('Conflicting phase modes')
- if model not in ['qwen27','bolt','super','flash'] or not re.fullmatch('[0-9]+',attempt):raise ValueError('Invalid model or attempt')
+ if model not in ['qwen27','bolt','super','flash','deepseek1017'] or not re.fullmatch('[0-9]+',attempt):raise ValueError('Invalid model or attempt')
  return f'{model}-gpu1800{"limited" if limited_only else "normal" if normal_only else ""}-{attempt}'
 def model_run(model,attempt,limited_only=False,normal_only=False,thermal_stop_c=90):
  if thermal_stop_c not in [90,95]:raise ValueError("Unsupported thermal stop")
@@ -35,13 +35,13 @@ def model_run(model,attempt,limited_only=False,normal_only=False,thermal_stop_c=
  if remote(f'test -e ~/workspace/results/{label} && echo exists || true').strip():raise RuntimeError('Remote run output already exists: '+label)
  local=ROOT/label;local.mkdir(exist_ok=False)
  jid=None;logger=None;watch=None;active_cap=None;current_profile='normal';handled=0;start=time.monotonic();last_beat=0
- image={'qwen27':'qwen-benchmarks:20261102','bolt':'bolt-benchmarks:20261102','super':'super-benchmarks:20261102','flash':'flash-benchmarks:20261102'}[model]
- switch(image,{'qwen27':'Qwen 27B NVIDIA image','bolt':'Bolt NVIDIA playbook image','super':'Super VL forum image','flash':'Flash-Next NVIDIA recipe image'}[model],thermal_stop_c)
+ image={'qwen27':'qwen-benchmarks:20261102','bolt':'bolt-benchmarks:20261102','super':'super-benchmarks:20261102','flash':'flash-benchmarks:20261102','deepseek1017':'deepseek1017-benchmarks:20261103'}[model]
+ switch(image,{'qwen27':'Qwen 27B NVIDIA image','bolt':'Bolt NVIDIA playbook image','super':'Super VL forum image','flash':'Flash-Next NVIDIA recipe image','deepseek1017':'DeepSeek Flash1017 verified EXL3 recipe image'}[model],thermal_stop_c)
  try:
   limits=cpu()
   if any(v['scaling_max_freq']!=v['cpuinfo_max_freq'] for v in limits.values()):raise RuntimeError('Unexpected pre-existing CPU cap; refusing to overwrite')
   spec={'command':['python3','/workspace/code/model_campaign_job.py','--thermal-stop-c',str(thermal_stop_c),'--model',model,'--run-id',label,'--limited-profile','gpu1800_cpu60','--quality-mode','normal-only','--phase-mode','normal-only' if normal_only else 'limited-only' if limited_only else 'paired'],
-   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'thermal_stop_c':thermal_stop_c,'campaign':ROOT.name,'profiles':phases,'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':None if normal_only else 1800,'cpu_ceiling_fraction':1.0 if normal_only else 0.6,'quality_mode':'none' if limited_only or normal_only else 'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
+   'metadata':{'commit':subprocess.check_output(['git','-C',str(REPO),'rev-parse','HEAD'],text=True).strip(),'dataset':'tool-eval-104-and-seeded-llama-benchy-v2','parameters':{'model':model,'thermal_stop_c':thermal_stop_c,'campaign':ROOT.name,'profiles':phases,'exact_output_tokens':128,'numpy_seed':42,'request_seed':42,'context':262144 if model=='deepseek1017' else 32768,'cpus':20,'memory_ceiling_gib':118,'gpu_ceiling_mhz':None if normal_only else 1800,'cpu_ceiling_fraction':1.0 if normal_only else 0.6,'server_max_num_seqs':1 if model=='deepseek1017' else 4,'quality_mode':'none' if limited_only or normal_only else 'normal-only','source_hashes':{n:hashlib.sha256((REPO/'scripts'/n).read_bytes()).hexdigest() for n in ['model_campaign_job.py','paired_model_bench.py','campaign_guard.py','clock_profile.py']}}}}
   (local/'spec.json').write_text(json.dumps(spec,indent=2));run(SCP+[str(local/'spec.json'),HOST+':workspace/campaign-spec.json'])
   smart_snapshot(local,'nvme-smart-before.json')
   logger=subprocess.Popen(['python3',str(REPO/'scripts/telemetry.py'),'--out',str(local/'telemetry'),'--duration','21600','--label',label],stdout=subprocess.DEVNULL,stderr=open(local/'telemetry.log','w'))
@@ -116,7 +116,7 @@ def model_run(model,attempt,limited_only=False,normal_only=False,thermal_stop_c=
    (local/'queue.log').write_text(remote('compute-job logs '+jid))
    if remote(f'test -d ~/workspace/results/{label} && echo yes || true').strip()=='yes':run(SCP+['-r',HOST+':workspace/results/'+label,str(local/'result')])
 def main():
- p=argparse.ArgumentParser();p.add_argument('--models',nargs='+',choices=['qwen27','bolt','super','flash'],default=['qwen27','bolt','super','flash']);p.add_argument('--attempt',default='01');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--models',nargs='+',choices=['qwen27','bolt','super','flash','deepseek1017'],default=['qwen27','bolt','super','flash','deepseek1017']);p.add_argument('--attempt',default='01');a=p.parse_args()
  if not a.attempt.isdigit():raise SystemExit('Numeric attempt required')
  try:
   for model in a.models:

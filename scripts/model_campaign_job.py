@@ -24,10 +24,10 @@ def guard(out,thermal_stop_c=90):
    except Exception as e:reason='health_read_error: '+str(e)
    if reason:failures.append(reason);event('guard_abort',reason=reason);terminate();stop.set()
 def main():
- p=argparse.ArgumentParser();p.add_argument('--thermal-stop-c',type=int,choices=[90,95],default=90);p.add_argument('--phase-mode',choices=['paired','limited-only','normal-only'],default='paired');p.add_argument('--model',choices=['qwen27','bolt','super','flash'],required=True);p.add_argument('--run-id',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80','gpu1800_cpu60'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--thermal-stop-c',type=int,choices=[90,95],default=90);p.add_argument('--phase-mode',choices=['paired','limited-only','normal-only'],default='paired');p.add_argument('--model',choices=['qwen27','bolt','super','flash','deepseek1017'],required=True);p.add_argument('--run-id',required=True);p.add_argument('--limited-profile',choices=['efficiency80','gpu1800_cpu80','gpu1800_cpu60'],default='efficiency80');p.add_argument('--quality-mode',choices=['both','normal-only'],default='both');a=p.parse_args()
  if not a.run_id or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-_' for c in a.run_id):p.error('Invalid run ID')
  out=ROOT/'results'/a.run_id;out.mkdir(parents=True,exist_ok=False)
- target=ROOT/'models'/dict(qwen27='Qwen3.8-27B-NVFP4',bolt='NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB',super='NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4',flash='Qwen3.8-Flash-Next-FP4-Local')[a.model]
+ target=ROOT/'models'/dict(qwen27='Qwen3.8-27B-NVFP4',bolt='NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB',super='NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4',flash='Qwen3.8-Flash-Next-FP4-Local',deepseek1017='DSV4.1-Flash-1017-SAGE-EXL3-1.62bpw')[a.model]
  command=[sys.executable,'-m','vllm.entrypoints.cli.main','serve',str(target),'--served-model-name','candidate','--host','127.0.0.1','--port','8000','--trust-remote-code','--max-model-len','32768','--max-num-seqs','4','--enable-auto-tool-choice']
  env=os.environ.copy();cache='/workspace/cache/large-'+a.model
  env.update({'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1','HF_HOME':'/workspace/cache/hf','HF_MODULES_CACHE':'/workspace/cache/hf-modules','PYTHONDONTWRITEBYTECODE':'1','XDG_CACHE_HOME':cache,'TORCHINDUCTOR_CACHE_DIR':cache+'/inductor','TRITON_CACHE_DIR':cache+'/triton','VLLM_CACHE_ROOT':cache+'/vllm','CUDA_CACHE_PATH':cache+'/cuda','VLLM_SERVER_DEV_MODE':'1','VLLM_NO_USAGE_STATS':'1','DO_NOT_TRACK':'1','OMP_NUM_THREADS':'8'})
@@ -39,13 +39,18 @@ def main():
   env['VLLM_USE_V2_MODEL_RUNNER']='1'
   for key in ['XDG_CACHE_HOME','TORCHINDUCTOR_CACHE_DIR','TRITON_CACHE_DIR','VLLM_CACHE_ROOT','CUDA_CACHE_PATH']:
    env[key]=env[key].replace(cache,'/workspace/cache/playbook')
+ elif a.model=='deepseek1017':
+  command=['bash','/workspace/code/deepseek1017/serve_inner.sh']
+  env.update(json.loads((ROOT/'code/deepseek1017/serve-env.json').read_text()))
+  for path in ['B12X_COMPILE_CACHE_DIR','B12X_CUTE_COMPILE_CACHE_DIR','CUDA_CACHE_PATH','CUTE_DSL_CACHE_DIR','TILELANG_CACHE_DIR','TRITON_CACHE_DIR','XDG_CACHE_HOME','VLLM_CACHE_ROOT']:
+   Path(env[path]).mkdir(parents=True,exist_ok=True)
  elif a.model=='super':
   draft=ROOT/'models/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4-LiLiCorr'
   command+=['--gpu-memory-utilization','0.75','--max-num-batched-tokens','8192','--speculative-config',json.dumps({'method':'dflash','model':str(draft),'num_speculative_tokens':7}),'--mamba-backend','flashinfer','--mamba-ssm-cache-dtype','float16','--enable-mamba-cache-stochastic-rounding','--mamba-cache-philox-rounds','5','--enable-mamba-shared-prefix-checkpoint','--block-size','64','--prefix-match-unit','64','--limit-mm-per-prompt',json.dumps({'image':1,'video':0}),'--allowed-media-domains','media.invalid','--tool-call-parser','qwen3_coder','--reasoning-parser','nemotron_v3','--enable-prompt-tokens-details']
  else:
   env.update({'PYTORCH_CUDA_ALLOC_CONF':'expandable_segments:True','VLLM_PLE_TABLE_MEMORY':'disk','B12X_DISK_BACKEND':'io_uring','CUTE_DSL_ARCH':'sm_121a','SAFETENSORS_FAST_GPU':'1','VLLM_WORKER_MULTIPROC_METHOD':'spawn','VLLM_SSM_CONV_STATE_LAYOUT':'DS','VLLM_USE_AOT_COMPILE':'1','VLLM_USE_MEGA_AOT_ARTIFACT':'1','VLLM_USE_V2_MODEL_RUNNER':'1','B12X_POLICY_MODE':'auto','VLLM_MXFP8_LM_HEAD':'1','VLLM_B12X_MOE_FP4_LAYER_MAX_INPUT_SCALE':'w13','VLLM_B12X_MOE_FP4_FORCE_A16':'1','B12X_W4A16_A4_PREFILL':'1'})
   command+=['--kv-cache-dtype','fp8','--gpu-memory-utilization','0.8','--tensor-parallel-size','1','--pipeline-parallel-size','1','--mamba-cache-mode','align','--enable-prefix-caching','--enable-chunked-prefill','--dtype','bfloat16','--quantization','modelopt_mixed','--block-size','16','--load-format','b12x','--max-num-batched-tokens','4096','--speculative-config',json.dumps({'method':'mtp','num_speculative_tokens':4}),'--gdn-decode-kernel','b12x','--linear-backend','b12x','--moe-backend','b12x','--no-enable-flashinfer-autotune','--mm-encoder-tp-mode','data','--reasoning-parser','qwen3','--tool-call-parser','qwen3_xml','--compilation-config',json.dumps({'pass_config':{'fuse_act_quant':True}})]
- (out/'launch.json').write_text(json.dumps({'command':command,'model':a.model,'environment':{k:v for k,v in env.items() if k.startswith(('VLLM_','B12X_','OMP_','CUTE_','SAFETENSORS_','PYTORCH_'))},'queue_limits':{'memory_gib':118,'cpus':20,'shm_gib':16},'thermal_stop_c':a.thermal_stop_c,'memory_stop_available_gib':2},indent=2))
+ (out/'launch.json').write_text(json.dumps({'command':command,'model':a.model,'environment':{k:v for k,v in env.items() if k.startswith(('VLLM_','B12X_','OMP_','CUTE_','SAFETENSORS_','PYTORCH_','DSV41_','MAXLEN','KVB','MNBT','LPT','MTP_K','CAPTURE_SIZES','CG_MODE','PREFIX_CACHING'))},'queue_limits':{'memory_gib':118,'cpus':20,'shm_gib':16},'thermal_stop_c':a.thermal_stop_c,'memory_stop_available_gib':2},indent=2))
  def signal_stop(*_):failures.append('signal');stop.set();terminate()
  signal.signal(signal.SIGTERM,signal_stop);signal.signal(signal.SIGINT,signal_stop)
  watcher=threading.Thread(target=guard,args=(out,a.thermal_stop_c),daemon=True);watcher.start();rc=1
